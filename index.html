@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Soluções Elétrica</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', sans-serif;
+      color: #1f2937;
+      background: #fafafa;
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      min-height: 380px;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url('modal_Logo.jpg') center/100% 100% no-repeat;
+    }
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.1);
+    }
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      background: #ffffff;
+      padding: 48px 24px;
+      text-align: center;
+      color: #1f2937;
+      max-width: 100%;
+    }
+    .hero-content h1 { font-size: 2.5rem; font-weight: 800; margin-bottom: 12px; line-height: 1.2; color: #1f2937; }
+    .hero-content p { font-size: 1.125rem; color: #4b5563; margin-bottom: 32px; line-height: 1.6; }
+    .btn-whatsapp {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: #f59e0b;
+      color: #0f172a;
+      padding: 14px 32px;
+      border-radius: 50px;
+      font-size: 1.125rem;
+      font-weight: 700;
+      text-decoration: none;
+      transition: transform .2s, box-shadow .2s;
+      box-shadow: 0 4px 16px rgba(245,158,11,0.35);
+    }
+    .btn-whatsapp:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 24px rgba(245,158,11,0.5);
+    }
+
+    .section { padding: 64px 24px; max-width: 960px; margin: 0 auto; }
+    .section-title {
+      font-size: 1.75rem;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 8px;
+      color: #f59e0b;
+    }
+    .section-subtitle {
+      text-align: center;
+      color: #6b7280;
+      margin-bottom: 40px;
+      font-size: 1rem;
+    }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 24px;
+      align-items: start;
+    }
+    .service-card {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+      border: 1px solid #f0f0f0;
+      border-left: 4px solid transparent;
+      overflow: hidden;
+      cursor: pointer;
+      transition: box-shadow .2s, border-color .2s;
+    }
+    .service-card:hover { box-shadow: 0 4px 16px rgba(245,158,11,0.12); border-left-color: #f59e0b; }
+    .service-card:active { transform: scale(0.98); }
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 20px 24px;
+      user-select: none;
+    }
+    .card-header i:first-child {
+      font-size: 24px;
+      color: #f59e0b;
+      background: rgba(245,158,11,0.1);
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 12px;
+      flex-shrink: 0;
+    }
+    .card-header h3 { font-size: 1.05rem; font-weight: 600; flex: 1; }
+    .card-header i:last-child {
+      font-size: 14px;
+      color: #9ca3af;
+      flex-shrink: 0;
+    }
+
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal {
+      background: white;
+      border-radius: 20px;
+      max-width: 520px;
+      width: 100%;
+      max-height: 80vh;
+      overflow-y: auto;
+      padding: 32px;
+      position: relative;
+      animation: modalIn .25s ease;
+    }
+    @keyframes modalIn {
+      from { transform: scale(0.9); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    .modal-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: none;
+      border: none;
+      font-size: 20px;
+      color: #9ca3af;
+      cursor: pointer;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background .2s;
+    }
+    .modal-close:hover { background: #f3f4f6; color: #374151; }
+    .modal-image {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      display: block;
+      background: #1e293b;
+    }
+    .modal h3 { font-size: 1.25rem; font-weight: 700; margin-bottom: 4px; }
+    .modal-desc { color: #6b7280; font-size: 0.9rem; line-height: 1.5; margin-bottom: 4px; }
+    .modal-note {
+      color: #6b7280;
+      font-size: 0.875rem;
+      margin-bottom: 16px;
+      padding: 12px;
+      background: #f9fafb;
+      border-radius: 8px;
+    }
+    .modal ul { list-style: none; margin: 16px 0 24px; }
+    .modal ul li {
+      padding: 8px 0 8px 24px;
+      position: relative;
+      color: #4b5563;
+      font-size: 0.925rem;
+      line-height: 1.5;
+      border-bottom: 1px solid #f3f4f6;
+    }
+    .modal ul li:last-child { border-bottom: none; }
+    .modal ul li::before {
+      content: '\f00c';
+      font-family: 'Font Awesome 6 Free';
+      font-weight: 900;
+      position: absolute;
+      left: 0;
+      color: #f59e0b;
+      font-size: 0.8rem;
+    }
+    .btn-modal-whatsapp {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      background: #f59e0b;
+      color: #0f172a;
+      padding: 14px 24px;
+      border-radius: 50px;
+      font-size: 1rem;
+      font-weight: 700;
+      text-decoration: none;
+      transition: transform .2s, box-shadow .2s;
+    }
+    .btn-modal-whatsapp:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 16px rgba(245,158,11,0.35);
+    }
+
+    .trust-bar {
+      background: white;
+      border-top: 1px solid #e5e7eb;
+      border-bottom: 1px solid #e5e7eb;
+      padding: 40px 24px;
+    }
+    .trust-grid {
+      max-width: 960px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 24px;
+      text-align: center;
+    }
+    .trust-item i { font-size: 28px; color: #f59e0b; margin-bottom: 8px; }
+    .trust-item h4 { font-size: 1.125rem; font-weight: 600; }
+    .trust-item p { color: #6b7280; font-size: 0.875rem; }
+
+    .cta-section {
+      background: linear-gradient(135deg, #0f172a, #1e293b);
+      color: white;
+      text-align: center;
+      padding: 64px 24px;
+    }
+    .cta-section h2 { font-size: 1.75rem; font-weight: 700; margin-bottom: 12px; }
+    .cta-section p { color: rgba(255,255,255,0.85); margin-bottom: 28px; }
+
+    .whatsapp-fab {
+      position: fixed;
+      right: 24px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: #25D366;
+      color: white;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      text-decoration: none;
+      box-shadow: 0 4px 20px rgba(37,211,102,0.4);
+      z-index: 999;
+      transition: transform .2s, box-shadow .2s;
+    }
+    .whatsapp-fab:hover {
+      transform: translateY(-50%) scale(1.08);
+      box-shadow: 0 6px 28px rgba(37,211,102,0.5);
+    }
+
+    footer {
+      background: #111827;
+      color: rgba(255,255,255,0.6);
+      text-align: center;
+      padding: 24px;
+      font-size: 0.875rem;
+      position: relative;
+    }
+    footer a { color: rgba(255,255,255,0.8); text-decoration: none; }
+    footer a:hover { color: white; }
+
+    .footer-admin {
+      position: absolute;
+      right: 24px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(255,255,255,0.08);
+      color: rgba(255,255,255,0.4);
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all .2s;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .footer-admin:hover {
+      background: rgba(245,158,11,0.15);
+      color: #f59e0b;
+      border-color: rgba(245,158,11,0.3);
+    }
+
+    .login-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 2000;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .login-overlay.active { display: flex; }
+    .login-card {
+      background: white;
+      border-radius: 20px;
+      max-width: 400px;
+      width: 100%;
+      padding: 36px 32px 32px;
+      position: relative;
+      animation: modalIn .25s ease;
+    }
+    .login-card .modal-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: none;
+      border: none;
+      font-size: 20px;
+      color: #9ca3af;
+      cursor: pointer;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background .2s;
+    }
+    .login-card .modal-close:hover { background: #f3f4f6; color: #374151; }
+    .login-header {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+    .login-header .login-icon {
+      width: 56px;
+      height: 56px;
+      background: rgba(245,158,11,0.1);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 14px;
+    }
+    .login-header .login-icon i {
+      font-size: 24px;
+      color: #f59e0b;
+    }
+    .login-header h3 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #1f2937;
+      margin-bottom: 4px;
+    }
+    .login-header p {
+      color: #6b7280;
+      font-size: 0.875rem;
+    }
+    .login-field {
+      margin-bottom: 16px;
+    }
+    .login-field label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #4b5563;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .login-field input {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid #d1d5db;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      color: #1f2937;
+      outline: none;
+      transition: border-color .2s, box-shadow .2s;
+      font-family: inherit;
+    }
+    .login-field input:focus {
+      border-color: #f59e0b;
+      box-shadow: 0 0 0 3px rgba(245,158,11,0.15);
+    }
+    .login-field input::placeholder { color: #9ca3af; }
+    .login-btn {
+      width: 100%;
+      padding: 13px;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform .15s, box-shadow .15s;
+      font-family: inherit;
+      margin-bottom: 10px;
+    }
+    .login-btn-primary {
+      background: #f59e0b;
+      color: #0f172a;
+      box-shadow: 0 4px 12px rgba(245,158,11,0.3);
+    }
+    .login-btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(245,158,11,0.4);
+    }
+    .login-btn-secondary {
+      background: #f3f4f6;
+      color: #4b5563;
+    }
+    .login-btn-secondary:hover {
+      background: #e5e7eb;
+    }
+    .login-error {
+      display: none;
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      color: #dc2626;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      margin-bottom: 14px;
+    }
+
+    .login-divider {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin: 18px 0;
+    }
+    .login-divider::before,
+    .login-divider::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: #e5e7eb;
+    }
+    .login-divider span {
+      font-size: 0.8rem;
+      color: #9ca3af;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .login-btn-google {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 10px;
+      background: white;
+      color: #374151;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: all .15s;
+      font-family: inherit;
+      margin-bottom: 10px;
+    }
+    .login-btn-google:hover {
+      background: #f9fafb;
+      border-color: #9ca3af;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+    .login-btn-google svg {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+    }
+
+    @media (max-width: 640px) {
+      .hero h1 { font-size: 1.75rem; }
+      .hero { padding: 60px 20px 80px; }
+      .section { padding: 48px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <section class="hero">
+    <div class="hero-overlay"></div>
+  </section>
+  <div class="hero-content">
+      <h1>Soluções Elétrica</h1>
+      <p>Profissionalismo e segurança em cada serviço. Atendimento rápido em Brasília e região.</p>
+      <a href="https://wa.me/5561995663288?text=Ol%C3%A1!%20Gostaria%20de%20um%20or%C3%A7amento." target="_blank" class="btn-whatsapp">
+        <i class="fab fa-whatsapp"></i> Solicitar orçamento
+      </a>
+    </div>
+  <section class="section">
+    <h2 class="section-title">Nossos serviços</h2>
+    <p class="section-subtitle">Clique em cada categoria para ver os detalhes</p>
+    <div class="services-grid">
+
+      <div class="service-card" onclick="openModal(this)" data-image="modal1.jpg" data-desc="Instalação completa de sistemas elétricos com segurança para residências, comércios e indústrias." data-title="Instalações Elétricas" data-whatsapp="Olá! Tenho interesse no serviço de Instalações Elétricas. Poderia me enviar um orçamento?" data-items='["Instalação elétrica residencial, comercial e industrial","Instalação de iluminação interna e externa","Instalação de tomadas, interruptores e circuitos dedicados","Instalação de padrões de entrada e ramais de energia","Instalação de sistemas de aterramento e DPS","Instalação de dispositivos DR (proteção contra choques)"]'>
+        <div class="card-header">
+          <i class="fas fa-home"></i>
+          <h3>Instalações Elétricas</h3>
+          <i class="fas fa-chevron-right"></i>
+        </div>
+      </div>
+
+      <div class="service-card" onclick="openModal(this)" data-image="modal2.jpg" data-desc="Montagem, manutenção e dimensionamento de quadros elétricos, painéis de comando e motores." data-title="Quadros, Painéis e Motores" data-whatsapp="Olá! Tenho interesse no serviço de Quadros, Painéis e Motores. Poderia me enviar um orçamento?" data-items='["Montagem e manutenção de quadros de distribuição (QDC)","Dimensionamento de circuitos elétricos","Montagem de painéis elétricos e de comando","Instalação e manutenção de motores elétricos"]'>
+        <div class="card-header">
+          <i class="fas fa-toolbox"></i>
+          <h3>Quadros, Painéis e Motores</h3>
+          <i class="fas fa-chevron-right"></i>
+        </div>
+      </div>
+
+      <div class="service-card" onclick="openModal(this)" data-image="modal3.jpg" data-desc="Diagnóstico preciso e manutenção preventiva e corretiva com medições e testes elétricos completos." data-title="Manutenção e Testes" data-whatsapp="Olá! Tenho interesse no serviço de Manutenção e Testes Elétricos. Poderia me enviar um orçamento?" data-items='["Manutenção preventiva e corretiva em instalações elétricas","Medição e testes elétricos (isolação, continuidade, aterramento e tensão)","Correção de fator de potência (em empresas)","Emissão de laudos e relatórios técnicos"]'>
+        <div class="card-header">
+          <i class="fas fa-wrench"></i>
+          <h3>Manutenção e Testes</h3>
+          <i class="fas fa-chevron-right"></i>
+        </div>
+      </div>
+
+      <div class="service-card" onclick="openModal(this)" data-image="modal4.jpg" data-desc="Elaboração de projetos elétricos e automação residencial e comercial com soluções modernas." data-title="Projetos e Automação" data-whatsapp="Olá! Tenho interesse no serviço de Projetos e Automação. Poderia me enviar um orçamento?" data-items='["Projetos elétricos de baixa tensão","Automação residencial e comercial","Instalação de geradores e nobreaks","Instalação de sistemas de energia solar","Infraestrutura para carregadores de veículos elétricos","Instalação de sistemas de iluminação de emergência"]'>
+        <div class="card-header">
+          <i class="fas fa-draw-polygon"></i>
+          <h3>Projetos e Automação</h3>
+          <i class="fas fa-chevron-right"></i>
+        </div>
+      </div>
+
+      <div class="service-card" onclick="openModal(this)" data-image="modal5.jpg" data-desc="Instalação de equipamentos elétricos como LEDs, chuveiros, ventiladores, bombas e carregadores." data-title="Equipamentos e Dispositivos" data-whatsapp="Olá! Tenho interesse em instalação de Equipamentos e Dispositivos. Poderia me enviar um orçamento?" data-items='["Instalação de LEDs, refletores e luminárias","Chuveiros elétricos","Ventiladores de teto","Bombas de água","Carregadores para carros elétricos","Carregador de Carro Wallbox"]'>
+        <div class="card-header">
+          <i class="fas fa-plug"></i>
+          <h3>Equipamentos e Dispositivos</h3>
+          <i class="fas fa-chevron-right"></i>
+        </div>
+      </div>
+
+      <div class="service-card" onclick="openModal(this)" data-image="modal6.jpg" data-desc="Serviços especializados com emissão de laudos, TRT e responsabilidade técnica profissional." data-title="Serviços Técnicos" data-whatsapp="Olá! Tenho interesse nos Serviços Técnicos. Poderia me enviar um orçamento?" data-items='["Assinatura de projetos dentro dos limites da atribuição profissional","Emissão de Termo de Responsabilidade Técnica (TRT)","Atuação como responsável técnico de empresas","Laudos e inspeções técnicas"]' data-note="Serviços exclusivos para profissionais com formação técnica em Eletrotécnica e registro profissional.">
+        <div class="card-header">
+          <i class="fas fa-file-signature"></i>
+          <h3>Serviços Técnicos</h3>
+          <i class="fas fa-chevron-right"></i>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+    <div class="modal" id="modalContent">
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+      <img id="modalImage" class="modal-image" src="" alt="">
+      <h3 id="modalTitle"></h3>
+      <p class="modal-desc" id="modalDesc"></p>
+      <div class="modal-note" id="modalNote" style="display:none;"></div>
+      <ul id="modalList"></ul>
+      <a id="modalWhatsapp" href="#" target="_blank" class="btn-modal-whatsapp">
+        <i class="fab fa-whatsapp"></i> Pedir orçamento
+      </a>
+    </div>
+  </div>
+
+  <section class="trust-bar">
+    <div class="trust-grid">
+      <div class="trust-item">
+        <i class="fas fa-clock"></i>
+        <h4>Atendimento rápido</h4>
+        <p>Chegamos ao local no mesmo dia</p>
+      </div>
+      <div class="trust-item">
+        <i class="fas fa-shield-alt"></i>
+        <h4>Serviço garantido</h4>
+        <p>Garantia de 90 dias em todos os serviços</p>
+      </div>
+      <div class="trust-item">
+        <i class="fas fa-star"></i>
+        <h4>Profissionais</h4>
+        <p>Equipe qualificada e experiente</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>&copy; 2026 Soluções Elétrica — Todos os direitos reservados</p>
+    <p style="margin-top:4px;"><i class="fas fa-map-marker-alt"></i> Rua 43, Quadra 149, Lote E — Parque Mingone II — Luziânia, GO</p>
+    <div class="footer-admin" onclick="openLogin()" title="Acesso administrativo">
+      <i class="fas fa-cog"></i>
+    </div>
+  </footer>
+
+  <a href="https://wa.me/5561995663288?text=Ol%C3%A1!%20Gostaria%20de%20um%20or%C3%A7amento." target="_blank" class="whatsapp-fab" aria-label="WhatsApp">
+    <i class="fab fa-whatsapp"></i>
+  </a>
+
+  <div class="login-overlay" id="loginOverlay" onclick="closeLogin(event)">
+    <div class="login-card" onclick="event.stopPropagation()">
+      <button class="modal-close" onclick="closeLogin()">&times;</button>
+      <div class="login-header">
+        <div class="login-icon">
+          <i class="fas fa-user-shield"></i>
+        </div>
+        <h3>Acesso Administrativo</h3>
+        <p>Faca login para gerenciar o painel</p>
+      </div>
+      <div class="login-error" id="loginError">Usuario ou senha incorretos.</div>
+      <form id="loginForm" onsubmit="return handleLogin(event)">
+        <div class="login-field">
+          <label for="loginUser">Usuario</label>
+          <input type="text" id="loginUser" placeholder="Digite seu usuario" required autocomplete="username" />
+        </div>
+        <div class="login-field">
+          <label for="loginPass">Senha</label>
+          <input type="password" id="loginPass" placeholder="Digite sua senha" required autocomplete="current-password" />
+        </div>
+        <button type="submit" class="login-btn login-btn-primary">
+          <i class="fas fa-sign-in-alt"></i> Entrar
+        </button>
+        <div class="login-divider"><span>ou</span></div>
+        <button type="button" class="login-btn-google" onclick="handleGoogleLogin()">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/>
+            <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+            <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+            <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+          </svg>
+          Entrar com Google
+        </button>
+        <button type="button" class="login-btn login-btn-secondary" onclick="closeLogin()">
+          <i class="fas fa-arrow-left"></i> Voltar
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabaseClient.js"></script>
+  <script>
+    function openModal(el) {
+      const title = el.dataset.title;
+      const items = JSON.parse(el.dataset.items);
+      const whatsapp = el.dataset.whatsapp;
+      const note = el.dataset.note;
+      const image = el.dataset.image;
+
+      document.getElementById('modalImage').src = image;
+      document.getElementById('modalImage').alt = title;
+      document.getElementById('modalTitle').textContent = title;
+      document.getElementById('modalDesc').textContent = el.dataset.desc || '';
+
+      const noteEl = document.getElementById('modalNote');
+      if (note) {
+        noteEl.textContent = note;
+        noteEl.style.display = 'block';
+      } else {
+        noteEl.style.display = 'none';
+      }
+
+      const listEl = document.getElementById('modalList');
+      listEl.innerHTML = items.map(function(item) {
+        return '<li>' + item + '</li>';
+      }).join('');
+
+      document.getElementById('modalWhatsapp').href = 'https://wa.me/5561995663288?text=' + encodeURIComponent(whatsapp);
+
+      document.getElementById('modalOverlay').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal(e) {
+      if (e && e.target !== e.currentTarget) return;
+      document.getElementById('modalOverlay').classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') { closeModal(); closeLogin(); }
+    });
+
+    function openLogin() {
+      document.getElementById('loginOverlay').classList.add('active');
+      document.body.style.overflow = 'hidden';
+      document.getElementById('loginUser').focus();
+    }
+
+    function closeLogin(e) {
+      if (e && e.target && e.target !== e.currentTarget && !e.target.classList.contains('modal-close')) return;
+      document.getElementById('loginOverlay').classList.remove('active');
+      document.body.style.overflow = '';
+      document.getElementById('loginForm').reset();
+      document.getElementById('loginError').style.display = 'none';
+    }
+
+    async function handleLogin(e) {
+      e.preventDefault();
+      const email = document.getElementById('loginUser').value.trim();
+      const pass = document.getElementById('loginPass').value;
+
+      if (!email || !pass) {
+        document.getElementById('loginError').textContent = 'Preencha todos os campos.';
+        document.getElementById('loginError').style.display = 'block';
+        return false;
+      }
+
+      try {
+        const { data, error } = await supabase.auth.signInWithPassword({ email, password: pass });
+        if (error) throw error;
+        localStorage.setItem('se_session', JSON.stringify(data.session));
+        closeLogin();
+        window.location.href = 'admin.html';
+      } catch (err) {
+        document.getElementById('loginError').textContent = err.message || 'Email ou senha incorretos.';
+        document.getElementById('loginError').style.display = 'block';
+      }
+      return false;
+    }
+
+    async function handleGoogleLogin() {
+      try {
+        const { error } = await supabase.auth.signInWithOAuth({
+          provider: 'google',
+          options: { redirectTo: window.location.origin + '/admin.html' }
+        });
+        if (error) throw error;
+      } catch (err) {
+        document.getElementById('loginError').textContent = err.message || 'Erro ao conectar com Google.';
+        document.getElementById('loginError').style.display = 'block';
+        document.getElementById('loginOverlay').classList.add('active');
+      }
+    }
+  </script>
+
+</body>
+</html>
