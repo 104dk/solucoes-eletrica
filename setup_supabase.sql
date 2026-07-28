@@ -3,6 +3,14 @@
 -- Execute este SQL no Supabase Dashboard > SQL Editor
 -- =============================================
 
+-- Tabela de perfis (estende auth.users)
+CREATE TABLE IF NOT EXISTS profiles (
+  id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+  name TEXT,
+  role TEXT DEFAULT 'user' CHECK (role IN ('admin', 'user')),
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
 -- Pedidos
 CREATE TABLE IF NOT EXISTS pedidos (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
@@ -53,31 +61,43 @@ CREATE TABLE IF NOT EXISTS configuracoes (
 
 -- =============================================
 -- RLS (Row Level Security)
+--
+-- O check de admin e feito no frontend (verificarSessao no admin.html).
+-- Qualquer usuario autenticado tem acesso total as tabelas.
 -- =============================================
+ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE pedidos ENABLE ROW LEVEL SECURITY;
 ALTER TABLE clientes ENABLE ROW LEVEL SECURITY;
 ALTER TABLE produtos ENABLE ROW LEVEL SECURITY;
 ALTER TABLE rotas ENABLE ROW LEVEL SECURITY;
 ALTER TABLE configuracoes ENABLE ROW LEVEL SECURITY;
 
--- Policies para usuarios autenticados
-CREATE POLICY "auth_all_pedidos" ON pedidos FOR ALL USING (auth.role() = 'authenticated');
-CREATE POLICY "auth_all_clientes" ON clientes FOR ALL USING (auth.role() = 'authenticated');
-CREATE POLICY "auth_all_produtos" ON produtos FOR ALL USING (auth.role() = 'authenticated');
-CREATE POLICY "auth_all_rotas" ON rotas FOR ALL USING (auth.role() = 'authenticated');
-CREATE POLICY "auth_all_configuracoes" ON configuracoes FOR ALL USING (auth.role() = 'authenticated');
+-- Policies simplificadas: qualquer autenticado tem CRUD
+CREATE POLICY "profiles_auth" ON profiles FOR ALL TO authenticated USING (true) WITH CHECK (true);
+CREATE POLICY "pedidos_auth" ON pedidos FOR ALL TO authenticated USING (true) WITH CHECK (true);
+CREATE POLICY "clientes_auth" ON clientes FOR ALL TO authenticated USING (true) WITH CHECK (true);
+CREATE POLICY "produtos_auth" ON produtos FOR ALL TO authenticated USING (true) WITH CHECK (true);
+CREATE POLICY "rotas_auth" ON rotas FOR ALL TO authenticated USING (true) WITH CHECK (true);
+CREATE POLICY "configuracoes_auth" ON configuracoes FOR ALL TO authenticated USING (true) WITH CHECK (true);
+
+-- Leitura publica (para o frontend carregar dados da empresa sem login)
+GRANT SELECT ON configuracoes TO anon;
 
 -- =============================================
 -- GRANTS (expor tabelas via API)
 -- =============================================
+GRANT SELECT, INSERT, UPDATE, DELETE ON profiles TO authenticated;
 GRANT SELECT, INSERT, UPDATE, DELETE ON pedidos TO authenticated;
 GRANT SELECT, INSERT, UPDATE, DELETE ON clientes TO authenticated;
 GRANT SELECT, INSERT, UPDATE, DELETE ON produtos TO authenticated;
 GRANT SELECT, INSERT, UPDATE, DELETE ON rotas TO authenticated;
 GRANT SELECT, INSERT, UPDATE, DELETE ON configuracoes TO authenticated;
 
--- Acesso anon para leitura (opcional - para pagina publica)
-GRANT SELECT ON pedidos TO anon;
-GRANT SELECT ON clientes TO anon;
-GRANT SELECT ON produtos TO anon;
-GRANT SELECT ON rotas TO anon;
+-- =============================================
+-- INDEXES para performance
+-- =============================================
+CREATE INDEX IF NOT EXISTS idx_profiles_role ON profiles(role);
+CREATE INDEX IF NOT EXISTS idx_pedidos_status ON pedidos(status);
+CREATE INDEX IF NOT EXISTS idx_pedidos_data ON pedidos(data);
+CREATE INDEX IF NOT EXISTS idx_produtos_nome ON produtos(nome);
+CREATE INDEX IF NOT EXISTS idx_configuracoes_chave ON configuracoes(chave);
