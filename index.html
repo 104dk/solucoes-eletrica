@@ -622,11 +622,11 @@
         <h3>Acesso Administrativo</h3>
         <p>Faca login para gerenciar o painel</p>
       </div>
-      <div class="login-error" id="loginError">Usuario ou senha incorretos.</div>
+      <div class="login-error" id="loginError">Email ou senha incorretos.</div>
       <form id="loginForm" onsubmit="return handleLogin(event)">
         <div class="login-field">
-          <label for="loginUser">Usuario</label>
-          <input type="text" id="loginUser" placeholder="Digite seu usuario" required autocomplete="username" />
+          <label for="loginUser">Email</label>
+          <input type="email" id="loginUser" placeholder="Digite seu email" required autocomplete="email" />
         </div>
         <div class="login-field">
           <label for="loginPass">Senha</label>
