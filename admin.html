@@ -443,10 +443,17 @@
       rotas: 'rotas'
     };
 
+    var tipoParaTabela = {
+      pedido: 'pedidos',
+      cliente: 'clientes',
+      produto: 'produtos',
+      rota: 'rotas'
+    };
+
     function getTable(name) {
-      var t = tabelas[name];
+      var t = tabelas[name] || tipoParaTabela[name];
       if (!t) {
-        console.error('[SE] Tabela invalida:', name, Object.keys(tabelas));
+        console.error('[SE] Tabela invalida:', name);
         return null;
       }
       return t;
