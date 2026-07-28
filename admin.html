@@ -301,7 +301,7 @@
             <h2>Lista de Pedidos</h2>
             <div class="card-actions">
               <input type="text" class="search-input" placeholder="Buscar pedido..." oninput="handleSearchDebounced('pedidos', this.value)" aria-label="Buscar pedido" />
-              <button class="btn btn-primary" onclick="abrirModal('pedido')" aria-label="Novo pedido"><i class="fas fa-plus" aria-hidden="true"></i> Novo</button>
+              <button class="btn btn-primary" onclick="abrirModal('pedidos')" aria-label="Novo pedido"><i class="fas fa-plus" aria-hidden="true"></i> Novo</button>
             </div>
           </div>
           <div class="table-loading" id="loading-pedidos">Carregando...</div>
@@ -319,7 +319,7 @@
             <h2>Clientes</h2>
             <div class="card-actions">
               <input type="text" class="search-input" placeholder="Buscar cliente..." oninput="handleSearchDebounced('clientes', this.value)" aria-label="Buscar cliente" />
-              <button class="btn btn-primary" onclick="abrirModal('cliente')" aria-label="Novo cliente"><i class="fas fa-plus" aria-hidden="true"></i> Novo</button>
+              <button class="btn btn-primary" onclick="abrirModal('clientes')" aria-label="Novo cliente"><i class="fas fa-plus" aria-hidden="true"></i> Novo</button>
             </div>
           </div>
           <div class="table-loading" id="loading-clientes" style="display:none;">Carregando...</div>
@@ -337,7 +337,7 @@
             <h2>Produtos</h2>
             <div class="card-actions">
               <input type="text" class="search-input" placeholder="Buscar produto..." oninput="handleSearchDebounced('produtos', this.value)" aria-label="Buscar produto" />
-              <button class="btn btn-primary" onclick="abrirModal('produto')" aria-label="Novo produto"><i class="fas fa-plus" aria-hidden="true"></i> Novo</button>
+              <button class="btn btn-primary" onclick="abrirModal('produtos')" aria-label="Novo produto"><i class="fas fa-plus" aria-hidden="true"></i> Novo</button>
             </div>
           </div>
           <div class="table-loading" id="loading-produtos" style="display:none;">Carregando...</div>
@@ -355,7 +355,7 @@
             <h2>Rotas de Atendimento</h2>
             <div class="card-actions">
               <input type="text" class="search-input" placeholder="Buscar rota..." oninput="handleSearchDebounced('rotas', this.value)" aria-label="Buscar rota" />
-              <button class="btn btn-primary" onclick="abrirModal('rota')" aria-label="Nova rota"><i class="fas fa-plus" aria-hidden="true"></i> Nova</button>
+              <button class="btn btn-primary" onclick="abrirModal('rotas')" aria-label="Nova rota"><i class="fas fa-plus" aria-hidden="true"></i> Nova</button>
             </div>
           </div>
           <div class="table-loading" id="loading-rotas" style="display:none;">Carregando...</div>
@@ -443,15 +443,8 @@
       rotas: 'rotas'
     };
 
-    var tipoParaTabela = {
-      pedido: 'pedidos',
-      cliente: 'clientes',
-      produto: 'produtos',
-      rota: 'rotas'
-    };
-
     function getTable(name) {
-      var t = tabelas[name] || tipoParaTabela[name];
+      var t = tabelas[name];
       if (!t) {
         console.error('[SE] Tabela invalida:', name);
         return null;
@@ -660,7 +653,7 @@
         d = result.data || {};
       }
 
-      if (tipo === 'pedido') {
+      if (tipo === 'pedidos') {
         html = '<div class="form-group"><label for="f_cliente">Cliente *</label><input type="text" id="f_cliente" value="' + escapeHtml(d.cliente || '') + '" placeholder="Nome do cliente" required aria-required="true" /></div>' +
           '<div class="form-group"><label for="f_servico">Serviço</label><input type="text" id="f_servico" value="' + escapeHtml(d.servico || '') + '" placeholder="Tipo de serviço" /></div>' +
           '<div class="form-row">' +
@@ -670,7 +663,7 @@
           '<div class="form-group"><label for="f_data">Data</label><input type="date" id="f_data" value="' + (d.data || new Date().toISOString().split('T')[0]) + '" /></div>';
         document.getElementById('modalTitle').textContent = titulo + 'Pedido';
       }
-      else if (tipo === 'cliente') {
+      else if (tipo === 'clientes') {
         html = '<div class="form-group"><label for="f_nome">Nome *</label><input type="text" id="f_nome" value="' + escapeHtml(d.nome || '') + '" placeholder="Nome completo" required aria-required="true" /></div>' +
           '<div class="form-row">' +
           '<div class="form-group"><label for="f_telefone">Telefone</label><input type="tel" id="f_telefone" value="' + escapeHtml(d.telefone || '') + '" placeholder="(00) 00000-0000" /></div>' +
@@ -679,7 +672,7 @@
           '<div class="form-group"><label for="f_endereco">Endereço</label><input type="text" id="f_endereco" value="' + escapeHtml(d.endereco || '') + '" placeholder="Rua, número - Bairro - Cidade/UF" /></div>';
         document.getElementById('modalTitle').textContent = titulo + 'Cliente';
       }
-      else if (tipo === 'produto') {
+      else if (tipo === 'produtos') {
         html = '<div class="form-group"><label for="f_nome">Nome *</label><input type="text" id="f_nome" value="' + escapeHtml(d.nome || '') + '" placeholder="Nome do produto" required aria-required="true" /></div>' +
           '<div class="form-group"><label for="f_descricao">Descrição</label><textarea id="f_descricao" placeholder="Descrição do produto">' + escapeHtml(d.descricao || '') + '</textarea></div>' +
           '<div class="form-row">' +
@@ -688,7 +681,7 @@
           '</div>';
         document.getElementById('modalTitle').textContent = titulo + 'Produto';
       }
-      else if (tipo === 'rota') {
+      else if (tipo === 'rotas') {
         html = '<div class="form-group"><label for="f_bairro">Bairro *</label><input type="text" id="f_bairro" value="' + escapeHtml(d.bairro || '') + '" placeholder="Nome do bairro" required aria-required="true" /></div>' +
           '<div class="form-group"><label for="f_regiao">Região</label><input type="text" id="f_regiao" value="' + escapeHtml(d.regiao || '') + '" placeholder="Região de atendimento" /></div>' +
           '<div class="form-group"><label for="f_horario">Horário</label><input type="text" id="f_horario" value="' + escapeHtml(d.horario || '') + '" placeholder="Seg-Sex 08:00 - 18:00" /></div>';
@@ -737,7 +730,7 @@
       var saveBtn = document.getElementById('modalSaveBtn');
       saveBtn.disabled = true;
 
-      if (tipoAtual === 'pedido') {
+      if (tipoAtual === 'pedidos') {
         dados = {
           cliente: document.getElementById('f_cliente').value.trim(),
           servico: document.getElementById('f_servico').value.trim(),
@@ -745,21 +738,21 @@
           status: document.getElementById('f_status').value,
           data: document.getElementById('f_data').value
         };
-      } else if (tipoAtual === 'cliente') {
+      } else if (tipoAtual === 'clientes') {
         dados = {
           nome: document.getElementById('f_nome').value.trim(),
           telefone: document.getElementById('f_telefone').value.trim(),
           email: document.getElementById('f_email').value.trim(),
           endereco: document.getElementById('f_endereco').value.trim()
         };
-      } else if (tipoAtual === 'produto') {
+      } else if (tipoAtual === 'produtos') {
         dados = {
           nome: document.getElementById('f_nome').value.trim(),
           descricao: document.getElementById('f_descricao').value.trim(),
           preco: parseFloat(document.getElementById('f_preco').value) || 0,
           estoque: parseInt(document.getElementById('f_estoque').value) || 0
         };
-      } else if (tipoAtual === 'rota') {
+      } else if (tipoAtual === 'rotas') {
         dados = {
           bairro: document.getElementById('f_bairro').value.trim(),
           regiao: document.getElementById('f_regiao').value.trim(),
