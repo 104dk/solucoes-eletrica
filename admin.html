@@ -408,7 +408,7 @@
   <script>
     var SUPABASE_URL = 'https://hamsvtciocwsfrmrsphk.supabase.co';
     var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhhbXN2dGNpb2N3c2ZybXJzcGhrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUxOTU5MDUsImV4cCI6MjEwMDc3MTkwNX0.yK_O98XfvQhwEc6S90j2ZjDmE2jrdQSN2-BEWnmaraw';
-    var supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    var supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   </script>
   <script>
     let editando = null;
@@ -442,7 +442,7 @@
     // SESSAO
     // =============================================
     async function verificarSessao() {
-      const { data: { session } } = await supabase.auth.getSession();
+      const { data: { session } } = await supabaseClient.auth.getSession();
       if (!session) {
         window.location.href = 'index.html';
         return false;
@@ -464,7 +464,7 @@
     }
 
     async function atualizarBadge(tab) {
-      const { count } = await supabase.from(tabelas[tab]).select('*', { count: 'exact', head: true });
+      const { count } = await supabaseClient.from(tabelas[tab]).select('*', { count: 'exact', head: true });
       document.getElementById('pageBadge').textContent = (count || 0) + ' registro' + (count !== 1 ? 's' : '');
     }
 
@@ -473,7 +473,7 @@
     // =============================================
     async function renderTabela(tab) {
       const tabela = tabelas[tab];
-      const { data: dados, error } = await supabase.from(tabela).select('*').order('created_at', { ascending: false });
+      const { data: dados, error } = await supabaseClient.from(tabela).select('*').order('created_at', { ascending: false });
       const tbody = document.getElementById('tbody-' + tab);
       const empty = document.getElementById('empty-' + tab);
 
@@ -539,7 +539,7 @@
       let d = {};
 
       if (editando) {
-        const { data } = await supabase.from(tabelas[tipo]).select('*').eq('id', id).single();
+        const { data } = await supabaseClient.from(tabelas[tipo]).select('*').eq('id', id).single();
         d = data || {};
       }
 
@@ -633,9 +633,9 @@
       if (!dados) return;
 
       if (editando) {
-        await supabase.from(tabelas[tipoAtual]).update(dados).eq('id', editando.id);
+        await supabaseClient.from(tabelas[tipoAtual]).update(dados).eq('id', editando.id);
       } else {
-        await supabase.from(tabelas[tipoAtual]).insert(dados);
+        await supabaseClient.from(tabelas[tipoAtual]).insert(dados);
       }
 
       renderTabela(tipoAtual);
@@ -648,7 +648,7 @@
 
     async function excluirRegistro(tab, id) {
       if (!confirm('Tem certeza que deseja excluir este registro?')) return;
-      await supabase.from(tabelas[tab]).delete().eq('id', id);
+      await supabaseClient.from(tabelas[tab]).delete().eq('id', id);
       renderTabela(tab);
     }
 
@@ -661,7 +661,7 @@
         return;
       }
       const tabela = tabelas[tab];
-      const { data: dados } = await supabase.from(tabela).select('*');
+      const { data: dados } = await supabaseClient.from(tabela).select('*');
       if (!dados) return;
       const lower = termo.toLowerCase();
       const filtrados = dados.filter(d => Object.values(d).some(v => String(v).toLowerCase().includes(lower)));
@@ -696,7 +696,7 @@
     // CONFIGURACOES (Supabase)
     // =============================================
     async function carregarConfig() {
-      const { data } = await supabase.from('configuracoes').select('*');
+      const { data } = await supabaseClient.from('configuracoes').select('*');
       if (!data) return;
       const cfgMap = {};
       data.forEach(c => { cfgMap[c.chave] = c.valor; });
@@ -720,7 +720,7 @@
         { chave: 'instagram', valor: document.getElementById('cfgInstagram').value }
       ];
       for (const c of campos) {
-        await supabase.from('configuracoes').upsert({ chave: c.chave, valor: c.valor, updated_at: new Date() }, { onConflict: 'chave' });
+        await supabaseClient.from('configuracoes').upsert({ chave: c.chave, valor: c.valor, updated_at: new Date() }, { onConflict: 'chave' });
       }
       alert('Configuracoes salvas com sucesso!');
     }
@@ -730,7 +730,7 @@
     // =============================================
     async function logout() {
       if (!confirm('Deseja sair do painel?')) return;
-      await supabase.auth.signOut();
+      await supabaseClient.auth.signOut();
       localStorage.removeItem('se_session');
       window.location.href = 'index.html';
     }
