@@ -160,7 +160,17 @@
     .status-confirmado { background: #dbeafe; color: #1e40af; }
     .status-concluido { background: #d1fae5; color: #065f46; }
     .status-cancelado { background: #fee2e2; color: #991b1b; }
-    .actions-cell { display: flex; gap: 4px; }
+    .actions-cell { display: flex; gap: 4px; flex-wrap: wrap; }
+    .cell-route { max-width: 360px; }
+    .cell-route .route-text {
+      overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical; font-size: 0.8rem; color: #64748b;
+    }
+    .cell-route .route-count {
+      display: inline-block; margin-top: 4px; padding: 2px 8px;
+      border-radius: 20px; background: #eef2ff; color: #4338ca;
+      font-size: 0.7rem; font-weight: 600;
+    }
     .status-select {
       padding: 4px 6px; border: 1px solid #e2e8f0; border-radius: 6px;
       font-size: 0.75rem; font-weight: 600; background: #fff; color: #334155;
@@ -288,7 +298,7 @@
       grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 12px;
     }
-    .rota-actions { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+    .rota-actions { grid-template-columns: repeat(4, minmax(0, 1fr)); }
     .pedido-form .error { border-color: #dc2626 !important; }
     .lookup-field { position: relative; }
     .lookup-control {
@@ -392,6 +402,10 @@
     .form-group textarea { resize: vertical; min-height: 80px; }
     .form-row { display: flex; gap: 14px; }
     .form-row .form-group { flex: 1; }
+    .form-row .form-group.col-1 { flex: 1; }
+    .form-row .form-group.col-2 { flex: 2; }
+    .form-row .form-group.col-3 { flex: 3; }
+    .msg-destinos-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
     .modal-foot {
       padding: 16px 24px; border-top: 1px solid #e2e8f0;
       display: flex; justify-content: flex-end; gap: 8px;
@@ -430,6 +444,7 @@
       .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
       .search-input { width: 100%; max-width: 100%; }
       .form-row { flex-direction: column; gap: 0; }
+      .msg-destinos-grid { grid-template-columns: 1fr; }
       .pedido-builder-head, .pedido-form { padding-left: 18px; padding-right: 18px; }
       .pedido-actions { grid-template-columns: 1fr; }
       .rota-actions { grid-template-columns: 1fr; }
@@ -536,6 +551,9 @@
       <a href="#" data-tab="whatsapp" onclick="switchTab('whatsapp', this)" role="tab">
         <i class="fab fa-whatsapp" aria-hidden="true"></i> WhatsApp
       </a>
+      <a href="#" data-tab="mensagens" onclick="switchTab('mensagens', this)" role="tab">
+        <i class="fas fa-paper-plane" aria-hidden="true"></i> Enviar Mensagens
+      </a>
       <div class="nav-divider"></div>
       <div class="nav-section">Gelo Mix</div>
       <a href="#" data-tab="gelo-publica" onclick="switchTab('gelo-publica', this)" role="tab">
@@ -599,7 +617,7 @@
             </div>
 
             <div class="form-row">
-              <div class="form-group lookup-field">
+              <div class="form-group lookup-field col-2">
                 <label for="pedidoNome">Nome do Cliente *</label>
                 <div class="lookup-control">
                   <input type="text" id="pedidoNome" placeholder="Buscar cliente cadastrado" required autocomplete="off" oninput="atualizarBuscaClientePedido()" />
@@ -607,7 +625,7 @@
                 </div>
                 <div class="lookup-results" id="clienteLookupResults"></div>
               </div>
-              <div class="form-group">
+              <div class="form-group col-1">
                 <label for="pedidoTelefone">Telefone</label>
                 <input type="tel" id="pedidoTelefone" placeholder="Ex: (11) 99999-0000" />
               </div>
@@ -629,7 +647,7 @@
                   </div>
 
                   <div class="form-row">
-                    <div class="form-group lookup-field">
+                    <div class="form-group lookup-field col-3">
                       <label>Produto *</label>
                       <div class="lookup-control">
                         <input type="text" class="produto" placeholder="Buscar produto cadastrado" required autocomplete="off" oninput="atualizarBuscaProdutoPedido(this)" />
@@ -637,11 +655,11 @@
                       </div>
                       <div class="lookup-results produto-results"></div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group col-1">
                       <label>Quantidade *</label>
                       <input type="number" class="quantidade" min="1" step="1" placeholder="0" required />
                     </div>
-                    <div class="form-group">
+                    <div class="form-group col-1">
                       <label>Valor Unitario (R$) *</label>
                       <input type="text" class="valor" placeholder="0,00" required />
                     </div>
@@ -654,11 +672,11 @@
             </div>
 
             <div class="form-row">
-              <div class="form-group">
+              <div class="form-group col-1">
                 <label for="pedidoDesconto">Desconto (R$)</label>
                 <input type="text" id="pedidoDesconto" placeholder="0,00" />
               </div>
-              <div class="form-group">
+              <div class="form-group col-2">
                 <label for="pedidoPagamento">Forma de Pagamento *</label>
                 <select id="pedidoPagamento" required>
                   <option value="">Selecione...</option>
@@ -743,7 +761,7 @@
                     <button type="button" class="btn-remove-item" onclick="removerParadaRota(this)" style="display:none;">Remover</button>
                   </div>
                   <div class="form-row">
-                    <div class="form-group lookup-field">
+                    <div class="form-group lookup-field col-2">
                       <label>Cliente *</label>
                       <div class="lookup-control">
                         <input type="text" class="rota-cliente" placeholder="Buscar ou digitar cliente" required autocomplete="off" oninput="atualizarBuscaClienteRota(this)" />
@@ -751,11 +769,11 @@
                       </div>
                       <div class="lookup-results rota-cliente-results"></div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group col-1">
                       <label>Telefone</label>
                       <input type="tel" class="rota-telefone" placeholder="(00) 00000-0000" maxlength="15" inputmode="tel" />
                     </div>
-                    <div class="form-group">
+                    <div class="form-group col-1">
                       <label>CEP</label>
                       <input type="text" class="rota-cep" placeholder="00000-000" maxlength="9" inputmode="numeric" />
                     </div>
@@ -1204,6 +1222,68 @@
         </div>
       </div>
 
+      <div class="tab-content" id="tab-mensagens">
+        <div class="card" style="max-width:860px;">
+          <div class="card-header">
+            <h2>Enviar Mensagens (WhatsApp)</h2>
+            <div class="card-actions">
+              <button class="btn btn-outline" onclick="carregarMensagens()"><i class="fas fa-rotate" aria-hidden="true"></i> Atualizar</button>
+            </div>
+          </div>
+          <div style="padding:24px;">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;padding:14px 16px;border-radius:12px;background:#f8fafc;border:1px solid #e2e8f0;">
+              <i class="fab fa-whatsapp" style="font-size:24px;color:#25d366;" aria-hidden="true"></i>
+              <span style="font-size:0.85rem;color:#475569;">Modo teste da Meta: só entrega para destinatários de teste cadastrados. Uso real exige número verificado + token permanente (templates aprovados para envio em massa).</span>
+            </div>
+
+            <div class="form-group">
+              <label>Destinatários</label>
+              <div class="msg-destinos-grid" style="margin-top:6px;">
+                <div>
+                  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
+                    <input type="text" id="mBusca" class="search-input" placeholder="Buscar cliente..." style="flex:1;min-width:160px;" oninput="renderClientesMensagens(this.value)" />
+                    <button class="btn btn-outline" onclick="selecionarTodosMensagens(true)"><i class="fas fa-check-double" aria-hidden="true"></i> Todos</button>
+                    <button class="btn btn-outline" onclick="selecionarTodosMensagens(false)"><i class="fas fa-eraser" aria-hidden="true"></i> Limpar</button>
+                  </div>
+                  <div id="mListaClientes" style="max-height:240px;overflow-y:auto;border:1px solid #e2e8f0;border-radius:8px;padding:8px;"></div>
+                  <p style="font-size:0.78rem;color:#94a3b8;margin-top:6px;"><strong id="mContador">0 selecionado</strong> · clientes cadastrados</p>
+                </div>
+                <div>
+                  <label for="mManual">Números manuais</label>
+                  <textarea id="mManual" placeholder="Ex: (61) 99178-3512, 61991234567" style="min-height:236px;margin-top:4px;" oninput="atualizarContadorMensagens()"></textarea>
+                  <p style="font-size:0.78rem;color:#94a3b8;margin-top:6px;">Separados por vírgula, ponto e vírgula ou quebra de linha. Somam-se aos clientes selecionados.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group" style="margin-top:18px;">
+              <label for="mTemplate">Modelo de mensagem</label>
+              <select id="mTemplate" onchange="carregarTemplateMensagem()">
+                <option value="">Mensagem livre</option>
+                <option value="pedido_confirmado">Pedido confirmado</option>
+                <option value="lembrete_pedido">Lembrete de pedido</option>
+                <option value="pedido_cancelado">Pedido cancelado</option>
+                <option value="pagamento_pendente">Pagamento pendente</option>
+              </select>
+              <label for="mMensagem" style="margin-top:12px;display:block;">Mensagem</label>
+              <textarea id="mMensagem" style="min-height:110px;"></textarea>
+              <p style="font-size:0.78rem;color:#94a3b8;margin-top:6px;">O placeholder <code>{{nome}}</code> é substituído pelo nome de cada cliente. Os demais (<code>{{resumo}}</code>, <code>{{total}}</code>) permanecem como estão.</p>
+            </div>
+
+            <div style="margin-top:18px;">
+              <button class="btn btn-primary" onclick="enviarMensagens()" id="mEnviarBtn"><i class="fas fa-paper-plane" aria-hidden="true"></i> Enviar para <span id="mEnviarCount">0</span> contatos</button>
+              <div id="mProgresso" style="display:none;margin-top:14px;">
+                <div style="background:#e2e8f0;border-radius:8px;height:8px;overflow:hidden;">
+                  <div id="mBarra" style="background:#25d366;height:100%;width:0%;transition:width .3s;"></div>
+                </div>
+                <p id="mStatusProgresso" style="font-size:0.8rem;color:#475569;margin-top:6px;">Enviando...</p>
+              </div>
+              <div id="mResultado" style="margin-top:14px;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 
@@ -1216,6 +1296,7 @@
     <a href="#" data-tab="pedidos-lista" onclick="switchTab('pedidos-lista', this)"><i class="fas fa-list-check" aria-hidden="true"></i><span>Registros</span></a>
     <a href="#" data-tab="config" onclick="switchTab('config', this)"><i class="fas fa-cog" aria-hidden="true"></i><span>Config</span></a>
     <a href="#" data-tab="whatsapp" onclick="switchTab('whatsapp', this)"><i class="fab fa-whatsapp" aria-hidden="true"></i><span>WhatsApp</span></a>
+    <a href="#" data-tab="mensagens" onclick="switchTab('mensagens', this)"><i class="fas fa-paper-plane" aria-hidden="true"></i><span>Mensagens</span></a>
     <a href="#" data-tab="gelo-publica" onclick="switchTab('gelo-publica', this)"><i class="fas fa-eye" aria-hidden="true"></i><span>Gelo</span></a>
     <a href="#" data-tab="gelo-config" onclick="switchTab('gelo-config', this)"><i class="fas fa-snowflake" aria-hidden="true"></i><span>Gelo Cfg</span></a>
     <a href="#" data-tab="super-config" onclick="switchTab('super-config', this)"><i class="fas fa-user-shield" aria-hidden="true"></i><span>Super</span></a>
@@ -1287,6 +1368,7 @@
       'super-config': 'Super Config',
       config: 'Configurações',
       whatsapp: 'WhatsApp',
+      mensagens: 'Enviar Mensagens',
       'gelo-publica': 'Gelo Mix - Página Pública',
       'gelo-config': 'Gelo Mix - Configurações'
     };
@@ -1353,6 +1435,9 @@
       } else if (tab === 'whatsapp') {
         document.getElementById('pageBadge').textContent = 'WhatsApp';
         carregarWhatsappConfig();
+      } else if (tab === 'mensagens') {
+        document.getElementById('pageBadge').textContent = 'Enviar Mensagens';
+        carregarMensagens();
       } else if (tab !== 'config') {
         atualizarBadge(tab);
       } else {
@@ -1392,9 +1477,18 @@
                '<td>R$ ' + parseFloat(d.preco || 0).toFixed(2) + '</td>' +
                '<td>' + (d.estoque || 0) + '</td>';
       } else if (tab === 'rotas') {
+        var paradasRota = parseParadasRotaSalva(d.regiao || '');
         cols = '<td><strong>' + escapeHtml(d.bairro) + '</strong></td>' +
-               '<td>' + escapeHtml(d.regiao) + '</td>' +
+               '<td><div class="cell-route" title="' + escapeHtml(d.regiao || '') + '"><div class="route-text">' + escapeHtml(d.regiao || '-') + '</div>' +
+               (paradasRota.length ? '<span class="route-count">' + paradasRota.length + ' parada' + (paradasRota.length !== 1 ? 's' : '') + '</span>' : '') +
+               '</div></td>' +
                '<td>' + escapeHtml(d.horario) + '</td>';
+      }
+      var rotaBtns = '';
+      if (tab === 'rotas') {
+        rotaBtns = '<button class="btn btn-sm btn-success" onclick="abrirMapsRotaSalva(\'' + d.id + '\')" aria-label="Abrir no Google Maps" title="Abrir no Google Maps"><i class="fas fa-map-location-dot" aria-hidden="true"></i> Maps</button>' +
+          '<button class="btn btn-sm btn-outline" onclick="compartilharRotaSalvaWhatsApp(\'' + d.id + '\')" aria-label="Compartilhar rota no WhatsApp" title="Compartilhar rota no WhatsApp"><i class="fab fa-whatsapp" aria-hidden="true"></i> WhatsApp</button>' +
+          '<button class="btn btn-sm btn-outline" onclick="copiarLinkRotaSalva(\'' + d.id + '\')" aria-label="Copiar link do Maps" title="Copiar link do Maps"><i class="fas fa-copy" aria-hidden="true"></i> Copiar</button>';
       }
       var printBtn = isPedidosTab(tab)
         ? '<button class="btn btn-sm btn-outline" onclick="imprimirPedido(\'' + d.id + '\')" aria-label="Imprimir pedido" title="Imprimir pedido"><i class="fas fa-print" aria-hidden="true"></i></button>'
@@ -1409,6 +1503,7 @@
       return '<tr>' + cols + '<td class="actions-cell">' +
         printBtn +
         statusSel +
+        rotaBtns +
         '<button class="btn btn-sm btn-outline" onclick="editarRegistro(\'' + tab + '\',\'' + d.id + '\')" aria-label="Editar"><i class="fas fa-pen" aria-hidden="true"></i></button>' +
         '<button class="btn btn-sm btn-danger" onclick="excluirRegistro(\'' + tab + '\',\'' + d.id + '\')" aria-label="Excluir"><i class="fas fa-trash" aria-hidden="true"></i></button>' +
         '</td></tr>';
@@ -2166,6 +2261,86 @@
       window.open('https://wa.me/?text=' + encodeURIComponent(montarMensagemRota()), '_blank', 'noopener');
     }
 
+    // =============================================
+    // ROTAS SALVAS - abrir no Maps / WhatsApp / copiar link
+    // =============================================
+    function parseParadasRotaSalva(regiao) {
+      return String(regiao || '').split('|').map(function(seg) {
+        var texto = seg.replace(/^\d+\.\s*/, '').trim();
+        var partes = texto.split(' - ').map(function(s) { return s.trim(); }).filter(Boolean);
+        var cliente = partes[0] || '';
+        var resto = partes.slice(1);
+        var cep = '';
+        var ultima = resto[resto.length - 1] || '';
+        if (/^\d{5}-?\d{3}$/.test(ultima)) {
+          cep = ultima;
+          resto = resto.slice(0, -1);
+        }
+        return { cliente: cliente, endereco: resto.join(' - '), cep: cep };
+      }).filter(function(p) { return p.endereco; });
+    }
+
+    function rotaSalvaPorId(id) {
+      return (dadosCache.rotas || []).find(function(r) { return r.id === id; });
+    }
+
+    function abrirMapsRotaSalva(id) {
+      var rota = rotaSalvaPorId(id);
+      if (!rota) { showToast('Rota nao encontrada.', 'error'); return; }
+      var links = criarLinksRota(parseParadasRotaSalva(rota.regiao));
+      if (!links.maps) { showToast('Rota sem enderecos validos.', 'error'); return; }
+      window.open(links.maps, '_blank', 'noopener');
+    }
+
+    function montarMensagemRotaSalva(rota) {
+      var paradas = parseParadasRotaSalva(rota.regiao);
+      var links = criarLinksRota(paradas);
+      var linhas = [rota.bairro || 'Rota de entrega', ''];
+      paradas.forEach(function(p, index) {
+        linhas.push((index + 1) + '. ' + (p.cliente || ''));
+        if (p.endereco) linhas.push([p.endereco, p.cep].filter(Boolean).join(' - '));
+      });
+      if (links.maps) {
+        linhas.push('');
+        linhas.push('Google Maps: ' + links.maps);
+      }
+      return linhas.join('\n');
+    }
+
+    function compartilharRotaSalvaWhatsApp(id) {
+      var rota = rotaSalvaPorId(id);
+      if (!rota) { showToast('Rota nao encontrada.', 'error'); return; }
+      window.open('https://wa.me/?text=' + encodeURIComponent(montarMensagemRotaSalva(rota)), '_blank', 'noopener');
+    }
+
+    function copiarLinkRotaSalva(id) {
+      var rota = rotaSalvaPorId(id);
+      if (!rota) { showToast('Rota nao encontrada.', 'error'); return; }
+      var links = criarLinksRota(parseParadasRotaSalva(rota.regiao));
+      if (!links.maps) { showToast('Rota sem enderecos validos.', 'error'); return; }
+      var texto = links.maps;
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(texto).then(function() {
+          showToast('Link do Maps copiado!', 'success');
+        }).catch(function() {
+          copiarFallbackRota(texto);
+        });
+      } else {
+        copiarFallbackRota(texto);
+      }
+    }
+
+    function copiarFallbackRota(texto) {
+      var ta = document.createElement('textarea');
+      ta.value = texto;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand('copy'); showToast('Link do Maps copiado!', 'success'); } catch (e) { showToast('Falha ao copiar.', 'error'); }
+      document.body.removeChild(ta);
+    }
+
     function clienteRotaJaExiste(parada) {
       var nome = normalizarBusca(parada.cliente);
       var telefone = String(parada.telefone || '').replace(/\D/g, '');
@@ -2396,24 +2571,29 @@
       else if (tipo === 'clientes') {
         html = '<div class="form-group"><label for="f_nome">Nome *</label><input type="text" id="f_nome" value="' + escapeHtml(d.nome || '') + '" placeholder="Nome completo" required aria-required="true" /></div>' +
           '<div class="form-row">' +
-          '<div class="form-group"><label for="f_telefone">Telefone</label><input type="tel" id="f_telefone" value="' + escapeHtml(d.telefone || '') + '" placeholder="(00) 00000-0000" maxlength="15" inputmode="tel" /></div>' +
-          '<div class="form-group"><label for="f_email">Email</label><input type="email" id="f_email" value="' + escapeHtml(d.email || '') + '" placeholder="email@exemplo.com" /></div>' +
+          '<div class="form-group col-1"><label for="f_telefone">Telefone</label><input type="tel" id="f_telefone" value="' + escapeHtml(d.telefone || '') + '" placeholder="(00) 00000-0000" maxlength="15" inputmode="tel" /></div>' +
+          '<div class="form-group col-2"><label for="f_email">Email</label><input type="email" id="f_email" value="' + escapeHtml(d.email || '') + '" placeholder="email@exemplo.com" /></div>' +
           '</div>' +
-          '<div class="form-group"><label for="f_cep">CEP</label><input type="text" id="f_cep" value="' + escapeHtml(d.cep || '') + '" placeholder="00000-000" maxlength="9" inputmode="numeric" /></div>' +
-          '<div class="form-group"><label for="f_endereco">Endereço</label><input type="text" id="f_endereco" value="' + escapeHtml(d.endereco || '') + '" placeholder="Rua, número - Bairro - Cidade/UF" /></div>';
+          '<div class="form-row">' +
+          '<div class="form-group col-1"><label for="f_cep">CEP</label><input type="text" id="f_cep" value="' + escapeHtml(d.cep || '') + '" placeholder="00000-000" maxlength="9" inputmode="numeric" /></div>' +
+          '<div class="form-group col-3"><label for="f_endereco">Endereço</label><input type="text" id="f_endereco" value="' + escapeHtml(d.endereco || '') + '" placeholder="Rua, número - Bairro - Cidade/UF" /></div>' +
+          '</div>';
         document.getElementById('modalTitle').textContent = titulo + 'Cliente';
       }
       else if (tipo === 'produtos') {
-        html = '<div class="form-group"><label for="f_nome">Nome *</label><input type="text" id="f_nome" value="' + escapeHtml(d.nome || '') + '" placeholder="Nome do produto" required aria-required="true" /></div>' +          '<div class="form-row">' +
-          '<div class="form-group"><label for="f_preco">Preço (R$)</label><input type="number" step="0.01" id="f_preco" value="' + (d.preco || '') + '" placeholder="0.00" /></div>' +
-          '<div class="form-group"><label for="f_estoque">Estoque</label><input type="number" id="f_estoque" value="' + (d.estoque || '') + '" placeholder="0" /></div>' +
+        html = '<div class="form-group"><label for="f_nome">Nome *</label><input type="text" id="f_nome" value="' + escapeHtml(d.nome || '') + '" placeholder="Nome do produto" required aria-required="true" /></div>' +
+          '<div class="form-row">' +
+          '<div class="form-group col-2"><label for="f_preco">Preço (R$)</label><input type="number" step="0.01" id="f_preco" value="' + (d.preco || '') + '" placeholder="0.00" /></div>' +
+          '<div class="form-group col-1"><label for="f_estoque">Estoque</label><input type="number" id="f_estoque" value="' + (d.estoque || '') + '" placeholder="0" /></div>' +
           '</div>';
         document.getElementById('modalTitle').textContent = titulo + 'Produto';
       }
       else if (tipo === 'rotas') {
         html = '<div class="form-group"><label for="f_bairro">Bairro *</label><input type="text" id="f_bairro" value="' + escapeHtml(d.bairro || '') + '" placeholder="Nome do bairro" required aria-required="true" /></div>' +
-          '<div class="form-group"><label for="f_regiao">Região</label><input type="text" id="f_regiao" value="' + escapeHtml(d.regiao || '') + '" placeholder="Região de atendimento" /></div>' +
-          '<div class="form-group"><label for="f_horario">Horário</label><input type="text" id="f_horario" value="' + escapeHtml(d.horario || '') + '" placeholder="Seg-Sex 08:00 - 18:00" /></div>';
+          '<div class="form-row">' +
+          '<div class="form-group col-2"><label for="f_regiao">Região</label><input type="text" id="f_regiao" value="' + escapeHtml(d.regiao || '') + '" placeholder="Região de atendimento" /></div>' +
+          '<div class="form-group col-1"><label for="f_horario">Horário</label><input type="text" id="f_horario" value="' + escapeHtml(d.horario || '') + '" placeholder="Seg-Sex 08:00 - 18:00" /></div>' +
+          '</div>';
         document.getElementById('modalTitle').textContent = titulo + 'Rota';
       }
 
@@ -3451,6 +3631,144 @@
           showToast('Falha no envio (' + motivo + ')' + det, 'error');
         }
       } catch (e) {
+        showToast('Falha ao enviar: ' + e.message, 'error');
+      } finally {
+        if (btn) btn.disabled = false;
+      }
+    }
+
+    // =============================================
+    // ABA: ENVIAR MENSAGENS
+    // =============================================
+    var mensagensCache = { clientes: [], templates: {} };
+
+    async function carregarMensagens() {
+      try {
+        var token = await tokenSessao();
+        var resp = await fetch('/api/whatsapp-config', { headers: { 'Authorization': 'Bearer ' + token } });
+        var data = await resp.json();
+        if (data.config && data.config.templates) {
+          mensagensCache.templates = data.config.templates;
+        }
+      } catch (e) {
+        mensagensCache.templates = {};
+      }
+      try {
+        var result = await supabaseClient.from('clientes').select('id,nome,telefone').order('nome', { ascending: true });
+        if (result.error) throw result.error;
+        mensagensCache.clientes = result.data || [];
+      } catch (e) {
+        showToast('Erro ao carregar clientes: ' + e.message, 'error');
+        mensagensCache.clientes = [];
+      }
+      renderClientesMensagens(document.getElementById('mBusca') ? document.getElementById('mBusca').value : '');
+    }
+
+    function renderClientesMensagens(filtro) {
+      var lista = document.getElementById('mListaClientes');
+      if (!lista) return;
+      var f = (filtro || '').toLowerCase().trim();
+      var itens = mensagensCache.clientes.filter(function(c) {
+        if (!f) return true;
+        return String(c.nome || '').toLowerCase().indexOf(f) !== -1 ||
+               String(c.telefone || '').toLowerCase().indexOf(f) !== -1;
+      });
+      if (!itens.length) {
+        lista.innerHTML = '<p style="color:#94a3b8;font-size:0.85rem;padding:8px;">Nenhum cliente encontrado.</p>';
+        atualizarContadorMensagens();
+        return;
+      }
+      lista.innerHTML = itens.map(function(c) {
+        return '<label style="display:flex;align-items:center;gap:10px;padding:7px 8px;border-radius:6px;cursor:pointer;">' +
+          '<input type="checkbox" class="mClienteCheck" value="' + escapeHtml(c.id || '') + '" data-telefone="' + escapeHtml(c.telefone || '') + '" data-nome="' + escapeHtml(c.nome || '') + '" onchange="atualizarContadorMensagens()">' +
+          '<span style="flex:1;font-size:0.85rem;">' + escapeHtml(c.nome || '-') + '</span>' +
+          '<span style="font-size:0.78rem;color:#94a3b8;">' + escapeHtml(c.telefone || '') + '</span>' +
+          '</label>';
+      }).join('');
+      atualizarContadorMensagens();
+    }
+
+    function selecionarTodosMensagens(selecionar) {
+      document.querySelectorAll('.mClienteCheck').forEach(function(cb) { cb.checked = selecionar; });
+      atualizarContadorMensagens();
+    }
+
+    function atualizarContadorMensagens() {
+      var checks = document.querySelectorAll('.mClienteCheck:checked').length;
+      var manuais = (document.getElementById('mManual').value || '').split(/[\n,;]+/).map(function(s) { return s.trim(); }).filter(Boolean).length;
+      var total = checks + manuais;
+      var cont = document.getElementById('mContador');
+      if (cont) cont.textContent = total + ' selecionado' + (total !== 1 ? 's' : '');
+      var cnt = document.getElementById('mEnviarCount');
+      if (cnt) cnt.textContent = total;
+    }
+
+    function carregarTemplateMensagem() {
+      var sel = document.getElementById('mTemplate');
+      if (!sel) return;
+      var tpl = (mensagensCache.templates || {})[sel.value];
+      if (!tpl) return;
+      document.getElementById('mMensagem').value = tpl;
+    }
+
+    async function enviarMensagens() {
+      var destinos = [];
+      var nomes = {};
+      document.querySelectorAll('.mClienteCheck:checked').forEach(function(cb) {
+        var tel = cb.getAttribute('data-telefone') || '';
+        destinos.push(tel);
+        nomes[tel] = cb.getAttribute('data-nome') || '';
+      });
+      var manual = (document.getElementById('mManual').value || '').split(/[\n,;]+/).map(function(s) { return s.trim(); }).filter(Boolean);
+      manual.forEach(function(t) { destinos.push(t); });
+      if (!destinos.length) {
+        showToast('Selecione ao menos um destinatario.', 'error');
+        return;
+      }
+      var mensagem = document.getElementById('mMensagem').value.trim();
+      if (!mensagem) {
+        showToast('Informe a mensagem.', 'error');
+        return;
+      }
+      var btn = document.getElementById('mEnviarBtn');
+      var prog = document.getElementById('mProgresso');
+      var statusP = document.getElementById('mStatusProgresso');
+      var resBox = document.getElementById('mResultado');
+      if (btn) btn.disabled = true;
+      if (prog) prog.style.display = 'block';
+      if (document.getElementById('mBarra')) document.getElementById('mBarra').style.width = '0%';
+      if (statusP) statusP.textContent = 'Enviando ' + destinos.length + ' mensagem(ns)...';
+      if (resBox) resBox.innerHTML = '';
+      try {
+        var token = await tokenSessao();
+        var resp = await fetch('/api/whatsapp-send-bulk', {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain', 'Authorization': 'Bearer ' + token },
+          body: JSON.stringify({ destinos: destinos, mensagem: mensagem, nomes: nomes })
+        });
+        var data = await resp.json();
+        if (resp.status === 401 || resp.status === 403) {
+          showToast(data.error || 'Nao autorizado.', 'error');
+          return;
+        }
+        if (data.ok === false) {
+          if (statusP) statusP.textContent = 'Falha: ' + (data.reason || 'erro');
+          if (resBox) resBox.innerHTML = '<div style="background:#fef2f2;border:1px solid #fecaca;border-radius:8px;padding:10px 14px;font-size:0.82rem;">' + escapeHtml(JSON.stringify(data.error || data).slice(0, 300)) + '</div>';
+          showToast('Falha no envio (' + (data.reason || 'erro') + ').', 'error');
+          return;
+        }
+        var falhas = data.falhas || [];
+        if (document.getElementById('mBarra')) document.getElementById('mBarra').style.width = '100%';
+        if (statusP) statusP.textContent = 'Concluido: ' + (data.enviados || 0) + ' enviada(s), ' + falhas.length + ' falha(s).';
+        if (resBox && falhas.length) {
+          resBox.innerHTML = '<div style="background:#fef2f2;border:1px solid #fecaca;border-radius:8px;padding:10px 14px;font-size:0.82rem;">' +
+            falhas.map(function(f) {
+              return '<p style="margin:2px 0;"><strong>' + escapeHtml(f.telefone || '?') + ':</strong> ' + escapeHtml(String(f.erro || 'erro').slice(0, 160)) + '</p>';
+            }).join('') + '</div>';
+        }
+        showToast((data.enviados || 0) + ' mensagem(ns) enviada(s), ' + falhas.length + ' falha(s).', falhas.length ? 'error' : 'success');
+      } catch (e) {
+        if (statusP) statusP.textContent = 'Erro: ' + e.message;
         showToast('Falha ao enviar: ' + e.message, 'error');
       } finally {
         if (btn) btn.disabled = false;

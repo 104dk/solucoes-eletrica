@@ -322,6 +322,9 @@
     }
     .form-row { display: flex; gap: 14px; }
     .form-row .form-group { flex: 1; }
+    .form-row .form-group.col-1 { flex: 1; }
+    .form-row .form-group.col-2 { flex: 2; }
+    .form-row .form-group.col-3 { flex: 3; }
     .pedido-total {
       background: linear-gradient(135deg, #e0f2fe, #f0f9ff);
       border: 1px solid rgba(14,165,233,0.3);
@@ -689,16 +692,16 @@
         </div>
       </div>
       <div class="form-row">
-        <div class="form-group">
+        <div class="form-group col-2">
+          <label for="pedidoEndereco">Endereço de entrega *</label>
+          <input type="text" id="pedidoEndereco" placeholder="Rua, número - Bairro - Cidade/UF" required autocomplete="street-address" aria-required="true" />
+          <p style="font-size:0.75rem;color:#6b7280;margin-top:4px;">Preenchido pelo CEP, mas você pode editar se precisar.</p>
+        </div>
+        <div class="form-group col-1">
           <label for="pedidoCep">CEP *</label>
           <input type="text" id="pedidoCep" placeholder="00000-000" required maxlength="9" inputmode="numeric" autocomplete="postal-code" aria-required="true" />
-          <p style="font-size:0.75rem;color:#6b7280;margin-top:4px;">Ao informar o CEP, o endereço é preenchido automaticamente.</p>
+          <p style="font-size:0.75rem;color:#6b7280;margin-top:4px;">O endereço é preenchido automaticamente.</p>
         </div>
-      </div>
-      <div class="form-group">
-        <label for="pedidoEndereco">Endereço de entrega *</label>
-        <input type="text" id="pedidoEndereco" placeholder="Rua, número - Bairro - Cidade/UF" required autocomplete="street-address" aria-required="true" />
-        <p style="font-size:0.75rem;color:#6b7280;margin-top:4px;">Preenchido pelo CEP, mas você pode editar se precisar.</p>
       </div>
       <div class="form-row">
         <div class="form-group">
