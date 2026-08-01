@@ -867,6 +867,10 @@
                   <option value="nv3">NV3 - Super</option>
                 </select>
               </div>
+              <div class="form-group">
+                <label for="scUserSenha">Senha de acesso</label>
+                <input type="password" id="scUserSenha" placeholder="Senha de login do usuario" autocomplete="new-password" />
+              </div>
               <div class="form-group" style="justify-content:flex-end;">
                 <button class="btn btn-primary" onclick="salvarUsuarioAcesso()"><i class="fas fa-user-plus" aria-hidden="true"></i> Salvar usuario</button>
               </div>
@@ -891,6 +895,21 @@
               </div>
               <div class="form-group" style="justify-content:flex-end;">
                 <button class="btn btn-outline" onclick="editarUsuarioAcesso()"><i class="fas fa-pen" aria-hidden="true"></i> Editar usuario</button>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="scUserSelectSenha">Alterar senha de</label>
+                <select id="scUserSelectSenha"></select>
+              </div>
+              <div class="form-group">
+                <label for="scUserNovaSenha">Nova senha</label>
+                <input type="password" id="scUserNovaSenha" placeholder="Nova senha (minimo 6 caracteres)" autocomplete="new-password" />
+              </div>
+              <div class="form-group" style="justify-content:flex-end; gap:8px; flex-wrap:wrap;">
+                <button class="btn btn-outline" onclick="alterarSenhaUsuario()"><i class="fas fa-key" aria-hidden="true"></i> Alterar senha</button>
+                <button class="btn btn-outline" onclick="reenviarSenhaUsuario()"><i class="fas fa-paper-plane" aria-hidden="true"></i> Reenviar senha</button>
               </div>
             </div>
 
@@ -1164,10 +1183,74 @@
                '<td>' + escapeHtml(d.regiao) + '</td>' +
                '<td>' + escapeHtml(d.horario) + '</td>';
       }
+      var printBtn = isPedidosTab(tab)
+        ? '<button class="btn btn-sm btn-outline" onclick="imprimirPedido(\'' + d.id + '\')" aria-label="Imprimir pedido" title="Imprimir pedido"><i class="fas fa-print" aria-hidden="true"></i></button>'
+        : '';
       return '<tr>' + cols + '<td class="actions-cell">' +
+        printBtn +
         '<button class="btn btn-sm btn-outline" onclick="editarRegistro(\'' + tab + '\',\'' + d.id + '\')" aria-label="Editar"><i class="fas fa-pen" aria-hidden="true"></i></button>' +
         '<button class="btn btn-sm btn-danger" onclick="excluirRegistro(\'' + tab + '\',\'' + d.id + '\')" aria-label="Excluir"><i class="fas fa-trash" aria-hidden="true"></i></button>' +
         '</td></tr>';
+    }
+
+    function imprimirPedido(id) {
+      if (!window.jspdf || !window.jspdf.jsPDF) {
+        showToast('Nao foi possivel carregar a biblioteca de PDF.', 'error');
+        return;
+      }
+      var pedido = (dadosCache['pedidos-lista'] || dadosCache.pedidos || []).find(function(p) { return p.id === id; });
+      if (!pedido) {
+        showToast('Pedido nao encontrado.', 'error');
+        return;
+      }
+      var jsPDF = window.jspdf.jsPDF;
+      var doc = new jsPDF({ unit: 'mm', format: 'a4' });
+      var y = 14;
+      var mg = 14;
+      var right = 196;
+
+      doc.setFillColor(0, 96, 100);
+      doc.roundedRect(mg, y, 182, 22, 2.5, 2.5, 'F');
+      doc.setTextColor(255, 255, 255);
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(18);
+      doc.text('Gelo Mix', mg + 6, y + 9);
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(9);
+      doc.text('Comprovante de pedido registrado', mg + 6, y + 15);
+      doc.setFont('helvetica', 'bold');
+      doc.text('Data: ' + (pedido.data || ''), right - 6, y + 9, { align: 'right' });
+      doc.setFont('helvetica', 'normal');
+      doc.text('Pedido: ' + String(pedido.id || '').substring(0, 8), right - 6, y + 15, { align: 'right' });
+
+      y += 32;
+      doc.setTextColor(31, 41, 51);
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(10);
+      doc.text('CLIENTE', mg, y);
+      y += 7;
+      doc.setFont('helvetica', 'normal');
+      var linhasCliente = doc.splitTextToSize(pedido.cliente || '-', 182);
+      doc.text(linhasCliente, mg, y);
+      y += linhasCliente.length * 5 + 10;
+
+      doc.setFont('helvetica', 'bold');
+      doc.text('DETALHES DO PEDIDO', mg, y);
+      y += 7;
+      doc.setFont('helvetica', 'normal');
+      var detalhes = doc.splitTextToSize(pedido.servico || '-', 182);
+      doc.text(detalhes, mg, y);
+      y += detalhes.length * 5 + 12;
+
+      doc.setDrawColor(215, 226, 230);
+      doc.line(mg, y, right, y);
+      y += 9;
+      doc.setFont('helvetica', 'bold');
+      doc.text('Status: ' + (pedido.status || 'Pendente'), mg, y);
+      doc.setFontSize(14);
+      doc.text('Total: R$ ' + parseFloat(pedido.valor || 0).toFixed(2), right, y, { align: 'right' });
+
+      doc.save('pedido-' + String(pedido.id || '').substring(0, 8) + '.pdf');
     }
 
     async function renderTabela(tab) {
@@ -2292,6 +2375,9 @@
       popularSelect('scDeleteUserSelect', usuariosAcessoCache, 'Selecione um email', function(u) {
         return u.email || '-';
       });
+      popularSelect('scUserSelectSenha', usuariosAcessoCache, 'Selecione um usuario', function(u) {
+        return (u.email || '-') + ' - ' + nivelLabel(u.nivel);
+      });
     }
 
     async function carregarUsuariosAcesso() {
@@ -2335,9 +2421,25 @@
       var email = document.getElementById('scUserEmail').value.trim().toLowerCase();
       var nome = document.getElementById('scUserName').value.trim();
       var nivel = document.getElementById('scUserLevel').value;
+      var senha = document.getElementById('scUserSenha').value;
       if (!email) {
         showToast('Informe o email do usuario.', 'error');
         return;
+      }
+      if (senha) {
+        var sessaoAtual = (await supabaseClient.auth.getSession()).data.session;
+        var signUp = await supabaseClient.auth.signUp({ email: email, password: senha });
+        if (signUp.error) {
+          var msgErro = String(signUp.error.message || '').toLowerCase();
+          if (msgErro.indexOf('already registered') === -1 && msgErro.indexOf('ja cadastrado') === -1 && msgErro.indexOf('já') === -1) {
+            showToast('Erro ao criar o login: ' + signUp.error.message, 'error');
+            return;
+          }
+          showToast('Email ja possui login. Acesso atualizado (senha mantida).', 'warning');
+        } else {
+          showToast('Usuario criado com login no Supabase.', 'success');
+          if (sessaoAtual) await supabaseClient.auth.setSession(sessaoAtual);
+        }
       }
       var result = await supabaseClient.from('usuarios_acesso').upsert({
         email: email,
@@ -2352,6 +2454,7 @@
       document.getElementById('scUserEmail').value = '';
       document.getElementById('scUserName').value = '';
       document.getElementById('scUserLevel').value = 'nv1';
+      document.getElementById('scUserSenha').value = '';
       showToast('Usuario registrado no Supabase.', 'success');
       carregarUsuariosAcesso();
     }
@@ -2396,6 +2499,76 @@
       }
       showToast('Acesso removido.', 'success');
       carregarUsuariosAcesso();
+    }
+
+    async function alterarSenhaUsuario() {
+      var id = document.getElementById('scUserSelectSenha').value;
+      var novaSenha = document.getElementById('scUserNovaSenha').value;
+      if (!id) {
+        showToast('Selecione um usuario para alterar a senha.', 'error');
+        return;
+      }
+      if (!novaSenha || novaSenha.length < 6) {
+        showToast('Informe a nova senha (minimo 6 caracteres).', 'error');
+        return;
+      }
+      var usuario = usuariosAcessoCache.find(function(u) { return u.id === id; });
+      if (!usuario || !usuario.email) {
+        showToast('Usuario nao encontrado.', 'error');
+        return;
+      }
+      try {
+        var resp = await fetch('/api/super-admin-user', {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain' },
+          body: JSON.stringify({ action: 'update_password', email: usuario.email, password: novaSenha })
+        });
+        var data = await resp.json();
+        if (data.configured === false) {
+          var reset = await supabaseClient.auth.resetPasswordForEmail(usuario.email);
+          if (reset.error) {
+            showToast('Servidor sem chave admin e o envio de link tambem falhou: ' + reset.error.message, 'error');
+            return;
+          }
+          document.getElementById('scUserNovaSenha').value = '';
+          showToast('Servidor sem chave admin. Link de redefinicao enviado para ' + usuario.email + '.', 'warning');
+          return;
+        }
+        if (!resp.ok || data.error) {
+          showToast(data.error || 'Erro ao alterar a senha.', 'error');
+          return;
+        }
+        document.getElementById('scUserNovaSenha').value = '';
+        showToast('Senha alterada com sucesso.', 'success');
+      } catch (err) {
+        showToast('Falha ao alterar a senha: ' + err.message, 'error');
+      }
+    }
+
+    async function reenviarSenhaUsuario() {
+      var id = document.getElementById('scUserSelectSenha').value;
+      if (!id) {
+        showToast('Selecione um usuario para reenviar a senha.', 'error');
+        return;
+      }
+      var usuario = usuariosAcessoCache.find(function(u) { return u.id === id; });
+      if (!usuario || !usuario.email) {
+        showToast('Usuario nao encontrado.', 'error');
+        return;
+      }
+      try {
+        var resend = await supabaseClient.auth.resend({ type: 'signup', email: usuario.email });
+        if (resend.error) {
+          var reset = await supabaseClient.auth.resetPasswordForEmail(usuario.email);
+          if (reset.error) {
+            showToast('Nao foi possivel reenviar: ' + reset.error.message, 'error');
+            return;
+          }
+        }
+        showToast('Email enviado para ' + usuario.email + '.', 'success');
+      } catch (err) {
+        showToast('Falha ao reenviar: ' + err.message, 'error');
+      }
     }
 
     function normalizarContatoSelecionado(contato) {

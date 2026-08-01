@@ -810,14 +810,18 @@
         var result = await supabaseClient.auth.signInWithPassword({ email: email, password: pass });
         if (result.error) throw result.error;
 
-        var profileResult = await supabaseClient.from('profiles').select('role').eq('id', result.data.user.id).single();
-        if (profileResult.data && profileResult.data.role === 'admin') {
+        var profileResult = await supabaseClient.from('profiles').select('role').eq('id', result.data.user.id).maybeSingle();
+        var roleProfile = profileResult.data ? profileResult.data.role : '';
+        var acessoResult = await supabaseClient.from('usuarios_acesso').select('nivel').ilike('email', email).maybeSingle();
+        var nivelAcesso = acessoResult.data ? acessoResult.data.nivel : '';
+        var podeAcessarPainel = roleProfile === 'admin' || roleProfile === 'super' || nivelAcesso === 'nv2' || nivelAcesso === 'nv3';
+        if (podeAcessarPainel) {
           localStorage.setItem('se_session', JSON.stringify(result.data.session));
           closeLogin();
           window.location.href = 'admin.html';
         } else {
           await supabaseClient.auth.signOut();
-          throw new Error('Acesso negado. Somente administradores podem acessar o painel.');
+          throw new Error('Acesso negado. Usuario sem permissao para o painel.');
         }
       } catch (err) {
         errorEl.textContent = err.message || 'Email ou senha incorretos.';
