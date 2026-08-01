@@ -756,7 +756,7 @@
     <p>&copy; 2026 Gelo Mix — Todos os direitos reservados</p>
     <p style="margin-top:4px;"><i class="fas fa-map-marker-alt" aria-hidden="true"></i> <span id="footerEndereco">Rua 43, Quadra 149, Lote E — Parque Mingone II — Luziânia, GO</span></p>
     <div class="footer-social" aria-label="Redes sociais">
-      <a href="https://wa.me/5561991783512" target="_blank" rel="noopener" aria-label="WhatsApp">
+      <a href="https://wa.me/5561991783512" target="_blank" rel="noopener" aria-label="WhatsApp" id="footerWhatsapp">
         <i class="fab fa-whatsapp" aria-hidden="true"></i>
       </a>
     </div>
@@ -765,7 +765,7 @@
     </div>
   </footer>
 
-  <a href="https://wa.me/5561991783512?text=Ol%C3%A1!%20Gostaria%20de%20pedir%20gelo." target="_blank" rel="noopener" class="whatsapp-fab" aria-label="WhatsApp">
+  <a href="https://wa.me/5561991783512?text=Ol%C3%A1!%20Gostaria%20de%20pedir%20gelo." target="_blank" rel="noopener" class="whatsapp-fab" aria-label="WhatsApp" id="footerWhatsappFab">
     <i class="fab fa-whatsapp" aria-hidden="true"></i>
   </a>
 
@@ -1318,10 +1318,44 @@
       atualizarTotalPedido();
     }
 
-    renderizarCardapio();
-    popularSelectProdutos();
-    configurarFormulario();
-    checkOAuthCallback();
+    async function carregarConfigGelo() {
+      try {
+        var result = await supabaseClient.from('configuracoes').select('chave, valor');
+        var cfgMap = {};
+        if (result.data) result.data.forEach(function(c) { cfgMap[c.chave] = c.valor; });
+
+        if (cfgMap['gelo_whatsapp']) {
+          WHATSAPP_GELO_MIX = cfgMap['gelo_whatsapp'];
+        }
+
+        var endereco = cfgMap['gelo_endereco'] || 'Rua 43, Quadra 149, Lote E — Parque Mingone II — Luziânia, GO';
+        var enderecoEl = document.getElementById('footerEndereco');
+        if (enderecoEl) enderecoEl.textContent = endereco;
+
+        var waLink = 'https://wa.me/' + WHATSAPP_GELO_MIX;
+        var waFooter = document.getElementById('footerWhatsapp');
+        var waFab = document.getElementById('footerWhatsappFab');
+        if (waFooter) waFooter.href = waLink;
+        if (waFab) waFab.href = waLink + '?text=' + encodeURIComponent('Olá! Gostaria de pedir gelo.');
+
+        if (cfgMap['gelo_produtos']) {
+          try {
+            var produtos = JSON.parse(cfgMap['gelo_produtos']);
+            if (Array.isArray(produtos) && produtos.length) {
+              GELO_PRODUTOS = produtos;
+            }
+          } catch (e) { /* mantem padroes */ }
+        }
+      } catch (e) {
+        console.warn('[Gelo Mix] Config indisponivel, usando padroes.', e);
+      }
+      renderizarCardapio();
+      popularSelectProdutos();
+      configurarFormulario();
+      checkOAuthCallback();
+    }
+
+    carregarConfigGelo();
   </script>
 
 </body>

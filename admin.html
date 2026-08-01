@@ -40,6 +40,14 @@
       border-left-color: #f59e0b;
     }
     .sidebar-nav a i { width: 20px; text-align: center; font-size: 1rem; }
+    .sidebar-nav .nav-divider {
+      height: 1px; margin: 10px 20px; background: rgba(255,255,255,0.12);
+    }
+    .sidebar-nav .nav-section {
+      padding: 14px 20px 6px; font-size: 0.68rem; font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+    }
     .sidebar-footer {
       padding: 16px 20px; border-top: 1px solid rgba(255,255,255,0.08);
     }
@@ -436,10 +444,14 @@
         z-index: 300;
         padding: 6px 2px calc(6px + env(safe-area-inset-bottom));
         border-top: 1px solid rgba(255,255,255,0.08);
+        overflow-x: auto;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
       }
+      .mobile-nav::-webkit-scrollbar { display: none; }
       .mobile-nav a {
-        flex: 1;
-        min-width: 0;
+        flex: 0 0 auto;
+        min-width: 58px;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -521,6 +533,15 @@
       <a href="#" data-tab="config" onclick="switchTab('config', this)" role="tab">
         <i class="fas fa-cog" aria-hidden="true"></i> Configurações
       </a>
+      <div class="nav-divider"></div>
+      <div class="nav-section">Gelo Mix</div>
+      <a href="#" data-tab="gelo-publica" onclick="switchTab('gelo-publica', this)" role="tab">
+        <i class="fas fa-eye" aria-hidden="true"></i> Página Pública
+      </a>
+      <a href="#" data-tab="gelo-config" onclick="switchTab('gelo-config', this)" role="tab">
+        <i class="fas fa-snowflake" aria-hidden="true"></i> Gelo - Config
+      </a>
+      <div class="nav-divider"></div>
       <a href="#" data-tab="super-config" onclick="switchTab('super-config', this)" role="tab">
         <i class="fas fa-shield-alt" aria-hidden="true"></i> Super Config
       </a>
@@ -1012,6 +1033,52 @@
         </div>
       </div>
 
+      <!-- ========== GELO MIX - PAGINA PUBLICA ========== -->
+      <div class="tab-content" id="tab-gelo-publica">
+        <div class="card">
+          <div class="card-header">
+            <h2>Gelo Mix - Página Pública</h2>
+            <div class="card-actions">
+              <button class="btn btn-outline" onclick="carregarGeloPublica()"><i class="fas fa-rotate" aria-hidden="true"></i> Atualizar</button>
+              <a class="btn btn-primary" href="gelomix.html" target="_blank" rel="noopener"><i class="fas fa-external-link-alt" aria-hidden="true"></i> Abrir página pública</a>
+            </div>
+          </div>
+          <div style="padding:24px;">
+            <div id="geloPublicaResumo"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== GELO MIX - CONFIG ========== -->
+      <div class="tab-content" id="tab-gelo-config">
+        <div class="card" style="max-width:760px;">
+          <div class="card-header">
+            <h2>Gelo Mix - Configurações da página</h2>
+            <div class="card-actions">
+              <button class="btn btn-outline" onclick="carregarGeloConfig()"><i class="fas fa-rotate" aria-hidden="true"></i> Atualizar</button>
+            </div>
+          </div>
+          <div style="padding:24px;">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="geloCfgWhatsapp">WhatsApp (somente números)</label>
+                <input type="tel" id="geloCfgWhatsapp" placeholder="Ex: 61991783512" maxlength="13" inputmode="tel" />
+              </div>
+              <div class="form-group">
+                <label for="geloCfgEndereco">Endereço (rodapé da página)</label>
+                <input type="text" id="geloCfgEndereco" placeholder="Rua, número - Bairro - Cidade/UF" />
+              </div>
+            </div>
+            <p style="margin:8px 0 12px; font-size:0.85rem; color:#64748b;"><i class="fas fa-info-circle" aria-hidden="true"></i> Cardápio exibido na página pública do Gelo Mix:</p>
+            <div class="pedido-items-box">
+              <div id="geloProdutosContainer"></div>
+              <button type="button" class="btn btn-outline" onclick="adicionarGeloProduto()"><i class="fas fa-plus" aria-hidden="true"></i> Adicionar produto</button>
+            </div>
+            <button class="btn btn-primary" onclick="salvarGeloConfig()" id="saveGeloConfigBtn" style="margin-top:16px;"><i class="fas fa-save" aria-hidden="true"></i> Salvar configurações do Gelo Mix</button>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 
@@ -1023,6 +1090,8 @@
     <a href="#" data-tab="rotas" onclick="switchTab('rotas', this)"><i class="fas fa-route" aria-hidden="true"></i><span>Rotas</span></a>
     <a href="#" data-tab="pedidos-lista" onclick="switchTab('pedidos-lista', this)"><i class="fas fa-list-check" aria-hidden="true"></i><span>Registros</span></a>
     <a href="#" data-tab="config" onclick="switchTab('config', this)"><i class="fas fa-cog" aria-hidden="true"></i><span>Config</span></a>
+    <a href="#" data-tab="gelo-publica" onclick="switchTab('gelo-publica', this)"><i class="fas fa-eye" aria-hidden="true"></i><span>Gelo</span></a>
+    <a href="#" data-tab="gelo-config" onclick="switchTab('gelo-config', this)"><i class="fas fa-snowflake" aria-hidden="true"></i><span>Gelo Cfg</span></a>
     <a href="#" data-tab="super-config" onclick="switchTab('super-config', this)"><i class="fas fa-user-shield" aria-hidden="true"></i><span>Super</span></a>
   </nav>
 
@@ -1090,7 +1159,9 @@
       produtos: 'Produtos',
       rotas: 'Rotas',
       'super-config': 'Super Config',
-      config: 'Configurações'
+      config: 'Configurações',
+      'gelo-publica': 'Gelo Mix - Página Pública',
+      'gelo-config': 'Gelo Mix - Configurações'
     };
 
     // =============================================
@@ -1146,6 +1217,12 @@
       if (tab === 'super-config') {
         document.getElementById('pageBadge').textContent = 'Super';
         carregarSuperConfig();
+      } else if (tab === 'gelo-publica') {
+        document.getElementById('pageBadge').textContent = 'Gelo Mix';
+        carregarGeloPublica();
+      } else if (tab === 'gelo-config') {
+        document.getElementById('pageBadge').textContent = 'Gelo Mix';
+        carregarGeloConfig();
       } else if (tab !== 'config') {
         atualizarBadge(tab);
       } else {
@@ -2889,6 +2966,136 @@
 
       saveBtn.disabled = false;
       showToast('Configurações salvas com sucesso!', 'success');
+    }
+
+    // =============================================
+    // GELO MIX - CONFIGURACOES DA PAGINA PUBLICA
+    // =============================================
+    var geloProdutosCache = [];
+    var GELO_PRODUTOS_DEFAULT = [
+      { nome: 'Saco de Gelo 2kg', preco: 7.00, icone: 'fa-cube', desc: 'Ideal para geladeiras, conservar alimentos e uso diário.' },
+      { nome: 'Saco de Gelo 4kg', preco: 12.00, icone: 'fa-cubes', desc: 'Perfeito para churrascos, festas e uso comercial.' },
+      { nome: 'Saco de Gelo 5kg', preco: 14.00, icone: 'fa-cube', desc: 'A escolha ideal para eventos médios e estabelecimentos.' },
+      { nome: 'Saco de Gelo 10kg', preco: 25.00, icone: 'fa-weight-hanging', desc: 'Para festas grandes, restaurantes e comércios.' },
+      { nome: 'Gelo Triturado 5kg', preco: 16.00, icone: 'fa-snowflake', desc: 'Gelo triturado, perfeito para bebidas e vitrines.' },
+      { nome: 'Gelo em Cubos 10kg', preco: 28.00, icone: 'fa-border-all', desc: 'Cubos de gelo para eventos, bares e restaurantes.' }
+    ];
+
+    async function carregarGeloConfig() {
+      var result = await supabaseClient.from('configuracoes').select('*');
+      var cfgMap = {};
+      if (result.data) result.data.forEach(function(c) { cfgMap[c.chave] = c.valor; });
+
+      document.getElementById('geloCfgWhatsapp').value = cfgMap['gelo_whatsapp'] || '5561991783512';
+      document.getElementById('geloCfgEndereco').value = cfgMap['gelo_endereco'] || 'Rua 43, Quadra 149, Lote E — Parque Mingone II — Luziânia, GO';
+
+      try {
+        geloProdutosCache = cfgMap['gelo_produtos'] ? JSON.parse(cfgMap['gelo_produtos']) : [];
+      } catch (e) {
+        geloProdutosCache = [];
+      }
+      if (!Array.isArray(geloProdutosCache) || !geloProdutosCache.length) {
+        geloProdutosCache = JSON.parse(JSON.stringify(GELO_PRODUTOS_DEFAULT));
+      }
+      renderGeloProdutos();
+    }
+
+    function renderGeloProdutos() {
+      var container = document.getElementById('geloProdutosContainer');
+      if (!container) return;
+      container.innerHTML = geloProdutosCache.map(function(p, i) {
+        return '<div class="gelo-produto-item" style="border:1px solid #e2e8f0;border-radius:10px;padding:12px;margin-bottom:12px;background:#f8fafc;">' +
+          '<div class="item-title" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">' +
+          '<span style="font-weight:700;color:#0f766e;">Produto ' + (i + 1) + '</span>' +
+          '<button type="button" class="btn-remove-item" onclick="removerGeloProduto(this)">Remover</button>' +
+          '</div>' +
+          '<div class="form-row">' +
+          '<div class="form-group"><label>Nome</label><input type="text" class="gp-nome" value="' + escapeHtml(p.nome || '') + '" placeholder="Saco de Gelo 2kg" /></div>' +
+          '<div class="form-group"><label>Preço (R$)</label><input type="text" class="gp-preco" value="' + escapeHtml(p.preco || '') + '" placeholder="7,00" /></div>' +
+          '<div class="form-group"><label>Ícone</label><input type="text" class="gp-icone" value="' + escapeHtml(p.icone || 'fa-cube') + '" placeholder="fa-cube" /></div>' +
+          '</div>' +
+          '<div class="form-group"><label>Descrição</label><input type="text" class="gp-desc" value="' + escapeHtml(p.desc || '') + '" placeholder="Descrição exibida no cardápio" /></div>' +
+          '</div>';
+      }).join('');
+    }
+
+    function adicionarGeloProduto() {
+      geloProdutosCache.push({ nome: '', preco: '', icone: 'fa-cube', desc: '' });
+      renderGeloProdutos();
+    }
+
+    function removerGeloProduto(btn) {
+      var itens = document.querySelectorAll('#geloProdutosContainer .gelo-produto-item');
+      var alvo = btn.closest('.gelo-produto-item');
+      var index = Array.prototype.indexOf.call(itens, alvo);
+      if (index === -1) return;
+      geloProdutosCache.splice(index, 1);
+      renderGeloProdutos();
+    }
+
+    function lerGeloProdutosForm() {
+      var itens = document.querySelectorAll('#geloProdutosContainer .gelo-produto-item');
+      return Array.prototype.map.call(itens, function(el) {
+        return {
+          nome: el.querySelector('.gp-nome').value.trim(),
+          preco: parseValorBr(el.querySelector('.gp-preco').value),
+          icone: el.querySelector('.gp-icone').value.trim() || 'fa-cube',
+          desc: el.querySelector('.gp-desc').value.trim()
+        };
+      }).filter(function(p) { return p.nome; });
+    }
+
+    async function salvarGeloConfig() {
+      var campos = [
+        { chave: 'gelo_whatsapp', valor: document.getElementById('geloCfgWhatsapp').value.trim() },
+        { chave: 'gelo_endereco', valor: document.getElementById('geloCfgEndereco').value.trim() },
+        { chave: 'gelo_produtos', valor: JSON.stringify(lerGeloProdutosForm()) }
+      ];
+      var saveBtn = document.getElementById('saveGeloConfigBtn');
+      saveBtn.disabled = true;
+      for (var i = 0; i < campos.length; i++) {
+        var c = campos[i];
+        var result = await supabaseClient.from('configuracoes').upsert(
+          { chave: c.chave, valor: c.valor, updated_at: new Date() },
+          { onConflict: 'chave' }
+        );
+        if (result.error) {
+          showToast('Erro ao salvar: ' + result.error.message, 'error');
+          saveBtn.disabled = false;
+          return;
+        }
+      }
+      saveBtn.disabled = false;
+      showToast('Configurações do Gelo Mix salvas!', 'success');
+    }
+
+    async function carregarGeloPublica() {
+      var result = await supabaseClient.from('configuracoes').select('*');
+      var cfgMap = {};
+      if (result.data) result.data.forEach(function(c) { cfgMap[c.chave] = c.valor; });
+      var whats = cfgMap['gelo_whatsapp'] || '5561991783512';
+      var end = cfgMap['gelo_endereco'] || 'Rua 43, Quadra 149, Lote E — Parque Mingone II — Luziânia, GO';
+      var produtos = [];
+      try { produtos = cfgMap['gelo_produtos'] ? JSON.parse(cfgMap['gelo_produtos']) : []; } catch (e) { produtos = []; }
+      if (!Array.isArray(produtos) || !produtos.length) produtos = GELO_PRODUTOS_DEFAULT;
+
+      var html = '';
+      html += '<div class="stats-grid" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr));margin-bottom:20px;">' +
+        '<div class="stat-card"><div class="stat-icon green"><i class="fab fa-whatsapp" aria-hidden="true"></i></div><div class="stat-info"><h3>' + escapeHtml(whats) + '</h3><p>WhatsApp</p></div></div>' +
+        '<div class="stat-card"><div class="stat-icon blue"><i class="fas fa-map-marker-alt" aria-hidden="true"></i></div><div class="stat-info"><h3 style="font-size:0.9rem;">' + escapeHtml(end) + '</h3><p>Endereço no rodapé</p></div></div>' +
+        '<div class="stat-card"><div class="stat-icon yellow"><i class="fas fa-box-open" aria-hidden="true"></i></div><div class="stat-info"><h3>' + produtos.length + '</h3><p>Produtos no cardápio</p></div></div>' +
+        '</div>';
+      html += '<p style="font-size:0.9rem;color:#475569;margin-bottom:12px;">Prévia do cardápio publicado em <a href="gelomix.html" target="_blank" rel="noopener">gelomix.html</a>:</p>';
+      html += '<div class="pedido-items-box">';
+      produtos.forEach(function(p) {
+        html += '<div class="pedido-item" style="display:flex;justify-content:space-between;align-items:center;gap:12px;">' +
+          '<span><i class="fas ' + escapeHtml(p.icone || 'fa-cube') + '" aria-hidden="true"></i> <strong>' + escapeHtml(p.nome || '-') + '</strong><br><small>' + escapeHtml(p.desc || '') + '</small></span>' +
+          '<span style="font-weight:700;color:#0f766e;white-space:nowrap;">R$ ' + parseFloat(p.preco || 0).toFixed(2) + '</span>' +
+          '</div>';
+      });
+      if (!produtos.length) html += '<p>Nenhum produto cadastrado.</p>';
+      html += '</div>';
+      document.getElementById('geloPublicaResumo').innerHTML = html;
     }
 
     // =============================================
