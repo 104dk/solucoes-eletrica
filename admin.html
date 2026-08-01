@@ -554,6 +554,9 @@
       <a href="#" data-tab="mensagens" onclick="switchTab('mensagens', this)" role="tab">
         <i class="fas fa-paper-plane" aria-hidden="true"></i> Enviar Mensagens
       </a>
+      <a href="#" data-tab="links" onclick="switchTab('links', this)" role="tab">
+        <i class="fas fa-link" aria-hidden="true"></i> Links WhatsApp
+      </a>
       <div class="nav-divider"></div>
       <div class="nav-section">Gelo Mix</div>
       <a href="#" data-tab="gelo-publica" onclick="switchTab('gelo-publica', this)" role="tab">
@@ -1284,6 +1287,64 @@
         </div>
       </div>
 
+      <div class="tab-content" id="tab-links">
+        <div class="card" style="max-width:860px;">
+          <div class="card-header">
+            <h2>Links WhatsApp (wa.me)</h2>
+            <div class="card-actions">
+              <button class="btn btn-outline" onclick="carregarLinks()"><i class="fas fa-rotate" aria-hidden="true"></i> Atualizar</button>
+            </div>
+          </div>
+          <div style="padding:24px;">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;padding:14px 16px;border-radius:12px;background:#f0fdf4;border:1px solid #bbf7d0;">
+              <i class="fab fa-whatsapp" style="font-size:24px;color:#25d366;" aria-hidden="true"></i>
+              <span style="font-size:0.85rem;color:#166534;">Sem API Meta. Gera um link <code>wa.me</code> que abre o chat no WhatsApp do seu celular com a mensagem pronta — basta apertar enviar. Funciona para qualquer cliente, sem token nem número verificado.</span>
+            </div>
+
+            <div class="form-group">
+              <label>Destinatários</label>
+              <div class="msg-destinos-grid" style="margin-top:6px;">
+                <div>
+                  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
+                    <input type="text" id="lBusca" class="search-input" placeholder="Buscar cliente..." style="flex:1;min-width:160px;" oninput="renderClientesLinks(this.value)" />
+                    <button class="btn btn-outline" onclick="selecionarTodosLinks(true)"><i class="fas fa-check-double" aria-hidden="true"></i> Todos</button>
+                    <button class="btn btn-outline" onclick="selecionarTodosLinks(false)"><i class="fas fa-eraser" aria-hidden="true"></i> Limpar</button>
+                  </div>
+                  <div id="lListaClientes" style="max-height:240px;overflow-y:auto;border:1px solid #e2e8f0;border-radius:8px;padding:8px;"></div>
+                  <p style="font-size:0.78rem;color:#94a3b8;margin-top:6px;"><strong id="lContador">0 selecionado</strong> · clientes cadastrados</p>
+                </div>
+                <div>
+                  <label for="lManual">Números manuais</label>
+                  <textarea id="lManual" placeholder="Ex: (61) 99178-3512, 61991234567" style="min-height:236px;margin-top:4px;" oninput="atualizarContadorLinks()"></textarea>
+                  <p style="font-size:0.78rem;color:#94a3b8;margin-top:6px;">Separados por vírgula, ponto e vírgula ou quebra de linha. Somam-se aos clientes selecionados.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group" style="margin-top:18px;">
+              <label for="lTemplate">Modelo de mensagem</label>
+              <select id="lTemplate" onchange="carregarTemplateLinks()">
+                <option value="">Mensagem livre</option>
+                <option value="pedido_confirmado">Pedido confirmado</option>
+                <option value="lembrete_pedido">Lembrete de pedido</option>
+                <option value="pedido_cancelado">Pedido cancelado</option>
+                <option value="pagamento_pendente">Pagamento pendente</option>
+              </select>
+              <label for="lMensagem" style="margin-top:12px;display:block;">Mensagem</label>
+              <textarea id="lMensagem" style="min-height:110px;"></textarea>
+              <p style="font-size:0.78rem;color:#94a3b8;margin-top:6px;">O placeholder <code>{{nome}}</code> é substituído pelo nome de cada cliente. Os demais (<code>{{resumo}}</code>, <code>{{total}}</code>) permanecem como estão.</p>
+            </div>
+
+            <div style="margin-top:18px;">
+              <button class="btn btn-primary" onclick="gerarLinksWhatsApp()"><i class="fas fa-link" aria-hidden="true"></i> Gerar Links (<span id="lGerarCount">0</span>)</button>
+              <button class="btn btn-outline" onclick="copiarLinksWhatsApp()" style="margin-left:8px;"><i class="fas fa-copy" aria-hidden="true"></i> Copiar todos</button>
+              <button class="btn btn-outline" onclick="baixarLinksWhatsApp()" style="margin-left:8px;"><i class="fas fa-download" aria-hidden="true"></i> Baixar .txt</button>
+              <div id="lResultado" style="margin-top:14px;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 
@@ -1297,6 +1358,7 @@
     <a href="#" data-tab="config" onclick="switchTab('config', this)"><i class="fas fa-cog" aria-hidden="true"></i><span>Config</span></a>
     <a href="#" data-tab="whatsapp" onclick="switchTab('whatsapp', this)"><i class="fab fa-whatsapp" aria-hidden="true"></i><span>WhatsApp</span></a>
     <a href="#" data-tab="mensagens" onclick="switchTab('mensagens', this)"><i class="fas fa-paper-plane" aria-hidden="true"></i><span>Mensagens</span></a>
+    <a href="#" data-tab="links" onclick="switchTab('links', this)"><i class="fas fa-link" aria-hidden="true"></i><span>Links WhatsApp</span></a>
     <a href="#" data-tab="gelo-publica" onclick="switchTab('gelo-publica', this)"><i class="fas fa-eye" aria-hidden="true"></i><span>Gelo</span></a>
     <a href="#" data-tab="gelo-config" onclick="switchTab('gelo-config', this)"><i class="fas fa-snowflake" aria-hidden="true"></i><span>Gelo Cfg</span></a>
     <a href="#" data-tab="super-config" onclick="switchTab('super-config', this)"><i class="fas fa-user-shield" aria-hidden="true"></i><span>Super</span></a>
@@ -1369,6 +1431,7 @@
       config: 'Configurações',
       whatsapp: 'WhatsApp',
       mensagens: 'Enviar Mensagens',
+      links: 'Links WhatsApp',
       'gelo-publica': 'Gelo Mix - Página Pública',
       'gelo-config': 'Gelo Mix - Configurações'
     };
@@ -1438,6 +1501,9 @@
       } else if (tab === 'mensagens') {
         document.getElementById('pageBadge').textContent = 'Enviar Mensagens';
         carregarMensagens();
+      } else if (tab === 'links') {
+        document.getElementById('pageBadge').textContent = 'Links WhatsApp';
+        carregarLinks();
       } else if (tab !== 'config') {
         atualizarBadge(tab);
       } else {
@@ -3773,6 +3839,191 @@
       } finally {
         if (btn) btn.disabled = false;
       }
+    }
+
+    // =============================================
+    // ABA: LINKS WHATSAPP (wa.me)
+    // =============================================
+    var linksCache = { gerados: [] };
+
+    function normalizarTelefoneLink(valor) {
+      var digitos = String(valor || '').replace(/\D/g, '');
+      if (!digitos) return null;
+      if (digitos.length === 10 || digitos.length === 11) return '55' + digitos;
+      if (digitos.length === 12 || digitos.length === 13) return digitos.startsWith('55') ? digitos : '55' + digitos;
+      return digitos;
+    }
+
+    async function carregarLinks() {
+      try {
+        var token = await tokenSessao();
+        var resp = await fetch('/api/whatsapp-config', { headers: { 'Authorization': 'Bearer ' + token } });
+        var data = await resp.json();
+        if (data.config && data.config.templates) mensagensCache.templates = data.config.templates;
+      } catch (e) {
+        mensagensCache.templates = mensagensCache.templates || {};
+      }
+      if (!mensagensCache.clientes.length) {
+        try {
+          var result = await supabaseClient.from('clientes').select('id,nome,telefone').order('nome', { ascending: true });
+          if (result.error) throw result.error;
+          mensagensCache.clientes = result.data || [];
+        } catch (e) {
+          showToast('Erro ao carregar clientes: ' + e.message, 'error');
+        }
+      }
+      renderClientesLinks(document.getElementById('lBusca') ? document.getElementById('lBusca').value : '');
+    }
+
+    function renderClientesLinks(filtro) {
+      var lista = document.getElementById('lListaClientes');
+      if (!lista) return;
+      var f = (filtro || '').toLowerCase().trim();
+      var itens = mensagensCache.clientes.filter(function(c) {
+        if (!f) return true;
+        return String(c.nome || '').toLowerCase().indexOf(f) !== -1 ||
+               String(c.telefone || '').toLowerCase().indexOf(f) !== -1;
+      });
+      if (!itens.length) {
+        lista.innerHTML = '<p style="color:#94a3b8;font-size:0.85rem;padding:8px;">Nenhum cliente encontrado.</p>';
+        atualizarContadorLinks();
+        return;
+      }
+      lista.innerHTML = itens.map(function(c) {
+        return '<label style="display:flex;align-items:center;gap:10px;padding:7px 8px;border-radius:6px;cursor:pointer;">' +
+          '<input type="checkbox" class="lClienteCheck" value="' + escapeHtml(c.id || '') + '" data-telefone="' + escapeHtml(c.telefone || '') + '" data-nome="' + escapeHtml(c.nome || '') + '" onchange="atualizarContadorLinks()">' +
+          '<span style="flex:1;font-size:0.85rem;">' + escapeHtml(c.nome || '-') + '</span>' +
+          '<span style="font-size:0.78rem;color:#94a3b8;">' + escapeHtml(c.telefone || '') + '</span>' +
+          '</label>';
+      }).join('');
+      atualizarContadorLinks();
+    }
+
+    function selecionarTodosLinks(selecionar) {
+      document.querySelectorAll('.lClienteCheck').forEach(function(cb) { cb.checked = selecionar; });
+      atualizarContadorLinks();
+    }
+
+    function atualizarContadorLinks() {
+      var checks = document.querySelectorAll('.lClienteCheck:checked').length;
+      var manuais = (document.getElementById('lManual').value || '').split(/[\n,;]+/).map(function(s) { return s.trim(); }).filter(Boolean).length;
+      var total = checks + manuais;
+      var cont = document.getElementById('lContador');
+      if (cont) cont.textContent = total + ' selecionado' + (total !== 1 ? 's' : '');
+      var cnt = document.getElementById('lGerarCount');
+      if (cnt) cnt.textContent = total;
+    }
+
+    function carregarTemplateLinks() {
+      var sel = document.getElementById('lTemplate');
+      if (!sel) return;
+      var tpl = (mensagensCache.templates || {})[sel.value];
+      if (!tpl) return;
+      document.getElementById('lMensagem').value = tpl;
+    }
+
+    function montarMensagemPorNome(mensagem, nome) {
+      return String(mensagem || '').split('{{nome}}').join(nome || 'Cliente');
+    }
+
+    function gerarLinksWhatsApp() {
+      var destinos = [];
+      var nomes = {};
+      document.querySelectorAll('.lClienteCheck:checked').forEach(function(cb) {
+        var tel = cb.getAttribute('data-telefone') || '';
+        destinos.push(tel);
+        nomes[tel] = cb.getAttribute('data-nome') || '';
+      });
+      var manual = (document.getElementById('lManual').value || '').split(/[\n,;]+/).map(function(s) { return s.trim(); }).filter(Boolean);
+      manual.forEach(function(t) { destinos.push(t); });
+      if (!destinos.length) {
+        showToast('Selecione ao menos um destinatario.', 'error');
+        return;
+      }
+      var mensagem = document.getElementById('lMensagem').value.trim();
+      if (!mensagem) {
+        showToast('Informe a mensagem.', 'error');
+        return;
+      }
+      var resBox = document.getElementById('lResultado');
+      if (resBox) resBox.innerHTML = '';
+      linksCache.gerados = [];
+      var invalidos = 0;
+      destinos.forEach(function(tel) {
+        var numero = normalizarTelefoneLink(tel);
+        if (!numero) { invalidos++; return; }
+        var texto = montarMensagemPorNome(mensagem, nomes[tel] || '');
+        var url = 'https://wa.me/' + numero + '?text=' + encodeURIComponent(texto);
+        linksCache.gerados.push({ nome: nomes[tel] || tel, telefone: numero, url: url, texto: texto });
+      });
+      renderLinksGerados(resBox);
+      if (invalidos) showToast(invalidos + ' numero(s) invalido(s) ignorado(s).', 'error');
+    }
+
+    function renderLinksGerados(resBox) {
+      if (!resBox) return;
+      var gerados = linksCache.gerados;
+      if (!gerados.length) {
+        resBox.innerHTML = '<div style="background:#fef2f2;border:1px solid #fecaca;border-radius:8px;padding:10px 14px;font-size:0.82rem;">Nenhum link valido gerado.</div>';
+        return;
+      }
+      resBox.innerHTML =
+        '<div style="font-size:0.8rem;color:#475569;margin-bottom:8px;"><strong>' + gerados.length + '</strong> link(s) gerado(s). Clique em <strong>Abrir</strong> — o WhatsApp abre com a mensagem pronta.</div>' +
+        '<div style="border:1px solid #e2e8f0;border-radius:8px;overflow:hidden;">' +
+        gerados.map(function(g, i) {
+          return '<div style="display:flex;align-items:center;gap:10px;padding:8px 12px;border-bottom:1px solid #eef2f7;background:' + (i % 2 ? '#f8fafc' : '#fff') + ';">' +
+            '<span style="flex:1;font-size:0.83rem;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + escapeHtml(g.nome) + '</span>' +
+            '<span style="font-size:0.75rem;color:#94a3b8;">+' + escapeHtml(g.telefone) + '</span>' +
+            '<button class="btn btn-sm btn-success" onclick="abrirLinkWhatsApp(' + i + ')"><i class="fas fa-paper-plane" aria-hidden="true"></i> Abrir</button>' +
+            '<button class="btn btn-sm btn-outline" onclick="copiarLinkWhatsApp(' + i + ')"><i class="fas fa-copy" aria-hidden="true"></i> Copiar</button>' +
+            '</div>';
+        }).join('') +
+        '</div>';
+    }
+
+    function abrirLinkWhatsApp(i) {
+      var g = linksCache.gerados[i];
+      if (!g) return;
+      window.open(g.url, '_blank', 'noopener');
+    }
+
+    function copiarLinkWhatsApp(i) {
+      var g = linksCache.gerados[i];
+      if (!g) return;
+      navigator.clipboard.writeText(g.url).then(function() {
+        showToast('Link copiado!', 'success');
+      }).catch(function() {
+        showToast('Falha ao copiar link.', 'error');
+      });
+    }
+
+    function copiarLinksWhatsApp() {
+      if (!linksCache.gerados.length) {
+        showToast('Gere os links primeiro.', 'error');
+        return;
+      }
+      var texto = linksCache.gerados.map(function(g) { return g.url; }).join('\n');
+      navigator.clipboard.writeText(texto).then(function() {
+        showToast(linksCache.gerados.length + ' link(s) copiados!', 'success');
+      }).catch(function() {
+        showToast('Falha ao copiar.', 'error');
+      });
+    }
+
+    function baixarLinksWhatsApp() {
+      if (!linksCache.gerados.length) {
+        showToast('Gere os links primeiro.', 'error');
+        return;
+      }
+      var texto = linksCache.gerados.map(function(g) { return g.nome + ' - ' + g.telefone + '\n' + g.url + '\n'; }).join('\n');
+      var blob = new Blob([texto], { type: 'text/plain;charset=utf-8' });
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'links-whatsapp.txt';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(a.href);
     }
 
     // =============================================
