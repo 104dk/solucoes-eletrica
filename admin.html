@@ -1298,7 +1298,7 @@
           <div style="padding:24px;">
             <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;padding:14px 16px;border-radius:12px;background:#f0fdf4;border:1px solid #bbf7d0;">
               <i class="fab fa-whatsapp" style="font-size:24px;color:#25d366;" aria-hidden="true"></i>
-              <span style="font-size:0.85rem;color:#166534;">Sem API Meta. Gera um link <code>wa.me</code> que abre o chat no WhatsApp do seu celular com a mensagem pronta — basta apertar enviar. Funciona para qualquer cliente, sem token nem número verificado.</span>
+              <span style="font-size:0.85rem;color:#166534;">Sem API Meta. Gera um link <code>wa.me</code> que abre o chat no WhatsApp com a mensagem pronta — basta apertar enviar. Os links reutilizam a mesma aba do WhatsApp. Funciona para qualquer cliente, sem token nem número verificado.</span>
             </div>
 
             <div class="form-group">
@@ -1332,11 +1332,11 @@
               </select>
               <label for="lMensagem" style="margin-top:12px;display:block;">Mensagem</label>
               <textarea id="lMensagem" style="min-height:110px;"></textarea>
-              <p style="font-size:0.78rem;color:#94a3b8;margin-top:6px;">O placeholder <code>{{nome}}</code> é substituído pelo nome de cada cliente. Os demais (<code>{{resumo}}</code>, <code>{{total}}</code>) permanecem como estão.</p>
+              <p style="font-size:0.78rem;color:#94a3b8;margin-top:6px;">Placeholders preenchidos automaticamente: <code>{{nome}}</code>, <code>{{telefone}}</code>, <code>{{endereco}}</code>, <code>{{cep}}</code>, <code>{{email}}</code> (do cliente) e <code>{{resumo}}</code>, <code>{{total}}</code>, <code>{{status}}</code>, <code>{{data}}</code> (do último pedido). Sem dado, o campo fica vazio.</p>
             </div>
 
             <div style="margin-top:18px;">
-              <button class="btn btn-primary" onclick="gerarLinksWhatsApp()"><i class="fas fa-link" aria-hidden="true"></i> Gerar Links (<span id="lGerarCount">0</span>)</button>
+              <button class="btn btn-primary" onclick="gerarLinksWhatsApp()" id="lGerarBtn"><i class="fas fa-link" aria-hidden="true"></i> Gerar Links (<span id="lGerarCount">0</span>)</button>
               <button class="btn btn-outline" onclick="copiarLinksWhatsApp()" style="margin-left:8px;"><i class="fas fa-copy" aria-hidden="true"></i> Copiar todos</button>
               <button class="btn btn-outline" onclick="baixarLinksWhatsApp()" style="margin-left:8px;"><i class="fas fa-download" aria-hidden="true"></i> Baixar .txt</button>
               <div id="lResultado" style="margin-top:14px;"></div>
@@ -3708,19 +3708,57 @@
     // =============================================
     var mensagensCache = { clientes: [], templates: {} };
 
+    function normalizarTextoMensagem(texto) {
+      return String(texto || '').replace(/\\n/g, '\n').replace(/\uFFFD/g, '');
+    }
+
+    function normalizarTemplates(templates) {
+      var out = {};
+      Object.keys(templates || {}).forEach(function(k) {
+        out[k] = normalizarTextoMensagem(templates[k]);
+      });
+      return out;
+    }
+
+    function formatarValor(valor) {
+      var n = parseFloat(valor);
+      if (isNaN(n)) return '';
+      return 'R$ ' + n.toFixed(2).replace('.', ',');
+    }
+
+    function resolverPlaceholders(texto, ctx) {
+      ctx = ctx || {};
+      var mapa = {
+        nome: ctx.nome || 'Cliente',
+        telefone: ctx.telefone || '',
+        endereco: ctx.endereco || '',
+        cep: ctx.cep || '',
+        email: ctx.email || '',
+        resumo: ctx.resumo || '',
+        total: ctx.total || '',
+        status: ctx.status || '',
+        data: ctx.data || ''
+      };
+      var t = normalizarTextoMensagem(texto);
+      Object.keys(mapa).forEach(function(k) {
+        t = t.split('{{' + k + '}}').join(mapa[k]);
+      });
+      return t.replace(/\{\{[^}]+\}\}/g, '');
+    }
+
     async function carregarMensagens() {
       try {
         var token = await tokenSessao();
         var resp = await fetch('/api/whatsapp-config', { headers: { 'Authorization': 'Bearer ' + token } });
         var data = await resp.json();
         if (data.config && data.config.templates) {
-          mensagensCache.templates = data.config.templates;
+          mensagensCache.templates = normalizarTemplates(data.config.templates);
         }
       } catch (e) {
         mensagensCache.templates = {};
       }
       try {
-        var result = await supabaseClient.from('clientes').select('id,nome,telefone').order('nome', { ascending: true });
+        var result = await supabaseClient.from('clientes').select('id,nome,telefone,cep,email,endereco').order('nome', { ascending: true });
         if (result.error) throw result.error;
         mensagensCache.clientes = result.data || [];
       } catch (e) {
@@ -3847,11 +3885,16 @@
     var linksCache = { gerados: [] };
 
     function normalizarTelefoneLink(valor) {
-      var digitos = String(valor || '').replace(/\D/g, '');
-      if (!digitos) return null;
-      if (digitos.length === 10 || digitos.length === 11) return '55' + digitos;
-      if (digitos.length === 12 || digitos.length === 13) return digitos.startsWith('55') ? digitos : '55' + digitos;
-      return digitos;
+      var d = String(valor || '').replace(/\D/g, '');
+      if (!d) return null;
+      if (d.length >= 12 && d.length <= 15 && d.charAt(0) === d.charAt(2) && d.charAt(1) === d.charAt(3)) {
+        var rest = d.slice(2);
+        if (rest.length === 10 || rest.length === 11) d = rest;
+      }
+      if (d.length === 10 || d.length === 11) return '55' + d;
+      if (d.length === 12 || d.length === 13) return d.startsWith('55') ? d : '55' + d;
+      if (d.length > 13) return d.slice(d.length - 13);
+      return d;
     }
 
     async function carregarLinks() {
@@ -3859,13 +3902,13 @@
         var token = await tokenSessao();
         var resp = await fetch('/api/whatsapp-config', { headers: { 'Authorization': 'Bearer ' + token } });
         var data = await resp.json();
-        if (data.config && data.config.templates) mensagensCache.templates = data.config.templates;
+        if (data.config && data.config.templates) mensagensCache.templates = normalizarTemplates(data.config.templates);
       } catch (e) {
         mensagensCache.templates = mensagensCache.templates || {};
       }
       if (!mensagensCache.clientes.length) {
         try {
-          var result = await supabaseClient.from('clientes').select('id,nome,telefone').order('nome', { ascending: true });
+          var result = await supabaseClient.from('clientes').select('id,nome,telefone,cep,email,endereco').order('nome', { ascending: true });
           if (result.error) throw result.error;
           mensagensCache.clientes = result.data || [];
         } catch (e) {
@@ -3922,11 +3965,7 @@
       document.getElementById('lMensagem').value = tpl;
     }
 
-    function montarMensagemPorNome(mensagem, nome) {
-      return String(mensagem || '').split('{{nome}}').join(nome || 'Cliente');
-    }
-
-    function gerarLinksWhatsApp() {
+    async function gerarLinksWhatsApp() {
       var destinos = [];
       var nomes = {};
       document.querySelectorAll('.lClienteCheck:checked').forEach(function(cb) {
@@ -3945,19 +3984,58 @@
         showToast('Informe a mensagem.', 'error');
         return;
       }
-      var resBox = document.getElementById('lResultado');
-      if (resBox) resBox.innerHTML = '';
-      linksCache.gerados = [];
-      var invalidos = 0;
-      destinos.forEach(function(tel) {
-        var numero = normalizarTelefoneLink(tel);
-        if (!numero) { invalidos++; return; }
-        var texto = montarMensagemPorNome(mensagem, nomes[tel] || '');
-        var url = 'https://wa.me/' + numero + '?text=' + encodeURIComponent(texto);
-        linksCache.gerados.push({ nome: nomes[tel] || tel, telefone: numero, url: url, texto: texto });
-      });
-      renderLinksGerados(resBox);
-      if (invalidos) showToast(invalidos + ' numero(s) invalido(s) ignorado(s).', 'error');
+      var btn = document.getElementById('lGerarBtn');
+      if (btn) btn.disabled = true;
+      try {
+        var clientePorTelefone = {};
+        mensagensCache.clientes.forEach(function(c) {
+          var n = normalizarTelefoneLink(c.telefone);
+          if (n && !clientePorTelefone[n]) clientePorTelefone[n] = c;
+        });
+        var ultimoPedidoPorNome = {};
+        try {
+          var result = await supabaseClient.from('pedidos')
+            .select('cliente,servico,valor,status,data,created_at')
+            .order('created_at', { ascending: false })
+            .limit(5000);
+          if (!result.error) {
+            (result.data || []).forEach(function(p) {
+              var nome = String(p.cliente || '').trim();
+              if (nome && !ultimoPedidoPorNome[nome]) ultimoPedidoPorNome[nome] = p;
+            });
+          }
+        } catch (e) { /* sem pedidos: placeholders de pedido ficam vazios */ }
+        var resBox = document.getElementById('lResultado');
+        if (resBox) resBox.innerHTML = '';
+        linksCache.gerados = [];
+        var invalidos = 0;
+        destinos.forEach(function(tel) {
+          var numero = normalizarTelefoneLink(tel);
+          if (!numero) { invalidos++; return; }
+          var cliente = clientePorTelefone[numero] || null;
+          var pedido = (cliente && ultimoPedidoPorNome[String(cliente.nome || '').trim()]) || null;
+          var ctx = {
+            nome: (cliente && cliente.nome) || nomes[tel] || '',
+            telefone: (cliente && cliente.telefone) || tel,
+            endereco: (cliente && cliente.endereco) || '',
+            cep: (cliente && cliente.cep) || '',
+            email: (cliente && cliente.email) || '',
+            resumo: (pedido && pedido.servico) || '',
+            total: formatarValor(pedido && pedido.valor),
+            status: (pedido && pedido.status) || '',
+            data: (pedido && pedido.data) || ''
+          };
+          var texto = resolverPlaceholders(mensagem, ctx);
+          var url = 'https://wa.me/' + numero + '?text=' + encodeURIComponent(texto);
+          linksCache.gerados.push({ nome: ctx.nome || tel, telefone: numero, url: url, texto: texto });
+        });
+        renderLinksGerados(resBox);
+        if (invalidos) showToast(invalidos + ' numero(s) invalido(s) ignorado(s).', 'error');
+      } catch (e) {
+        showToast('Falha ao gerar links: ' + e.message, 'error');
+      } finally {
+        if (btn) btn.disabled = false;
+      }
     }
 
     function renderLinksGerados(resBox) {
@@ -3968,7 +4046,7 @@
         return;
       }
       resBox.innerHTML =
-        '<div style="font-size:0.8rem;color:#475569;margin-bottom:8px;"><strong>' + gerados.length + '</strong> link(s) gerado(s). Clique em <strong>Abrir</strong> — o WhatsApp abre com a mensagem pronta.</div>' +
+        '<div style="font-size:0.8rem;color:#475569;margin-bottom:8px;"><strong>' + gerados.length + '</strong> link(s) gerado(s). Clique em <strong>Abrir</strong> — o WhatsApp abre com a mensagem pronta (reutiliza a mesma aba).</div>' +
         '<div style="border:1px solid #e2e8f0;border-radius:8px;overflow:hidden;">' +
         gerados.map(function(g, i) {
           return '<div style="display:flex;align-items:center;gap:10px;padding:8px 12px;border-bottom:1px solid #eef2f7;background:' + (i % 2 ? '#f8fafc' : '#fff') + ';">' +
@@ -3984,7 +4062,7 @@
     function abrirLinkWhatsApp(i) {
       var g = linksCache.gerados[i];
       if (!g) return;
-      window.open(g.url, '_blank', 'noopener');
+      window.open(g.url, 'se_whatsapp');
     }
 
     function copiarLinkWhatsApp(i) {

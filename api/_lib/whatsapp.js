@@ -75,13 +75,18 @@ export async function updateConfigStatus(status) {
 }
 
 export function normalizarTelefone(valor) {
-  const digitos = String(valor || '').replace(/\D/g, '');
-  if (!digitos) return null;
-  if (digitos.length === 10 || digitos.length === 11) {
-    return '55' + digitos;
+  let d = String(valor || '').replace(/\D/g, '');
+  if (!d) return null;
+  if (d.length >= 12 && d.length <= 15 && d.charAt(0) === d.charAt(2) && d.charAt(1) === d.charAt(3)) {
+    const rest = d.slice(2);
+    if (rest.length === 10 || rest.length === 11) d = rest;
   }
-  if (digitos.length === 12 || digitos.length === 13) {
-    return digitos.startsWith('55') ? digitos : '55' + digitos;
+  if (d.length === 10 || d.length === 11) {
+    return '55' + d;
   }
-  return digitos;
+  if (d.length === 12 || d.length === 13) {
+    return d.startsWith('55') ? d : '55' + d;
+  }
+  if (d.length > 13) return d.slice(d.length - 13);
+  return d;
 }
