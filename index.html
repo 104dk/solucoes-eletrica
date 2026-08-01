@@ -299,6 +299,32 @@
     }
     footer a { color: rgba(255,255,255,0.8); text-decoration: none; }
     footer a:hover { color: white; }
+    .footer-social {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 14px;
+    }
+    .footer-social a {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.82);
+      font-size: 17px;
+      transition: transform .2s, background .2s, color .2s, border-color .2s;
+    }
+    .footer-social a:hover {
+      transform: translateY(-2px);
+      background: rgba(245,158,11,0.16);
+      color: #f59e0b;
+      border-color: rgba(245,158,11,0.32);
+    }
 
     .footer-admin {
       position: absolute;
@@ -637,6 +663,20 @@
   <footer>
     <p>&copy; 2026 Soluções Elétrica — Todos os direitos reservados</p>
     <p style="margin-top:4px;" id="footerAddress"><i class="fas fa-map-marker-alt" aria-hidden="true"></i> <span id="footerEndereco">Carregando endereço...</span></p>
+    <div class="footer-social" aria-label="Redes sociais">
+      <a id="footerInstagram" href="https://www.instagram.com/solucoeseletrica" target="_blank" rel="noopener" aria-label="Instagram">
+        <i class="fab fa-instagram" aria-hidden="true"></i>
+      </a>
+      <a id="footerFacebook" href="https://www.facebook.com/solucoeseletrica" target="_blank" rel="noopener" aria-label="Facebook">
+        <i class="fab fa-facebook-f" aria-hidden="true"></i>
+      </a>
+      <a id="footerX" href="https://x.com/solucoeseletrica" target="_blank" rel="noopener" aria-label="X">
+        <i class="fab fa-x-twitter" aria-hidden="true"></i>
+      </a>
+      <a id="footerWhatsapp" href="https://wa.me/5561995663288?text=Ol%C3%A1!%20Gostaria%20de%20um%20or%C3%A7amento." target="_blank" rel="noopener" aria-label="WhatsApp">
+        <i class="fab fa-whatsapp" aria-hidden="true"></i>
+      </a>
+    </div>
     <div class="footer-admin" onclick="openLogin()" title="Acesso administrativo" role="button" tabindex="0" aria-label="Acesso administrativo">
       <i class="fas fa-cog" aria-hidden="true"></i>
     </div>
@@ -826,6 +866,20 @@
     // =============================================
     // CARREGAR CONFIG DO SUPABASE
     // =============================================
+    function normalizarUrlSocial(valor) {
+      valor = (valor || '').trim();
+      if (!valor) return '';
+      if (/^https?:\/\//i.test(valor)) return valor;
+      return 'https://' + valor.replace(/^@/, '');
+    }
+
+    function montarWhatsappLink(valor) {
+      valor = (valor || '').trim();
+      if (!valor) return '';
+      if (/^https?:\/\//i.test(valor)) return valor;
+      return 'https://wa.me/' + valor.replace(/\D/g, '') + '?text=Ol%C3%A1!%20Gostaria%20de%20um%20or%C3%A7amento.';
+    }
+
     async function carregarConfigFrontend() {
       try {
         var result = await supabaseClient.from('configuracoes').select('chave, valor');
@@ -841,10 +895,18 @@
           document.getElementById('footerEndereco').textContent = 'Rua 43, Quadra 149, Lote E — Parque Mingone II — Luziânia, GO';
         }
 
-        if (cfg.whatsapp) {
-          var whatsappLink = 'https://wa.me/' + cfg.whatsapp.replace(/\D/g, '') + '?text=Ol%C3%A1!%20Gostaria%20de%20um%20or%C3%A7amento.';
+        var instagramLink = normalizarUrlSocial(cfg.instagram);
+        var facebookLink = normalizarUrlSocial(cfg.facebook);
+        var xLink = normalizarUrlSocial(cfg.x);
+        var whatsappLink = montarWhatsappLink(cfg.whatsapp_link || cfg.whatsapp);
+
+        if (instagramLink) document.getElementById('footerInstagram').href = instagramLink;
+        if (facebookLink) document.getElementById('footerFacebook').href = facebookLink;
+        if (xLink) document.getElementById('footerX').href = xLink;
+        if (whatsappLink) {
           document.querySelector('.whatsapp-fab').href = whatsappLink;
           document.querySelector('.btn-whatsapp').href = whatsappLink;
+          document.getElementById('footerWhatsapp').href = whatsappLink;
         }
       } catch (err) {
         document.getElementById('footerEndereco').textContent = 'Rua 43, Quadra 149, Lote E — Parque Mingone II — Luziânia, GO';

@@ -1,0 +1,1320 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gelo Mix — Fábrica de Gelo | Gelo de Qualidade em Brasília e Região</title>
+  <meta name="description" content="Gelo Mix: gelo em sacos de 2kg a 10kg, gelo triturado e muito mais. Qualidade e entrega rápida em Brasília e região. Peça pelo site!">
+  <meta name="keywords" content="gelo, fábrica de gelo, gelo em saco, gelo para eventos, Brasília, Luziânia, entrega de gelo">
+  <meta name="author" content="Gelo Mix">
+  <meta name="robots" content="index, follow">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Gelo Mix — Fábrica de Gelo">
+  <meta property="og:description" content="Gelo em sacos e triturado com entrega rápida. Peça agora pelo site ou WhatsApp.">
+  <meta property="og:type" content="website">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9D%84%EF%B8%8F%3C/text%3E%3C/svg%3E">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', sans-serif;
+      color: #1f2937;
+      background: #f8fafc;
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      min-height: 380px;
+      background: linear-gradient(135deg, #0c4a6e 0%, #0ea5e9 55%, #7dd3fc 100%);
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 15% 30%, rgba(255,255,255,0.14) 0, transparent 40%),
+        radial-gradient(circle at 85% 70%, rgba(255,255,255,0.12) 0, transparent 45%);
+    }
+    .hero-overlay { position: absolute; inset: 0; background: rgba(255,255,255,0.03); }
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      background: #ffffff;
+      padding: 48px 24px;
+      text-align: center;
+      color: #1f2937;
+      max-width: 100%;
+    }
+    .hero-content h1 { font-size: 2.5rem; font-weight: 800; margin-bottom: 12px; line-height: 1.2; color: #0c4a6e; }
+    .hero-content p { font-size: 1.125rem; color: #4b5563; margin-bottom: 32px; line-height: 1.6; }
+    .btn-whatsapp {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: #0ea5e9;
+      color: #ffffff;
+      padding: 14px 32px;
+      border-radius: 50px;
+      font-size: 1.125rem;
+      font-weight: 700;
+      text-decoration: none;
+      transition: transform .2s, box-shadow .2s;
+      box-shadow: 0 4px 16px rgba(14,165,233,0.35);
+    }
+    .btn-whatsapp:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 24px rgba(14,165,233,0.5);
+    }
+
+    .section { padding: 64px 24px; max-width: 960px; margin: 0 auto; }
+    .section-title {
+      font-size: 1.75rem;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 8px;
+      color: #0c4a6e;
+    }
+    .section-subtitle {
+      text-align: center;
+      color: #6b7280;
+      margin-bottom: 40px;
+      font-size: 1rem;
+    }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 24px;
+      align-items: start;
+    }
+    .service-card {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+      border: 1px solid #f0f0f0;
+      border-left: 4px solid transparent;
+      overflow: hidden;
+      cursor: pointer;
+      transition: box-shadow .2s, border-color .2s, transform .15s;
+    }
+    .service-card:hover { box-shadow: 0 4px 16px rgba(14,165,233,0.14); border-left-color: #0ea5e9; transform: translateY(-2px); }
+    .service-card:active { transform: scale(0.98); }
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 20px 24px;
+      user-select: none;
+    }
+    .card-header i:first-child {
+      font-size: 24px;
+      color: #0ea5e9;
+      background: rgba(14,165,233,0.1);
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 12px;
+      flex-shrink: 0;
+    }
+    .card-info { flex: 1; }
+    .card-info h3 { font-size: 1.05rem; font-weight: 600; margin-bottom: 2px; }
+    .card-price { font-size: 0.9rem; font-weight: 800; color: #0284c7; }
+    .card-header i:last-child {
+      font-size: 14px;
+      color: #9ca3af;
+      flex-shrink: 0;
+      transition: transform .2s;
+    }
+    .service-card:hover .card-header i:last-child { transform: translateX(3px); color: #0ea5e9; }
+
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal {
+      background: white;
+      border-radius: 20px;
+      max-width: 520px;
+      width: 100%;
+      max-height: 80vh;
+      overflow-y: auto;
+      padding: 32px;
+      position: relative;
+      animation: modalIn .25s ease;
+    }
+    @keyframes modalIn {
+      from { transform: scale(0.9); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    .modal-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: none;
+      border: none;
+      font-size: 20px;
+      color: #9ca3af;
+      cursor: pointer;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background .2s;
+      z-index: 2;
+    }
+    .modal-close:hover { background: #f1f5f9; color: #334155; }
+    .modal-image {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      display: block;
+      background: #0c4a6e;
+    }
+    .modal-image-placeholder {
+      width: 100%;
+      height: 200px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 64px;
+      color: #ffffff;
+      background: linear-gradient(135deg, #0c4a6e, #38bdf8);
+    }
+    .modal h3 { font-size: 1.25rem; font-weight: 700; margin-bottom: 4px; }
+    .modal-price { font-size: 1.4rem; font-weight: 800; color: #0284c7; margin-bottom: 8px; }
+    .modal-desc { color: #6b7280; font-size: 0.9rem; line-height: 1.5; margin-bottom: 4px; }
+    .modal ul { list-style: none; margin: 16px 0 24px; }
+    .modal ul li {
+      padding: 8px 0 8px 24px;
+      position: relative;
+      color: #4b5563;
+      font-size: 0.925rem;
+      line-height: 1.5;
+      border-bottom: 1px solid #f3f4f6;
+    }
+    .modal ul li:last-child { border-bottom: none; }
+    .modal ul li::before {
+      content: '\f00c';
+      font-family: 'Font Awesome 6 Free';
+      font-weight: 900;
+      position: absolute;
+      left: 0;
+      color: #0ea5e9;
+      font-size: 0.8rem;
+    }
+    .modal-buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .btn-modal-pedido, .btn-modal-whatsapp {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 14px 24px;
+      border-radius: 50px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      transition: transform .2s, box-shadow .2s;
+      font-family: inherit;
+    }
+    .btn-modal-pedido {
+      background: #0ea5e9;
+      color: #ffffff;
+      box-shadow: 0 4px 16px rgba(14,165,233,0.35);
+    }
+    .btn-modal-pedido:hover { transform: translateY(-1px); }
+    .btn-modal-whatsapp {
+      background: #25D366;
+      color: #ffffff;
+    }
+    .btn-modal-whatsapp:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(37,211,102,0.35); }
+
+    .trust-bar {
+      background: white;
+      border-top: 1px solid #e2e8f0;
+      border-bottom: 1px solid #e2e8f0;
+      padding: 40px 24px;
+    }
+    .trust-grid {
+      max-width: 960px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 24px;
+      text-align: center;
+    }
+    .trust-item i { font-size: 28px; color: #0ea5e9; margin-bottom: 8px; }
+    .trust-item h4 { font-size: 1.125rem; font-weight: 600; }
+    .trust-item p { color: #6b7280; font-size: 0.875rem; }
+
+    /* ===== PEDIDO ===== */
+    .pedido-section {
+      background: linear-gradient(135deg, #e0f2fe, #f0f9ff);
+      border-top: 1px solid #bae6fd;
+      border-bottom: 1px solid #bae6fd;
+    }
+    .pedido-card {
+      background: white;
+      border-radius: 20px;
+      border: 1px solid #bae6fd;
+      box-shadow: 0 12px 32px rgba(12,74,110,0.08);
+      padding: 32px;
+      max-width: 640px;
+      margin: 0 auto;
+    }
+    .form-group { margin-bottom: 16px; }
+    .form-group label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #0c4a6e;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .form-group input, .form-group select {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      color: #1f2937;
+      outline: none;
+      transition: border-color .2s, box-shadow .2s;
+      font-family: inherit;
+      background: #fff;
+    }
+    .form-group input:focus, .form-group select:focus {
+      border-color: #0ea5e9;
+      box-shadow: 0 0 0 3px rgba(14,165,233,0.15);
+    }
+    .form-group input.invalid, .form-group select.invalid {
+      border-color: #dc2626;
+      box-shadow: 0 0 0 3px rgba(220,38,38,0.12);
+    }
+    .form-row { display: flex; gap: 14px; }
+    .form-row .form-group { flex: 1; }
+    .pedido-total {
+      background: linear-gradient(135deg, #e0f2fe, #f0f9ff);
+      border: 1px solid rgba(14,165,233,0.3);
+      border-radius: 14px;
+      padding: 18px;
+      text-align: right;
+      margin: 22px 0;
+    }
+    .pedido-total .label { font-size: 12px; color: #0c4a6e; font-weight: 800; letter-spacing: .08em; }
+    .pedido-total .value { font-size: 2rem; font-weight: 800; color: #0c4a6e; }
+    .btn-pedido {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 12px;
+      background: #0ea5e9;
+      color: #fff;
+      font-size: 1.05rem;
+      font-weight: 800;
+      cursor: pointer;
+      font-family: inherit;
+      transition: transform .15s, box-shadow .15s;
+      box-shadow: 0 4px 16px rgba(14,165,233,0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    .btn-pedido:hover { transform: translateY(-1px); }
+    .btn-pedido:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+    .btn-pedido-whatsapp {
+      width: 100%;
+      margin-top: 10px;
+      padding: 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      background: #fff;
+      color: #0c4a6e;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: all .15s;
+    }
+    .btn-pedido-whatsapp:hover { background: #f0f9ff; border-color: #0ea5e9; }
+
+    .cta-section {
+      background: linear-gradient(135deg, #0c4a6e, #0ea5e9);
+      color: white;
+      text-align: center;
+      padding: 64px 24px;
+    }
+    .cta-section h2 { font-size: 1.75rem; font-weight: 700; margin-bottom: 12px; }
+    .cta-section p { color: rgba(255,255,255,0.85); margin-bottom: 28px; }
+
+    .whatsapp-fab {
+      position: fixed;
+      right: 24px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: #25D366;
+      color: white;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      text-decoration: none;
+      box-shadow: 0 4px 20px rgba(37,211,102,0.4);
+      z-index: 999;
+      transition: transform .2s, box-shadow .2s;
+    }
+    .whatsapp-fab:hover {
+      transform: translateY(-50%) scale(1.08);
+      box-shadow: 0 6px 28px rgba(37,211,102,0.5);
+    }
+
+    footer {
+      background: #0f172a;
+      color: rgba(255,255,255,0.6);
+      text-align: center;
+      padding: 24px;
+      font-size: 0.875rem;
+      position: relative;
+    }
+    footer a { color: rgba(255,255,255,0.8); text-decoration: none; }
+    footer a:hover { color: white; }
+    .footer-social {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 14px;
+    }
+    .footer-social a {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.82);
+      font-size: 17px;
+      transition: transform .2s, background .2s, color .2s, border-color .2s;
+    }
+    .footer-social a:hover {
+      transform: translateY(-2px);
+      background: rgba(14,165,233,0.16);
+      color: #38bdf8;
+      border-color: rgba(14,165,233,0.32);
+    }
+    .footer-admin {
+      position: absolute;
+      right: 24px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(255,255,255,0.08);
+      color: rgba(255,255,255,0.4);
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all .2s;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .footer-admin:hover {
+      background: rgba(14,165,233,0.15);
+      color: #38bdf8;
+      border-color: rgba(14,165,233,0.3);
+    }
+
+    .login-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 2000;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .login-overlay.active { display: flex; }
+    .login-card {
+      background: white;
+      border-radius: 20px;
+      max-width: 400px;
+      width: 100%;
+      padding: 36px 32px 32px;
+      position: relative;
+      animation: modalIn .25s ease;
+    }
+    .login-card .modal-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: none;
+      border: none;
+      font-size: 20px;
+      color: #9ca3af;
+      cursor: pointer;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background .2s;
+    }
+    .login-card .modal-close:hover { background: #f3f4f6; color: #374151; }
+    .login-header { text-align: center; margin-bottom: 28px; }
+    .login-header .login-icon {
+      width: 56px;
+      height: 56px;
+      background: rgba(14,165,233,0.1);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 14px;
+    }
+    .login-header .login-icon i { font-size: 24px; color: #0ea5e9; }
+    .login-header h3 { font-size: 1.25rem; font-weight: 700; color: #1f2937; margin-bottom: 4px; }
+    .login-header p { color: #6b7280; font-size: 0.875rem; }
+    .login-field { margin-bottom: 16px; }
+    .login-field label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #4b5563;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .login-field input {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid #d1d5db;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      color: #1f2937;
+      outline: none;
+      transition: border-color .2s, box-shadow .2s;
+      font-family: inherit;
+    }
+    .login-field input:focus { border-color: #0ea5e9; box-shadow: 0 0 0 3px rgba(14,165,233,0.15); }
+    .login-field input::placeholder { color: #9ca3af; }
+    .login-btn {
+      width: 100%;
+      padding: 13px;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform .15s, box-shadow .15s;
+      font-family: inherit;
+      margin-bottom: 10px;
+    }
+    .login-btn-primary { background: #0ea5e9; color: #ffffff; box-shadow: 0 4px 12px rgba(14,165,233,0.3); }
+    .login-btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(14,165,233,0.4); }
+    .login-btn-secondary { background: #f3f4f6; color: #4b5563; }
+    .login-btn-secondary:hover { background: #e5e7eb; }
+    .login-error {
+      display: none;
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      color: #dc2626;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      margin-bottom: 14px;
+    }
+    .login-divider {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin: 18px 0;
+    }
+    .login-divider::before,
+    .login-divider::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: #e5e7eb;
+    }
+    .login-divider span {
+      font-size: 0.8rem;
+      color: #9ca3af;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .login-btn-google {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 10px;
+      background: white;
+      color: #374151;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: all .15s;
+      font-family: inherit;
+      margin-bottom: 10px;
+    }
+    .login-btn-google:hover {
+      background: #f9fafb;
+      border-color: #9ca3af;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+    .login-btn-google svg { width: 20px; height: 20px; flex-shrink: 0; }
+
+    .loading-spinner { display: none; text-align: center; padding: 12px; }
+    .loading-spinner.active { display: block; }
+    .loading-spinner::after {
+      content: '';
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 2px solid #d1d5db;
+      border-top-color: #0ea5e9;
+      border-radius: 50%;
+      animation: spin .6s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    @media (max-width: 640px) {
+      .hero h1 { font-size: 1.75rem; }
+      .hero { padding: 40px 20px 80px; }
+      .section { padding: 48px 20px; }
+      .form-row { flex-direction: column; gap: 0; }
+      .modal-buttons { grid-template-columns: 1fr; }
+      .pedido-card { padding: 24px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <section class="hero" aria-label="Banner principal">
+    <div class="hero-overlay"></div>
+  </section>
+  <div class="hero-content">
+    <h1>Gelo Mix</h1>
+    <p>Gelo de qualidade para sua casa, evento ou negócio. Entrega rápida em Brasília e região.</p>
+    <a href="https://wa.me/5561991783512?text=Ol%C3%A1!%20Gostaria%20de%20pedir%20gelo." target="_blank" rel="noopener" class="btn-whatsapp" aria-label="Pedir gelo via WhatsApp">
+      <i class="fab fa-whatsapp" aria-hidden="true"></i> Pedir gelo agora
+    </a>
+  </div>
+
+  <section class="section" aria-label="Cardápio de gelo">
+    <h2 class="section-title">Nossos produtos</h2>
+    <p class="section-subtitle">Clique em cada produto para ver os detalhes</p>
+    <div class="services-grid" id="cardapioGrid"></div>
+  </section>
+
+  <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)" role="dialog" aria-modal="true" aria-label="Detalhes do produto">
+    <div class="modal" id="modalContent">
+      <button class="modal-close" onclick="closeModal()" aria-label="Fechar">&times;</button>
+      <img id="modalImage" class="modal-image" src="" alt="" style="display:none;">
+      <div class="modal-image-placeholder" id="modalImagePlaceholder"><i class="fas fa-cube" aria-hidden="true"></i></div>
+      <h3 id="modalTitle"></h3>
+      <div class="modal-price" id="modalPrice"></div>
+      <p class="modal-desc" id="modalDesc"></p>
+      <ul id="modalList"></ul>
+      <div class="modal-buttons">
+        <button type="button" class="btn-modal-pedido" onclick="selecionarParaPedido()" aria-label="Selecionar para pedido">
+          <i class="fas fa-cart-plus" aria-hidden="true"></i> Selecionar para pedido
+        </button>
+        <a id="modalWhatsapp" href="#" target="_blank" rel="noopener" class="btn-modal-whatsapp" aria-label="Pedir via WhatsApp">
+          <i class="fab fa-whatsapp" aria-hidden="true"></i> WhatsApp
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <section class="pedido-section section" id="pedidoSection" aria-label="Fazer pedido">
+    <h2 class="section-title">Faça seu pedido</h2>
+    <p class="section-subtitle">Preencha os dados abaixo e envie. Entraremos em contato para confirmar a entrega.</p>
+    <form class="pedido-card" id="pedidoForm" novalidate>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="pedidoNome">Nome *</label>
+          <input type="text" id="pedidoNome" placeholder="Seu nome completo" required autocomplete="name" aria-required="true" />
+        </div>
+        <div class="form-group">
+          <label for="pedidoTelefone">Telefone *</label>
+          <input type="tel" id="pedidoTelefone" placeholder="(61) 99999-9999" required maxlength="15" inputmode="tel" autocomplete="tel" aria-required="true" />
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="pedidoCep">CEP *</label>
+          <input type="text" id="pedidoCep" placeholder="00000-000" required maxlength="9" inputmode="numeric" autocomplete="postal-code" aria-required="true" />
+          <p style="font-size:0.75rem;color:#6b7280;margin-top:4px;">Ao informar o CEP, o endereço é preenchido automaticamente.</p>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="pedidoEndereco">Endereço de entrega *</label>
+        <input type="text" id="pedidoEndereco" placeholder="Rua, número - Bairro - Cidade/UF" required autocomplete="street-address" aria-required="true" />
+        <p style="font-size:0.75rem;color:#6b7280;margin-top:4px;">Preenchido pelo CEP, mas você pode editar se precisar.</p>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="pedidoItem">Produto *</label>
+          <select id="pedidoItem" required aria-required="true"></select>
+        </div>
+        <div class="form-group">
+          <label for="pedidoQtd">Quantidade *</label>
+          <input type="number" id="pedidoQtd" min="1" step="1" placeholder="1" required inputmode="numeric" aria-required="true" />
+        </div>
+      </div>
+      <div class="pedido-total">
+        <div class="label">VALOR TOTAL</div>
+        <div class="value" id="pedidoTotalView">R$ 0,00</div>
+      </div>
+      <button type="submit" class="btn-pedido" id="pedidoSubmitBtn" aria-label="Enviar pedido">
+        <i class="fas fa-paper-plane" aria-hidden="true"></i> Enviar pedido
+      </button>
+      <div class="loading-spinner" id="pedidoLoading"></div>
+      <button type="button" class="btn-pedido-whatsapp" onclick="abrirWhatsappPedido()" aria-label="Pedir via WhatsApp">
+        <i class="fab fa-whatsapp" aria-hidden="true"></i> Prefiro pedir pelo WhatsApp
+      </button>
+    </form>
+  </section>
+
+  <section class="trust-bar" aria-label="Diferenciais">
+    <div class="trust-grid">
+      <div class="trust-item">
+        <i class="fas fa-snowflake" aria-hidden="true"></i>
+        <h4>Gelo de qualidade</h4>
+        <p>Gelo cristalino e sempre gelado</p>
+      </div>
+      <div class="trust-item">
+        <i class="fas fa-truck-fast" aria-hidden="true"></i>
+        <h4>Entrega rápida</h4>
+        <p>Chegamos no mesmo dia</p>
+      </div>
+      <div class="trust-item">
+        <i class="fas fa-handshake" aria-hidden="true"></i>
+        <h4>Atendimento fácil</h4>
+        <p>Peça pelo site ou WhatsApp</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-section" aria-label="Chamada final">
+    <h2>Precisa de gelo?</h2>
+    <p>Peça agora e receba rápido onde você estiver.</p>
+    <a href="https://wa.me/5561991783512?text=Ol%C3%A1!%20Gostaria%20de%20pedir%20gelo." target="_blank" rel="noopener" class="btn-whatsapp" aria-label="Pedir gelo via WhatsApp">
+      <i class="fab fa-whatsapp" aria-hidden="true"></i> Pedir gelo agora
+    </a>
+  </section>
+
+  <footer>
+    <p>&copy; 2026 Gelo Mix — Todos os direitos reservados</p>
+    <p style="margin-top:4px;"><i class="fas fa-map-marker-alt" aria-hidden="true"></i> <span id="footerEndereco">Rua 43, Quadra 149, Lote E — Parque Mingone II — Luziânia, GO</span></p>
+    <div class="footer-social" aria-label="Redes sociais">
+      <a href="https://wa.me/5561991783512" target="_blank" rel="noopener" aria-label="WhatsApp">
+        <i class="fab fa-whatsapp" aria-hidden="true"></i>
+      </a>
+    </div>
+    <div class="footer-admin" onclick="openLogin()" title="Acesso administrativo" role="button" tabindex="0" aria-label="Acesso administrativo">
+      <i class="fas fa-cog" aria-hidden="true"></i>
+    </div>
+  </footer>
+
+  <a href="https://wa.me/5561991783512?text=Ol%C3%A1!%20Gostaria%20de%20pedir%20gelo." target="_blank" rel="noopener" class="whatsapp-fab" aria-label="WhatsApp">
+    <i class="fab fa-whatsapp" aria-hidden="true"></i>
+  </a>
+
+  <div class="login-overlay" id="loginOverlay" onclick="closeLogin(event)" role="dialog" aria-modal="true" aria-label="Login administrativo">
+    <div class="login-card" onclick="event.stopPropagation()">
+      <button class="modal-close" onclick="closeLogin()" aria-label="Fechar login">&times;</button>
+      <div class="login-header">
+        <div class="login-icon">
+          <i class="fas fa-user-shield" aria-hidden="true"></i>
+        </div>
+        <h3>Acesso Administrativo</h3>
+        <p>Faça login para gerenciar o painel</p>
+      </div>
+      <div class="login-error" id="loginError" role="alert">Email ou senha incorretos.</div>
+      <form id="loginForm" onsubmit="return handleLogin(event)" novalidate>
+        <div class="login-field">
+          <label for="loginUser">Email</label>
+          <input type="email" id="loginUser" placeholder="Digite seu email" required autocomplete="email" aria-required="true" />
+        </div>
+        <div class="login-field">
+          <label for="loginPass">Senha</label>
+          <input type="password" id="loginPass" placeholder="Digite sua senha" required autocomplete="current-password" aria-required="true" />
+        </div>
+        <div class="loading-spinner" id="loginLoading"></div>
+        <button type="submit" class="login-btn login-btn-primary" id="loginSubmitBtn">
+          <i class="fas fa-sign-in-alt" aria-hidden="true"></i> Entrar
+        </button>
+        <div class="login-divider"><span>ou</span></div>
+        <button type="button" class="login-btn-google" onclick="handleGoogleLogin()" id="googleBtn">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/>
+            <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+            <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+            <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+          </svg>
+          Entrar com Google
+        </button>
+        <button type="button" class="login-btn login-btn-secondary" onclick="closeLogin()">
+          <i class="fas fa-arrow-left" aria-hidden="true"></i> Voltar
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabaseConfig.js?v=2"></script>
+  <script>
+    // =============================================
+    // GELO MIX - DADOS DA MARCA (edite aqui)
+    // =============================================
+    var WHATSAPP_GELO_MIX = '5561991783512';
+
+    // Cardapio de gelo. Edite nome, preco e descricao livremente.
+    // Se tiver foto, coloque o arquivo na pasta e preencha "imagem".
+    var GELO_PRODUTOS = [
+      {
+        nome: 'Saco de Gelo 2kg',
+        preco: 7.00,
+        icone: 'fa-cube',
+        imagem: '',
+        desc: 'Ideal para geladeiras, conservar alimentos e uso diário.',
+        itens: ['Gelo cristalino', 'Saco resistente com zíper', 'Conserva por horas']
+      },
+      {
+        nome: 'Saco de Gelo 4kg',
+        preco: 12.00,
+        icone: 'fa-cubes',
+        imagem: '',
+        desc: 'Perfeito para churrascos, festas e uso comercial.',
+        itens: ['Gelo cristalino', 'Saco resistente', 'Ótimo custo-benefício']
+      },
+      {
+        nome: 'Saco de Gelo 5kg',
+        preco: 14.00,
+        icone: 'fa-cube',
+        imagem: '',
+        desc: 'A escolha ideal para eventos médios e estabelecimentos.',
+        itens: ['Gelo cristalino', 'Saco resistente com alça', 'Entrega rápida']
+      },
+      {
+        nome: 'Saco de Gelo 10kg',
+        preco: 25.00,
+        icone: 'fa-weight-hanging',
+        imagem: '',
+        desc: 'Para festas grandes, restaurantes e comércios.',
+        itens: ['Gelo cristalino', 'Maior rendimento', 'Preço especial']
+      },
+      {
+        nome: 'Gelo Triturado 5kg',
+        preco: 16.00,
+        icone: 'fa-snowflake',
+        imagem: '',
+        desc: 'Gelo triturado, perfeito para bebidas e vitrines.',
+        itens: ['Gelo triturado uniforme', 'Ideal para bebidas', 'Resfria mais rápido']
+      },
+      {
+        nome: 'Gelo em Cubos 10kg',
+        preco: 28.00,
+        icone: 'fa-border-all',
+        imagem: '',
+        desc: 'Cubos de gelo para eventos, bares e restaurantes.',
+        itens: ['Cubos firmes', 'Derretem mais devagar', 'Entrega rápida']
+      }
+    ];
+
+    // =============================================
+    // UTILITARIOS
+    // =============================================
+    function formatarMoeda(valor) {
+      return Number(valor || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    }
+
+    function aplicarMascaraCelular(valor) {
+      var numeros = String(valor || '').replace(/\D/g, '').slice(0, 11);
+      if (numeros.length <= 2) return numeros.replace(/(\d{0,2})/, '($1');
+      if (numeros.length <= 7) return numeros.replace(/(\d{2})(\d{0,5})/, '($1) $2');
+      return numeros.replace(/(\d{2})(\d{5})(\d{0,4})/, '($1) $2-$3');
+    }
+
+    function aplicarMascaraCep(valor) {
+      var numeros = String(valor || '').replace(/\D/g, '').slice(0, 8);
+      if (numeros.length <= 5) return numeros;
+      return numeros.replace(/(\d{5})(\d{0,3})/, '$1-$2');
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      var div = document.createElement('div');
+      div.appendChild(document.createTextNode(str));
+      return div.innerHTML;
+    }
+
+    // =============================================
+    // CARDAPIO + MODAL
+    // =============================================
+    var modalIndex = 0;
+
+    function renderizarCardapio() {
+      var grid = document.getElementById('cardapioGrid');
+      grid.innerHTML = GELO_PRODUTOS.map(function(p, i) {
+        return '<div class="service-card" role="button" tabindex="0" aria-label="' + escapeHtml(p.nome) + '" onclick="openModal(' + i + ')" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();openModal(' + i + ')}">' +
+          '<div class="card-header">' +
+          '<i class="fas ' + p.icone + '" aria-hidden="true"></i>' +
+          '<div class="card-info"><h3>' + escapeHtml(p.nome) + '</h3><span class="card-price">' + formatarMoeda(p.preco) + '</span></div>' +
+          '<i class="fas fa-chevron-right" aria-hidden="true"></i>' +
+          '</div></div>';
+      }).join('');
+    }
+
+    function openModal(index) {
+      var p = GELO_PRODUTOS[index];
+      modalIndex = index;
+
+      var img = document.getElementById('modalImage');
+      var placeholder = document.getElementById('modalImagePlaceholder');
+      if (p.imagem) {
+        img.src = p.imagem;
+        img.alt = escapeHtml(p.nome);
+        img.style.display = 'block';
+        placeholder.style.display = 'none';
+      } else {
+        img.style.display = 'none';
+        placeholder.style.display = 'flex';
+        placeholder.innerHTML = '<i class="fas ' + p.icone + '" aria-hidden="true"></i>';
+      }
+
+      document.getElementById('modalTitle').textContent = p.nome;
+      document.getElementById('modalPrice').textContent = formatarMoeda(p.preco);
+      document.getElementById('modalDesc').textContent = p.desc || '';
+      document.getElementById('modalList').innerHTML = (p.itens || []).map(function(item) {
+        return '<li>' + escapeHtml(item) + '</li>';
+      }).join('');
+
+      document.getElementById('modalWhatsapp').href = 'https://wa.me/' + WHATSAPP_GELO_MIX + '?text=' + encodeURIComponent('Olá! Quero pedir: ' + p.nome + ' (' + formatarMoeda(p.preco) + ').');
+
+      document.getElementById('modalOverlay').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal(e) {
+      if (e && e.target !== e.currentTarget && !e.target.classList.contains('modal-close')) return;
+      document.getElementById('modalOverlay').classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    function selecionarParaPedido() {
+      var p = GELO_PRODUTOS[modalIndex];
+      if (!p) return;
+      document.getElementById('pedidoItem').value = p.nome;
+      document.getElementById('pedidoItem').classList.remove('invalid');
+      closeModal();
+      atualizarTotalPedido();
+      document.getElementById('pedidoSection').scrollIntoView({ behavior: 'smooth' });
+      setTimeout(function() { document.getElementById('pedidoNome').focus(); }, 400);
+    }
+
+    // =============================================
+    // FORMULARIO DE PEDIDO
+    // =============================================
+    function popularSelectProdutos() {
+      var select = document.getElementById('pedidoItem');
+      select.innerHTML = '<option value="">Selecione o produto...</option>' + GELO_PRODUTOS.map(function(p) {
+        return '<option value="' + escapeHtml(p.nome) + '">' + escapeHtml(p.nome) + ' — ' + formatarMoeda(p.preco) + '</option>';
+      }).join('');
+    }
+
+    function produtoSelecionado() {
+      var nome = document.getElementById('pedidoItem').value;
+      return GELO_PRODUTOS.find(function(p) { return p.nome === nome; }) || null;
+    }
+
+    function atualizarTotalPedido() {
+      var produto = produtoSelecionado();
+      var qtd = parseInt(document.getElementById('pedidoQtd').value) || 0;
+      var total = produto ? qtd * produto.preco : 0;
+      document.getElementById('pedidoTotalView').textContent = formatarMoeda(total > 0 ? total : 0);
+    }
+
+    function configurarCep() {
+      var cep = document.getElementById('pedidoCep');
+      cep.addEventListener('input', function() {
+        this.value = aplicarMascaraCep(this.value);
+        if (this.value.replace(/\D/g, '').length === 8) buscarEnderecoPorCep(this.value);
+      });
+      cep.addEventListener('blur', function() {
+        if (this.value.replace(/\D/g, '').length === 8) buscarEnderecoPorCep(this.value);
+      });
+    }
+
+    async function buscarEnderecoPorCep(cepValor) {
+      var cep = String(cepValor || '').replace(/\D/g, '');
+      var enderecoInput = document.getElementById('pedidoEndereco');
+      if (cep.length !== 8 || !enderecoInput) return;
+
+      try {
+        var response = await fetch('https://viacep.com.br/ws/' + cep + '/json/');
+        var data = await response.json();
+        if (data.erro) {
+          showToast('CEP não encontrado. Informe o endereço manualmente.', 'error');
+          enderecoInput.focus();
+          return;
+        }
+        var endereco = [
+          data.logradouro,
+          data.bairro,
+          data.localidade && data.uf ? data.localidade + '/' + data.uf : ''
+        ].filter(Boolean).join(' - ');
+        enderecoInput.value = endereco;
+        enderecoInput.classList.remove('invalid');
+        showToast('Endereço preenchido pelo CEP.', 'success');
+      } catch (e) {
+        showToast('Não foi possível buscar o CEP. Preencha o endereço manualmente.', 'error');
+      }
+    }
+
+    function validarPedido() {
+      var valido = true;
+      var campos = ['pedidoNome', 'pedidoTelefone', 'pedidoCep', 'pedidoEndereco', 'pedidoItem', 'pedidoQtd'];
+      campos.forEach(function(id) {
+        var el = document.getElementById(id);
+        el.classList.remove('invalid');
+        if (!el.value || !el.value.trim()) {
+          el.classList.add('invalid');
+          valido = false;
+        }
+      });
+      var qtd = parseInt(document.getElementById('pedidoQtd').value) || 0;
+      if (qtd < 1) {
+        document.getElementById('pedidoQtd').classList.add('invalid');
+        valido = false;
+      }
+      var telefone = String(document.getElementById('pedidoTelefone').value || '').replace(/\D/g, '');
+      if (telefone.length < 10) {
+        document.getElementById('pedidoTelefone').classList.add('invalid');
+        valido = false;
+      }
+      if (!valido) showToast('Preencha os campos obrigatórios.', 'error');
+      return valido;
+    }
+
+    function obterDadosPedido() {
+      var nome = document.getElementById('pedidoNome').value.trim();
+      var telefone = document.getElementById('pedidoTelefone').value.trim();
+      var cep = document.getElementById('pedidoCep').value.trim();
+      var endereco = document.getElementById('pedidoEndereco').value.trim();
+      var produto = produtoSelecionado();
+      var qtd = parseInt(document.getElementById('pedidoQtd').value) || 0;
+      var total = produto ? qtd * produto.preco : 0;
+      return {
+        nome: nome,
+        telefone: telefone,
+        cep: cep,
+        endereco: endereco,
+        item: produto ? produto.nome : '',
+        precoUnitario: produto ? produto.preco : 0,
+        qtd: qtd,
+        total: total,
+        data: new Date().toISOString().split('T')[0]
+      };
+    }
+
+    function montarResumoPedido(d) {
+      return [
+        d.qtd + 'x ' + d.item + ' (' + formatarMoeda(d.precoUnitario) + ')',
+        'Telefone: ' + d.telefone,
+        'Endereço: ' + d.endereco,
+        'CEP: ' + d.cep
+      ].join(' | ');
+    }
+
+    function montarMensagemCliente(d) {
+      return 'Olá, ' + d.nome + '! 🧊\n\nRecebemos seu pedido na Gelo Mix:\n' +
+        d.qtd + 'x ' + d.item + '\nTotal: ' + formatarMoeda(d.total) + '\n\n' +
+        'Logo nossa equipe entrará em contato para confirmar a entrega. Obrigado!';
+    }
+
+    function montarMensagemLoja(d) {
+      return '🧊 NOVO PEDIDO — Gelo Mix\n\n' +
+        'Cliente: ' + d.nome + '\n' +
+        'Telefone: ' + d.telefone + '\n' +
+        'Endereço: ' + d.endereco + '\n' +
+        'CEP: ' + d.cep + '\n\n' +
+        d.qtd + 'x ' + d.item + ' = ' + formatarMoeda(d.total) + '\n' +
+        'Data: ' + d.data;
+    }
+
+    function limparFormularioPedido() {
+      var form = document.getElementById('pedidoForm');
+      if (form) form.reset();
+      form.querySelectorAll('.invalid').forEach(function(el) { el.classList.remove('invalid'); });
+      atualizarTotalPedido();
+    }
+
+    // =============================================
+    // ENVIO + NOTIFICACAO WHATSAPP
+    // =============================================
+    async function enviarPedido(event) {
+      if (event) event.preventDefault();
+      if (!validarPedido()) return;
+
+      var d = obterDadosPedido();
+      var submitBtn = document.getElementById('pedidoSubmitBtn');
+      var loading = document.getElementById('pedidoLoading');
+      submitBtn.disabled = true;
+      loading.classList.add('active');
+
+      try {
+        var result = await supabaseClient.from('pedidos').insert({
+          cliente: d.nome,
+          servico: montarResumoPedido(d),
+          valor: d.total,
+          status: 'Pendente',
+          data: d.data
+        });
+
+        if (result.error) {
+          showToast('Erro ao enviar pedido: ' + result.error.message, 'error');
+          return;
+        }
+
+        showToast('Pedido enviado com sucesso! 🧊', 'success');
+        limparFormularioPedido();
+        await notificarWhatsApp(d);
+      } finally {
+        submitBtn.disabled = false;
+        loading.classList.remove('active');
+      }
+    }
+
+    async function notificarWhatsApp(d) {
+      try {
+        var resp = await fetch('/api/notify-whatsapp', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ telefone: d.telefone, mensagem: montarMensagemCliente(d) })
+        });
+        var result = await resp.json();
+        if (result && result.sent) {
+          showToast('Notificação enviada para seu WhatsApp.', 'success');
+          return;
+        }
+      } catch (e) {
+        // continua para o fallback
+      }
+      // Fallback: abre WhatsApp com o resumo do pedido para o Gelo Mix
+      window.open('https://wa.me/' + WHATSAPP_GELO_MIX + '?text=' + encodeURIComponent(montarMensagemLoja(d)), '_blank', 'noopener');
+    }
+
+    function abrirWhatsappPedido() {
+      if (!validarPedido()) return;
+      var d = obterDadosPedido();
+      window.open('https://wa.me/' + WHATSAPP_GELO_MIX + '?text=' + encodeURIComponent(montarMensagemLoja(d)), '_blank', 'noopener');
+    }
+
+    // =============================================
+    // LOGIN
+    // =============================================
+    function openLogin() {
+      document.getElementById('loginOverlay').classList.add('active');
+      document.body.style.overflow = 'hidden';
+      document.getElementById('loginUser').focus();
+    }
+
+    function closeLogin(e) {
+      if (e && e.target && e.target !== e.currentTarget && !e.target.classList.contains('modal-close')) return;
+      document.getElementById('loginOverlay').classList.remove('active');
+      document.body.style.overflow = '';
+      document.getElementById('loginForm').reset();
+      document.getElementById('loginError').style.display = 'none';
+      document.getElementById('loginLoading').classList.remove('active');
+    }
+
+    async function handleLogin(e) {
+      e.preventDefault();
+      var email = document.getElementById('loginUser').value.trim();
+      var pass = document.getElementById('loginPass').value;
+      var errorEl = document.getElementById('loginError');
+      var loadingEl = document.getElementById('loginLoading');
+      var submitBtn = document.getElementById('loginSubmitBtn');
+
+      if (!email || !pass) {
+        errorEl.textContent = 'Preencha todos os campos.';
+        errorEl.style.display = 'block';
+        return false;
+      }
+
+      loadingEl.classList.add('active');
+      submitBtn.disabled = true;
+      errorEl.style.display = 'none';
+
+      try {
+        var result = await supabaseClient.auth.signInWithPassword({ email: email, password: pass });
+        if (result.error) throw result.error;
+
+        var profileResult = await supabaseClient.from('profiles').select('role').eq('id', result.data.user.id).single();
+        if (profileResult.data && profileResult.data.role === 'admin') {
+          localStorage.setItem('se_session', JSON.stringify(result.data.session));
+          closeLogin();
+          window.location.href = 'admin.html';
+        } else {
+          await supabaseClient.auth.signOut();
+          throw new Error('Acesso negado. Somente administradores podem acessar o painel.');
+        }
+      } catch (err) {
+        errorEl.textContent = err.message || 'Email ou senha incorretos.';
+        errorEl.style.display = 'block';
+      } finally {
+        loadingEl.classList.remove('active');
+        submitBtn.disabled = false;
+      }
+      return false;
+    }
+
+    var googleSVG = '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>';
+
+    async function handleGoogleLogin() {
+      var errorEl = document.getElementById('loginError');
+      var googleButton = document.getElementById('googleBtn');
+
+      try {
+        if (googleButton) {
+          googleButton.disabled = true;
+          googleButton.innerHTML = 'Redirecionando...';
+        }
+        if (errorEl) errorEl.style.display = 'none';
+
+        var result = await supabaseClient.auth.signInWithOAuth({
+          provider: 'google',
+          options: {
+            redirectTo: new URL('index.html', window.location.href).href
+          }
+        });
+        if (result.error) throw result.error;
+        if (!result.data || !result.data.url) throw new Error('Não foi possível iniciar o login Google.');
+        window.location.href = result.data.url;
+      } catch (err) {
+        if (errorEl) {
+          errorEl.textContent = err.message || 'Não foi possível iniciar o login Google.';
+          errorEl.style.display = 'block';
+        }
+        if (googleButton) {
+          googleButton.disabled = false;
+          googleButton.innerHTML = googleSVG + 'Entrar com Google';
+        }
+      }
+    }
+
+    // =============================================
+    // GOOGLE OAUTH CALLBACK
+    // =============================================
+    async function checkOAuthCallback() {
+      var hash = window.location.hash;
+      if (!hash || hash.indexOf('access_token') === -1) return;
+
+      try {
+        var result = await supabaseClient.auth.getSession();
+        var session = result.data && result.data.session;
+        if (!session) return;
+
+        var profileResult = await supabaseClient.from('profiles').select('role').eq('id', session.user.id).single();
+        if (profileResult.data && profileResult.data.role === 'admin') {
+          window.location.href = 'admin.html';
+        } else {
+          await supabaseClient.auth.signOut();
+          var errorEl = document.getElementById('loginError');
+          if (errorEl) {
+            errorEl.textContent = 'Acesso negado. Somente administradores podem acessar o painel.';
+            errorEl.style.display = 'block';
+          }
+          window.history.replaceState(null, '', window.location.pathname);
+        }
+      } catch (err) {
+        console.error('OAuth callback error:', err);
+      }
+    }
+
+    // =============================================
+    // KEYBOARD
+    // =============================================
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') { closeModal(); closeLogin(); }
+    });
+
+    // =============================================
+    // INIT
+    // =============================================
+    function configurarFormulario() {
+      var form = document.getElementById('pedidoForm');
+      if (form) form.addEventListener('submit', enviarPedido);
+
+      var telefone = document.getElementById('pedidoTelefone');
+      if (telefone) {
+        telefone.addEventListener('input', function() { this.value = aplicarMascaraCelular(this.value); });
+      }
+
+      var item = document.getElementById('pedidoItem');
+      var qtd = document.getElementById('pedidoQtd');
+      if (item) item.addEventListener('change', atualizarTotalPedido);
+      if (qtd) qtd.addEventListener('input', atualizarTotalPedido);
+
+      configurarCep();
+      atualizarTotalPedido();
+    }
+
+    renderizarCardapio();
+    popularSelectProdutos();
+    configurarFormulario();
+    checkOAuthCallback();
+  </script>
+
+</body>
+</html>

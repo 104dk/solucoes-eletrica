@@ -10,6 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: 'Inter', sans-serif; background: #f1f5f9; color: #1e293b; min-height: 100vh; }
@@ -158,6 +159,181 @@
     .empty-state i { font-size: 40px; margin-bottom: 12px; display: block; }
     .empty-state p { font-size: 0.9rem; }
 
+    .pedido-builder {
+      background:
+        radial-gradient(circle at top left, rgba(0, 131, 143, 0.12), transparent 34%),
+        linear-gradient(135deg, #f8fbfc 0%, #eef6f8 100%);
+      border: 1px solid rgba(0, 96, 100, 0.12);
+      border-radius: 16px;
+      box-shadow: 0 16px 42px rgba(15, 56, 64, 0.1);
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+    .pedido-builder-head {
+      background: linear-gradient(135deg, #006064, #00838f);
+      color: white;
+      padding: 24px 28px;
+    }
+    .pedido-builder-head h2 { font-size: 1.35rem; margin-bottom: 6px; }
+    .pedido-builder-head p { font-size: .9rem; opacity: .88; }
+    .pedido-form { padding: 24px 28px 28px; }
+    .pedido-form label {
+      font-size: 12px;
+      font-weight: 800;
+      color: #42535a;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: .03em;
+    }
+    .pedido-form .form-group { margin-bottom: 16px; }
+    .pedido-form input,
+    .pedido-form select,
+    .pedido-form textarea {
+      border-color: #d7e2e6;
+      border-radius: 10px;
+      background: #fff;
+    }
+    .pedido-form input:focus,
+    .pedido-form select:focus,
+    .pedido-form textarea:focus {
+      border-color: #00838f;
+      box-shadow: 0 0 0 3px rgba(0, 131, 143, .12);
+    }
+    .pedido-form textarea { min-height: 64px; resize: vertical; }
+    .pedido-items-box {
+      border: 1px solid #d7e2e6;
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 18px;
+      background: #f8fbfc;
+    }
+    .pedido-item {
+      border: 1px solid #e2edf1;
+      border-radius: 14px;
+      margin-bottom: 14px;
+      padding: 15px;
+      background: #fff;
+      box-shadow: 0 6px 18px rgba(21, 74, 84, .05);
+    }
+    .pedido-item:last-child { margin-bottom: 0; }
+    .item-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #006064;
+    }
+    .item-title span {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .item-title span::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #00838f;
+    }
+    .btn-remove-item {
+      flex: 0 0 auto;
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: none;
+      background: #ffebee;
+      color: #c62828;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .pedido-total-display {
+      background: linear-gradient(135deg, #e6f7f8, #f4fbfb);
+      border: 1px solid rgba(0, 131, 143, .28);
+      border-radius: 14px;
+      padding: 18px;
+      text-align: right;
+      margin: 22px 0;
+    }
+    .pedido-total-display .label {
+      font-size: 12px;
+      color: #607d86;
+      font-weight: 800;
+      letter-spacing: .08em;
+    }
+    .pedido-total-display .value {
+      font-size: 2rem;
+      font-weight: 800;
+      color: #004d40;
+      letter-spacing: 0;
+    }
+    .pedido-actions {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .rota-actions { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+    .pedido-form .error { border-color: #dc2626 !important; }
+    .lookup-field { position: relative; }
+    .lookup-control {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 44px;
+      gap: 8px;
+    }
+    .lookup-btn {
+      width: 44px;
+      border: none;
+      border-radius: 10px;
+      background: #006064;
+      color: white;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: background .15s, transform .15s;
+    }
+    .lookup-btn:hover { background: #00838f; }
+    .lookup-btn:active { transform: scale(.96); }
+    .lookup-results {
+      display: none;
+      position: absolute;
+      z-index: 30;
+      left: 0;
+      right: 0;
+      top: calc(100% + 6px);
+      max-height: 240px;
+      overflow-y: auto;
+      background: #fff;
+      border: 1px solid #d7e2e6;
+      border-radius: 12px;
+      box-shadow: 0 16px 34px rgba(15, 56, 64, .16);
+      padding: 6px;
+    }
+    .lookup-results.open { display: block; }
+    .lookup-option {
+      width: 100%;
+      border: none;
+      border-radius: 8px;
+      background: transparent;
+      color: #1e293b;
+      cursor: pointer;
+      display: block;
+      padding: 10px 12px;
+      text-align: left;
+      font: inherit;
+    }
+    .lookup-option:hover,
+    .lookup-option:focus { background: #e6f7f8; outline: none; }
+    .lookup-option strong { display: block; color: #004d40; font-size: .9rem; }
+    .lookup-option span { display: block; color: #64748b; font-size: .8rem; margin-top: 2px; }
+    .lookup-empty {
+      color: #64748b;
+      font-size: .85rem;
+      padding: 10px 12px;
+    }
+
     /* ===== MODAL ===== */
     .modal-overlay {
       display: none; position: fixed; inset: 0;
@@ -222,6 +398,9 @@
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
+    /* ===== NAVEGACAO MOBILE ===== */
+    .mobile-nav { display: none; }
+
     /* ===== RESPONSIVE ===== */
     .menu-toggle {
       display: none; background: none; border: none; font-size: 20px;
@@ -230,10 +409,82 @@
     @media (max-width: 768px) {
       .sidebar { transform: translateX(-100%); }
       .sidebar.open { transform: translateX(0); }
-      .main { margin-left: 0; }
+      .main { margin-left: 0; padding-bottom: 76px; }
       .menu-toggle { display: block; }
-      .search-input { width: 160px; }
+      .content { padding: 16px 12px; }
+      .card-header { padding: 14px 16px; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+      .search-input { width: 100%; max-width: 100%; }
       .form-row { flex-direction: column; gap: 0; }
+      .pedido-builder-head, .pedido-form { padding-left: 18px; padding-right: 18px; }
+      .pedido-actions { grid-template-columns: 1fr; }
+      .rota-actions { grid-template-columns: 1fr; }
+      .modal { padding: 20px; }
+
+      /* Barra de navegacao inferior */
+      .mobile-nav {
+        display: flex;
+        position: fixed;
+        bottom: 0; left: 0; right: 0;
+        background: #0f172a;
+        z-index: 300;
+        padding: 6px 2px calc(6px + env(safe-area-inset-bottom));
+        border-top: 1px solid rgba(255,255,255,0.08);
+      }
+      .mobile-nav a {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2px;
+        padding: 5px 1px;
+        color: rgba(255,255,255,0.55);
+        text-decoration: none;
+        font-size: 0.55rem;
+        font-weight: 600;
+        text-align: center;
+      }
+      .mobile-nav a i { font-size: 1.1rem; }
+      .mobile-nav a.active { color: #f59e0b; }
+
+      /* Tabelas viram cartoes */
+      thead { display: none; }
+      table { border-collapse: separate; }
+      tbody { display: block; }
+      tbody tr {
+        display: block;
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        margin-bottom: 12px;
+        padding: 6px 0;
+      }
+      tbody tr:hover td { background: #fff; }
+      tbody td {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        flex-wrap: wrap;
+        padding: 9px 14px;
+        border-bottom: 1px solid #f1f5f9;
+        font-size: 0.85rem;
+      }
+      tbody td:last-child { border-bottom: none; }
+      tbody td::before {
+        content: attr(data-label);
+        font-size: 0.68rem;
+        font-weight: 700;
+        color: #94a3b8;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+        flex-shrink: 0;
+      }
+      .actions-cell { justify-content: flex-end; }
+      .actions-cell::before { display: none; }
+      .btn { min-height: 40px; }
+      .btn-sm { min-height: 36px; padding: 6px 12px; }
     }
   </style>
 </head>
@@ -258,8 +509,14 @@
       <a href="#" data-tab="rotas" onclick="switchTab('rotas', this)" role="tab">
         <i class="fas fa-route" aria-hidden="true"></i> Rotas
       </a>
+      <a href="#" data-tab="pedidos-lista" onclick="switchTab('pedidos-lista', this)" role="tab">
+        <i class="fas fa-list-check" aria-hidden="true"></i> Pedidos Registrados
+      </a>
       <a href="#" data-tab="config" onclick="switchTab('config', this)" role="tab">
         <i class="fas fa-cog" aria-hidden="true"></i> Configurações
+      </a>
+      <a href="#" data-tab="super-config" onclick="switchTab('super-config', this)" role="tab">
+        <i class="fas fa-shield-alt" aria-hidden="true"></i> Super Config
       </a>
     </nav>
     <div class="sidebar-footer">
@@ -296,21 +553,105 @@
           <div class="stat-card"><div class="stat-icon blue"><i class="fas fa-clock" aria-hidden="true"></i></div><div class="stat-info"><h3 id="statPendentes">0</h3><p>Pendentes</p></div></div>
           <div class="stat-card"><div class="stat-icon purple"><i class="fas fa-dollar-sign" aria-hidden="true"></i></div><div class="stat-info"><h3 id="statFaturamento">R$ 0</h3><p>Faturamento</p></div></div>
         </div>
-        <div class="card">
-          <div class="card-header">
-            <h2>Lista de Pedidos</h2>
-            <div class="card-actions">
-              <input type="text" class="search-input" placeholder="Buscar pedido..." oninput="handleSearchDebounced('pedidos', this.value)" aria-label="Buscar pedido" />
-              <button class="btn btn-primary" onclick="abrirModal('pedidos')" aria-label="Novo pedido"><i class="fas fa-plus" aria-hidden="true"></i> Novo</button>
-            </div>
+
+        <div class="pedido-builder">
+          <div class="pedido-builder-head">
+            <h2>GELO MIX - Fabrica de gelo</h2>
+            <p>Formulario de Pedido</p>
           </div>
-          <div class="table-loading" id="loading-pedidos">Carregando...</div>
-          <table><thead><tr>
-            <th>ID</th><th>Cliente</th><th>Serviço</th><th>Valor</th><th>Status</th><th>Data</th><th>Ações</th>
-          </tr></thead><tbody id="tbody-pedidos"></tbody></table>
-          <div class="empty-state" id="empty-pedidos" style="display:none;"><i class="fas fa-inbox" aria-hidden="true"></i><p>Nenhum pedido registrado</p></div>
-        </div>
-      </div>
+          <form class="pedido-form" id="pedidoForm" novalidate>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="pedidoCustomId">ID do Pedido</label>
+                <input type="text" id="pedidoCustomId" placeholder="Ex: PED-0001" />
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group lookup-field">
+                <label for="pedidoNome">Nome do Cliente *</label>
+                <div class="lookup-control">
+                  <input type="text" id="pedidoNome" placeholder="Buscar cliente cadastrado" required autocomplete="off" oninput="atualizarBuscaClientePedido()" />
+                  <button type="button" class="lookup-btn" onclick="abrirBuscaClientePedido()" aria-label="Buscar cliente"><i class="fas fa-search" aria-hidden="true"></i></button>
+                </div>
+                <div class="lookup-results" id="clienteLookupResults"></div>
+              </div>
+              <div class="form-group">
+                <label for="pedidoTelefone">Telefone</label>
+                <input type="tel" id="pedidoTelefone" placeholder="Ex: (11) 99999-0000" />
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="pedidoEndereco">Endereco completo</label>
+                <input type="text" id="pedidoEndereco" placeholder="Ex: Rua X - Plano Piloto - Brasilia/DF" />
+              </div>
+            </div>
+
+            <div class="pedido-items-box">
+              <div id="itensContainer">
+                <div class="pedido-item">
+                  <div class="item-title">
+                    <span>Item 1</span>
+                    <button type="button" class="btn-remove-item" onclick="removerItemPedido(this)" style="display:none;">Remover</button>
+                  </div>
+
+                  <div class="form-row">
+                    <div class="form-group lookup-field">
+                      <label>Produto *</label>
+                      <div class="lookup-control">
+                        <input type="text" class="produto" placeholder="Buscar produto cadastrado" required autocomplete="off" oninput="atualizarBuscaProdutoPedido(this)" />
+                        <button type="button" class="lookup-btn" onclick="abrirBuscaProdutoPedido(this)" aria-label="Buscar produto"><i class="fas fa-search" aria-hidden="true"></i></button>
+                      </div>
+                      <div class="lookup-results produto-results"></div>
+                    </div>
+                    <div class="form-group">
+                      <label>Quantidade *</label>
+                      <input type="number" class="quantidade" min="1" step="1" placeholder="0" required />
+                    </div>
+                    <div class="form-group">
+                      <label>Valor Unitario (R$) *</label>
+                      <input type="text" class="valor" placeholder="0,00" required />
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+              <button type="button" class="btn btn-outline" onclick="adicionarItemPedido()"><i class="fas fa-plus" aria-hidden="true"></i> Adicionar item</button>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="pedidoDesconto">Desconto (R$)</label>
+                <input type="text" id="pedidoDesconto" placeholder="0,00" />
+              </div>
+              <div class="form-group">
+                <label for="pedidoPagamento">Forma de Pagamento *</label>
+                <select id="pedidoPagamento" required>
+                  <option value="">Selecione...</option>
+                  <option value="Dinheiro">Dinheiro</option>
+                  <option value="PIX">PIX</option>
+                  <option value="Boleto">Boleto</option>
+                  <option value="Cartao de Credito">Cartao de Credito</option>
+                  <option value="Cartao de Debito">Cartao de Debito</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="pedido-total-display">
+              <div class="label">VALOR TOTAL</div>
+              <div class="value" id="pedidoTotalView">R$ 0,00</div>
+            </div>
+
+            <div class="pedido-actions">
+              <button type="button" class="btn btn-outline" onclick="limparFormularioPedido()">Limpar</button>
+              <button type="button" class="btn btn-outline" onclick="gerarPDFPedido()"><i class="fas fa-file-pdf" aria-hidden="true"></i> Gerar PDF</button>
+              <button type="submit" class="btn btn-primary" id="salvarPedidoBtn"><i class="fas fa-save" aria-hidden="true"></i> Salvar Pedido</button>
+            </div>
+          </form>
+        </div></div>
 
       <!-- ========== CLIENTES ========== -->
       <div class="tab-content" id="tab-clientes">
@@ -324,7 +665,7 @@
           </div>
           <div class="table-loading" id="loading-clientes" style="display:none;">Carregando...</div>
           <table><thead><tr>
-            <th>Nome</th><th>Telefone</th><th>Email</th><th>Endereço</th><th>Ações</th>
+            <th>Nome</th><th>Telefone</th><th>CEP</th><th>Email</th><th>Endereço</th><th>Ações</th>
           </tr></thead><tbody id="tbody-clientes"></tbody></table>
           <div class="empty-state" id="empty-clientes" style="display:none;"><i class="fas fa-users" aria-hidden="true"></i><p>Nenhum cliente cadastrado</p></div>
         </div>
@@ -342,7 +683,7 @@
           </div>
           <div class="table-loading" id="loading-produtos" style="display:none;">Carregando...</div>
           <table><thead><tr>
-            <th>Nome</th><th>Descrição</th><th>Preço</th><th>Estoque</th><th>Ações</th>
+            <th>Nome</th><th>Preco</th><th>Estoque</th><th>Acoes</th>
           </tr></thead><tbody id="tbody-produtos"></tbody></table>
           <div class="empty-state" id="empty-produtos" style="display:none;"><i class="fas fa-box-open" aria-hidden="true"></i><p>Nenhum produto cadastrado</p></div>
         </div>
@@ -350,12 +691,70 @@
 
       <!-- ========== ROTAS ========== -->
       <div class="tab-content" id="tab-rotas">
+        <div class="pedido-builder">
+          <div class="pedido-builder-head">
+            <h2>Montar rota de entrega</h2>
+            <p>Selecione ate 5 clientes cadastrados para gerar links de navegacao e compartilhar pelo WhatsApp.</p>
+          </div>
+          <form class="pedido-form" id="rotaForm" novalidate>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="rotaNome">Nome da rota</label>
+                <input type="text" id="rotaNome" placeholder="Ex: Entregas da manha" />
+              </div>
+            </div>
+
+            <div class="pedido-items-box">
+              <div id="rotaParadasContainer">
+                <div class="pedido-item rota-parada">
+                  <div class="item-title">
+                    <span>Endereco 1</span>
+                    <button type="button" class="btn-remove-item" onclick="removerParadaRota(this)" style="display:none;">Remover</button>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group lookup-field">
+                      <label>Cliente *</label>
+                      <div class="lookup-control">
+                        <input type="text" class="rota-cliente" placeholder="Buscar ou digitar cliente" required autocomplete="off" oninput="atualizarBuscaClienteRota(this)" />
+                        <button type="button" class="lookup-btn" onclick="abrirBuscaClienteRota(this)" aria-label="Buscar cliente"><i class="fas fa-search" aria-hidden="true"></i></button>
+                      </div>
+                      <div class="lookup-results rota-cliente-results"></div>
+                    </div>
+                    <div class="form-group">
+                      <label>Telefone</label>
+                      <input type="tel" class="rota-telefone" placeholder="(00) 00000-0000" maxlength="15" inputmode="tel" />
+                    </div>
+                    <div class="form-group">
+                      <label>CEP</label>
+                      <input type="text" class="rota-cep" placeholder="00000-000" maxlength="9" inputmode="numeric" />
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label>Endereco</label>
+                      <input type="text" class="rota-endereco" placeholder="Endereco do cliente" required />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <button type="button" class="btn btn-outline" onclick="adicionarParadaRota()"><i class="fas fa-plus" aria-hidden="true"></i> Adicionar endereco</button>
+            </div>
+
+            <div class="pedido-actions rota-actions">
+              <button type="button" class="btn btn-outline" onclick="limparRota()">Limpar</button>
+              <button type="button" class="btn btn-outline" onclick="abrirRotaGoogleMaps()"><i class="fas fa-map-location-dot" aria-hidden="true"></i> Abrir Maps</button>
+              <button type="button" class="btn btn-primary" onclick="compartilharRotaWhatsApp()"><i class="fab fa-whatsapp" aria-hidden="true"></i> WhatsApp</button>
+              <button type="submit" class="btn btn-primary" id="salvarRotaBtn"><i class="fas fa-save" aria-hidden="true"></i> Salvar rota</button>
+            </div>
+          </form>
+        </div>
+
         <div class="card">
           <div class="card-header">
-            <h2>Rotas de Atendimento</h2>
+            <h2>Rotas Salvas</h2>
             <div class="card-actions">
               <input type="text" class="search-input" placeholder="Buscar rota..." oninput="handleSearchDebounced('rotas', this.value)" aria-label="Buscar rota" />
-              <button class="btn btn-primary" onclick="abrirModal('rotas')" aria-label="Nova rota"><i class="fas fa-plus" aria-hidden="true"></i> Nova</button>
             </div>
           </div>
           <div class="table-loading" id="loading-rotas" style="display:none;">Carregando...</div>
@@ -363,6 +762,23 @@
             <th>Bairro</th><th>Região</th><th>Horário</th><th>Ações</th>
           </tr></thead><tbody id="tbody-rotas"></tbody></table>
           <div class="empty-state" id="empty-rotas" style="display:none;"><i class="fas fa-route" aria-hidden="true"></i><p>Nenhuma rota cadastrada</p></div>
+        </div>
+      </div>
+
+      <!-- ========== PEDIDOS REGISTRADOS ========== -->
+      <div class="tab-content" id="tab-pedidos-lista">
+        <div class="card">
+          <div class="card-header">
+            <h2>Pedidos Registrados</h2>
+            <div class="card-actions">
+              <input type="text" class="search-input" placeholder="Buscar pedido..." oninput="handleSearchDebounced('pedidos-lista', this.value)" aria-label="Buscar pedido" />
+            </div>
+          </div>
+          <div class="table-loading" id="loading-pedidos-lista" style="display:none;">Carregando...</div>
+          <table><thead><tr>
+            <th>ID</th><th>Cliente</th><th>Servico</th><th>Valor</th><th>Status</th><th>Data</th><th>Acoes</th>
+          </tr></thead><tbody id="tbody-pedidos-lista"></tbody></table>
+          <div class="empty-state" id="empty-pedidos-lista" style="display:none;"><i class="fas fa-inbox" aria-hidden="true"></i><p>Nenhum pedido registrado</p></div>
         </div>
       </div>
 
@@ -396,20 +812,194 @@
               </div>
               <div class="form-group">
                 <label for="cfgWhatsapp">WhatsApp</label>
-                <input type="tel" id="cfgWhatsapp" placeholder="5561995663288" />
+                <input type="text" id="cfgWhatsapp" placeholder="https://wa.me/5561995663288 ou 5561995663288" />
               </div>
             </div>
-            <div class="form-group">
-              <label for="cfgInstagram">Instagram</label>
-              <input type="text" id="cfgInstagram" placeholder="@solucoeseletrica" />
+            <div class="form-row">
+              <div class="form-group">
+                <label for="cfgInstagram">Link do Instagram</label>
+                <input type="url" id="cfgInstagram" placeholder="https://www.instagram.com/seu_perfil" />
+              </div>
+              <div class="form-group">
+                <label for="cfgFacebook">Link do Facebook</label>
+                <input type="url" id="cfgFacebook" placeholder="https://www.facebook.com/sua_pagina" />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="cfgX">Link do X</label>
+                <input type="url" id="cfgX" placeholder="https://x.com/seu_perfil" />
+              </div>
+              <div class="form-group">
+                <label for="cfgWhatsappLink">Link do WhatsApp</label>
+                <input type="text" id="cfgWhatsappLink" placeholder="https://wa.me/5561995663288" />
+              </div>
             </div>
             <button class="btn btn-primary" onclick="salvarConfig()" style="margin-top:8px;" id="saveConfigBtn"><i class="fas fa-save" aria-hidden="true"></i> Salvar Configurações</button>
           </div>
         </div>
       </div>
 
+      <!-- ========== SUPER CONFIG ========== -->
+      <div class="tab-content" id="tab-super-config">
+        <div class="card">
+          <div class="card-header">
+            <h2>Super Admin</h2>
+            <div class="card-actions">
+              <button class="btn btn-outline" onclick="carregarSuperConfig()"><i class="fas fa-rotate" aria-hidden="true"></i> Atualizar</button>
+            </div>
+          </div>
+          <div style="padding:24px;">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="scUserEmail">Adicionar novo usuario</label>
+                <input type="email" id="scUserEmail" placeholder="email@exemplo.com" />
+              </div>
+              <div class="form-group">
+                <label for="scUserName">Nome</label>
+                <input type="text" id="scUserName" placeholder="Nome do usuario" />
+              </div>
+              <div class="form-group">
+                <label for="scUserLevel">Nivel de acesso</label>
+                <select id="scUserLevel">
+                  <option value="nv1">NV1 - Usuario</option>
+                  <option value="nv2">NV2 - Administrador</option>
+                  <option value="nv3">NV3 - Super</option>
+                </select>
+              </div>
+              <div class="form-group" style="justify-content:flex-end;">
+                <button class="btn btn-primary" onclick="salvarUsuarioAcesso()"><i class="fas fa-user-plus" aria-hidden="true"></i> Salvar usuario</button>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="scUserSelect">Editar usuario</label>
+                <select id="scUserSelect" onchange="preencherUsuarioAcessoEdicao()"></select>
+              </div>
+              <div class="form-group">
+                <label for="scEditName">Nome</label>
+                <input type="text" id="scEditName" placeholder="Nome do usuario" />
+              </div>
+              <div class="form-group">
+                <label for="scEditLevel">Novo nivel</label>
+                <select id="scEditLevel">
+                  <option value="nv1">NV1 - Usuario</option>
+                  <option value="nv2">NV2 - Administrador</option>
+                  <option value="nv3">NV3 - Super</option>
+                </select>
+              </div>
+              <div class="form-group" style="justify-content:flex-end;">
+                <button class="btn btn-outline" onclick="editarUsuarioAcesso()"><i class="fas fa-pen" aria-hidden="true"></i> Editar usuario</button>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="scDeleteUserSelect">Excluir usuario</label>
+                <select id="scDeleteUserSelect"></select>
+              </div>
+              <div class="form-group" style="justify-content:flex-end;">
+                <button class="btn btn-danger" onclick="excluirUsuarioAcesso()"><i class="fas fa-trash" aria-hidden="true"></i> Excluir acesso</button>
+              </div>
+            </div>
+
+            <table><thead><tr>
+              <th>Email</th><th>Nome</th><th>Nivel</th><th>Criado em</th>
+            </tr></thead><tbody id="tbody-super-usuarios"></tbody></table>
+            <div class="empty-state" id="empty-super-usuarios" style="display:none;"><i class="fas fa-user-shield" aria-hidden="true"></i><p>Nenhum usuario cadastrado</p></div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:24px;">
+          <div class="card-header">
+            <h2>Contatos de Clientes</h2>
+            <div class="card-actions">
+              <button class="btn btn-outline" onclick="selecionarContatosCelular()"><i class="fas fa-address-book" aria-hidden="true"></i> Importar contatos</button>
+              <button class="btn btn-primary" onclick="salvarContatosSelecionados()"><i class="fas fa-save" aria-hidden="true"></i> Salvar selecionados</button>
+            </div>
+          </div>
+          <div style="padding:24px;">
+            <div id="contatosImportadosLista" class="pedido-items-box" style="display:none;"></div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="scClienteNome">Adicionar contato manual</label>
+                <input type="text" id="scClienteNome" placeholder="Nome do cliente" />
+              </div>
+              <div class="form-group">
+                <label for="scClienteTelefone">Telefone</label>
+                <input type="tel" id="scClienteTelefone" placeholder="(00) 00000-0000" maxlength="15" inputmode="tel" />
+              </div>
+              <div class="form-group">
+                <label for="scClienteCep">CEP</label>
+                <input type="text" id="scClienteCep" placeholder="00000-000" maxlength="9" inputmode="numeric" />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="scClienteEndereco">Endereco</label>
+                <input type="text" id="scClienteEndereco" placeholder="Rua, numero - Bairro - Cidade/UF" />
+              </div>
+              <div class="form-group" style="justify-content:flex-end;">
+                <button class="btn btn-primary" onclick="salvarClienteSuperConfig()"><i class="fas fa-user-plus" aria-hidden="true"></i> Salvar cliente</button>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="scClienteSelect">Editar contato de cliente</label>
+                <select id="scClienteSelect" onchange="preencherClienteSuperConfigEdicao()"></select>
+              </div>
+              <div class="form-group">
+                <label for="scClienteEditNome">Nome</label>
+                <input type="text" id="scClienteEditNome" placeholder="Nome do cliente" />
+              </div>
+              <div class="form-group">
+                <label for="scClienteEditTelefone">Telefone</label>
+                <input type="tel" id="scClienteEditTelefone" placeholder="(00) 00000-0000" maxlength="15" inputmode="tel" />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="scClienteEditCep">CEP</label>
+                <input type="text" id="scClienteEditCep" placeholder="00000-000" maxlength="9" inputmode="numeric" />
+              </div>
+              <div class="form-group">
+                <label for="scClienteEditEndereco">Endereco</label>
+                <input type="text" id="scClienteEditEndereco" placeholder="Rua, numero - Bairro - Cidade/UF" />
+              </div>
+              <div class="form-group" style="justify-content:flex-end;">
+                <button class="btn btn-outline" onclick="editarClienteSuperConfig()"><i class="fas fa-pen" aria-hidden="true"></i> Editar cliente</button>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="scClienteDeleteSelect">Excluir contato de cliente</label>
+                <select id="scClienteDeleteSelect"></select>
+              </div>
+              <div class="form-group" style="justify-content:flex-end;">
+                <button class="btn btn-danger" onclick="excluirClienteSuperConfig()"><i class="fas fa-trash" aria-hidden="true"></i> Excluir cliente</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
+
+  <!-- NAVEGACAO MOBILE -->
+  <nav class="mobile-nav" id="mobileNav" aria-label="Navegação mobile">
+    <a href="#" data-tab="pedidos" onclick="switchTab('pedidos', this)"><i class="fas fa-clipboard-list" aria-hidden="true"></i><span>Pedido</span></a>
+    <a href="#" data-tab="clientes" onclick="switchTab('clientes', this)"><i class="fas fa-users" aria-hidden="true"></i><span>Clientes</span></a>
+    <a href="#" data-tab="produtos" onclick="switchTab('produtos', this)"><i class="fas fa-box-open" aria-hidden="true"></i><span>Produtos</span></a>
+    <a href="#" data-tab="rotas" onclick="switchTab('rotas', this)"><i class="fas fa-route" aria-hidden="true"></i><span>Rotas</span></a>
+    <a href="#" data-tab="pedidos-lista" onclick="switchTab('pedidos-lista', this)"><i class="fas fa-list-check" aria-hidden="true"></i><span>Registros</span></a>
+    <a href="#" data-tab="config" onclick="switchTab('config', this)"><i class="fas fa-cog" aria-hidden="true"></i><span>Config</span></a>
+    <a href="#" data-tab="super-config" onclick="switchTab('super-config', this)"><i class="fas fa-user-shield" aria-hidden="true"></i><span>Super</span></a>
+  </nav>
 
   <!-- MODAL GENERICO -->
   <div class="modal-overlay" id="modalOverlay" onclick="fecharModal(event)" role="dialog" aria-modal="true" aria-label="Formulário">
@@ -429,15 +1019,22 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="supabaseConfig.js?v=2"></script>
   <script>
+    function isPedidosTab(tab) {
+      return tab === 'pedidos' || tab === 'pedidos-lista';
+    }
+
     // =============================================
     // ESTADO
     // =============================================
     var editando = null;
     var tipoAtual = '';
     var dadosCache = {};
+    var usuariosAcessoCache = [];
+    var contatosImportados = [];
 
     var tabelas = {
       pedidos: 'pedidos',
+      'pedidos-lista': 'pedidos',
       clientes: 'clientes',
       produtos: 'produtos',
       rotas: 'rotas'
@@ -463,9 +1060,11 @@
 
     var titulos = {
       pedidos: 'Pedidos',
+      'pedidos-lista': 'Pedidos Registrados',
       clientes: 'Clientes',
       produtos: 'Produtos',
       rotas: 'Rotas',
+      'super-config': 'Super Config',
       config: 'Configurações'
     };
 
@@ -483,14 +1082,23 @@
 
       var profileResult = await supabaseClient.from('profiles').select('role, name').eq('id', session.user.id).single();
       console.log('[SE] Profile:', profileResult);
-      if (!profileResult.data || profileResult.data.role !== 'admin') {
-        console.log('[SE] Acesso negado - role:', profileResult.data ? profileResult.data.role : 'NULO');
+      var roleProfile = profileResult.data ? profileResult.data.role : '';
+      var acessoResult = await supabaseClient.from('usuarios_acesso').select('email, nome, nivel').ilike('email', session.user.email).maybeSingle();
+      if (acessoResult.error) {
+        console.warn('[SE] usuarios_acesso indisponivel:', acessoResult.error.message);
+      }
+      var acesso = acessoResult.data || null;
+      var adminPorProfile = roleProfile === 'admin' || roleProfile === 'super';
+      var adminPorAcesso = acesso && (acesso.nivel === 'nv2' || acesso.nivel === 'nv3');
+
+      if (!adminPorProfile && !adminPorAcesso) {
+        console.log('[SE] Acesso negado - role:', roleProfile || 'NULO', 'nivel:', acesso ? acesso.nivel : 'NULO');
         await supabaseClient.auth.signOut();
         window.location.href = 'index.html';
         return false;
       }
 
-      var userName = profileResult.data.name || session.user.email || 'Admin';
+      var userName = (acesso && acesso.nome) || (profileResult.data && profileResult.data.name) || session.user.email || 'Admin';
       document.getElementById('userName').textContent = userName;
       document.getElementById('userAvatar').textContent = userName.charAt(0).toUpperCase();
 
@@ -503,10 +1111,21 @@
     function switchTab(tab, el) {
       document.querySelectorAll('.tab-content').forEach(function(t) { t.classList.remove('active'); });
       document.querySelectorAll('.sidebar-nav a').forEach(function(a) { a.classList.remove('active'); });
+      document.querySelectorAll('.mobile-nav a').forEach(function(a) { a.classList.remove('active'); });
       document.getElementById('tab-' + tab).classList.add('active');
       if (el) el.classList.add('active');
+      document.querySelectorAll('.mobile-nav a').forEach(function(a) {
+        if (a.getAttribute('data-tab') === tab) a.classList.add('active');
+      });
       document.getElementById('pageTitle').textContent = titulos[tab] || tab;
-      if (tab !== 'config') atualizarBadge(tab);
+      if (tab === 'super-config') {
+        document.getElementById('pageBadge').textContent = 'Super';
+        carregarSuperConfig();
+      } else if (tab !== 'config') {
+        atualizarBadge(tab);
+      } else {
+        document.getElementById('pageBadge').textContent = 'Config';
+      }
       document.getElementById('sidebar').classList.remove('open');
     }
 
@@ -523,7 +1142,7 @@
     // =============================================
     function renderLinha(tab, d) {
       var cols = '';
-      if (tab === 'pedidos') {
+      if (isPedidosTab(tab)) {
         cols = '<td><strong>' + escapeHtml(d.id ? d.id.substring(0,8) : '-') + '</strong></td>' +
                '<td>' + escapeHtml(d.cliente) + '</td>' +
                '<td>' + escapeHtml(d.servico) + '</td>' +
@@ -533,11 +1152,11 @@
       } else if (tab === 'clientes') {
         cols = '<td><strong>' + escapeHtml(d.nome) + '</strong></td>' +
                '<td>' + escapeHtml(d.telefone) + '</td>' +
+               '<td>' + escapeHtml(d.cep) + '</td>' +
                '<td>' + escapeHtml(d.email) + '</td>' +
                '<td>' + escapeHtml(d.endereco) + '</td>';
       } else if (tab === 'produtos') {
         cols = '<td><strong>' + escapeHtml(d.nome) + '</strong></td>' +
-               '<td>' + escapeHtml(d.descricao) + '</td>' +
                '<td>R$ ' + parseFloat(d.preco || 0).toFixed(2) + '</td>' +
                '<td>' + (d.estoque || 0) + '</td>';
       } else if (tab === 'rotas') {
@@ -570,25 +1189,27 @@
         showToast('Erro ao carregar ' + titulos[tab] + ': ' + result.error.message, 'error');
         empty.style.display = 'block';
         empty.querySelector('p').textContent = 'Erro ao carregar dados';
-        if (tab === 'pedidos') atualizarStats([]);
+        if (isPedidosTab(tab)) atualizarStats([]);
         atualizarBadge(tab);
         return;
       }
 
       var dados = result.data || [];
       dadosCache[tab] = dados;
+      if (isPedidosTab(tab)) dadosCache.pedidos = dados;
 
       if (dados.length === 0) {
         empty.style.display = 'block';
-        if (tab === 'pedidos') atualizarStats([]);
+        if (isPedidosTab(tab)) atualizarStats([]);
         atualizarBadge(tab);
         return;
       }
 
       tbody.innerHTML = dados.map(function(d) { return renderLinha(tab, d); }).join('');
 
-      if (tab === 'pedidos') atualizarStats(dados);
+      if (isPedidosTab(tab)) atualizarStats(dados);
       atualizarBadge(tab);
+      adaptarTabelasMobile();
     }
 
     function atualizarStats(pedidos) {
@@ -598,6 +1219,24 @@
       var total = pedidos.reduce(function(s, p) { return s + parseFloat(p.valor || 0); }, 0);
       document.getElementById('statFaturamento').textContent = 'R$ ' + total.toFixed(2);
     }
+
+    // =============================================
+    // TABELAS NO MOBILE (cartoes)
+    // =============================================
+    function adaptarTabelasMobile() {
+      document.querySelectorAll('.tab-content table').forEach(function(table) {
+        var headers = Array.prototype.map.call(table.querySelectorAll('thead th'), function(th) {
+          return th.textContent.trim();
+        });
+        if (!headers.length) return;
+        Array.prototype.forEach.call(table.querySelectorAll('tbody tr'), function(tr) {
+          Array.prototype.forEach.call(tr.querySelectorAll('td'), function(td, i) {
+            td.setAttribute('data-label', headers[i] || '');
+          });
+        });
+      });
+    }
+
 
     // =============================================
     // FILTRO COM DEBOUNCE
@@ -626,6 +1265,7 @@
       }
       empty.style.display = 'none';
       tbody.innerHTML = filtrados.map(function(d) { return renderLinha(tab, d); }).join('');
+      adaptarTabelasMobile();
     }
 
     var handleSearchDebounced = debounce(function(tab, termo) {
@@ -633,10 +1273,782 @@
     }, 300);
 
     // =============================================
+    // FORMULARIO DE PEDIDO GELO MIX
+    // =============================================
+    function parseValorBr(str) {
+      if (!str) return 0;
+      var limpo = String(str).replace(/\./g, '').replace(',', '.');
+      var num = parseFloat(limpo);
+      return isNaN(num) ? 0 : num;
+    }
+
+    function formatarMoeda(valor) {
+      return Number(valor || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    }
+
+    function formatarValorInput(valor) {
+      var numero = parseFloat(valor || 0);
+      if (!numero) return '';
+      return numero.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function normalizarBusca(valor) {
+      return String(valor || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    }
+
+    function fecharBuscasPedido() {
+      document.querySelectorAll('.pedido-form .lookup-results').forEach(function(el) {
+        el.classList.remove('open');
+      });
+    }
+
+    function filtrarClientesPedido(termo) {
+      var busca = normalizarBusca(termo);
+      var clientes = dadosCache.clientes || [];
+      if (!busca) return clientes.slice(0, 8);
+      return clientes.filter(function(cliente) {
+        return normalizarBusca([cliente.nome, cliente.telefone, cliente.cep, cliente.email, cliente.endereco].join(' ')).indexOf(busca) !== -1;
+      }).slice(0, 8);
+    }
+
+    function renderClientesPedido(clientes) {
+      var results = document.getElementById('clienteLookupResults');
+      if (!results) return;
+      if (!clientes.length) {
+        results.innerHTML = '<div class="lookup-empty">Nenhum cliente cadastrado encontrado.</div>';
+      } else {
+        results.innerHTML = clientes.map(function(cliente) {
+          return '<button type="button" class="lookup-option" onclick="selecionarClientePedido(\'' + cliente.id + '\')">' +
+            '<strong>' + escapeHtml(cliente.nome || 'Cliente sem nome') + '</strong>' +
+            '<span>' + escapeHtml([cliente.telefone, cliente.cep, cliente.endereco].filter(Boolean).join(' - ') || 'Sem telefone/endereco') + '</span>' +
+            '</button>';
+        }).join('');
+      }
+      results.classList.add('open');
+    }
+
+    function abrirBuscaClientePedido() {
+      renderClientesPedido(filtrarClientesPedido(document.getElementById('pedidoNome').value));
+      document.getElementById('pedidoNome').focus();
+    }
+
+    function atualizarBuscaClientePedido() {
+      var results = document.getElementById('clienteLookupResults');
+      if (results && results.classList.contains('open')) {
+        renderClientesPedido(filtrarClientesPedido(document.getElementById('pedidoNome').value));
+      }
+    }
+
+    function selecionarClientePedido(id) {
+      var cliente = (dadosCache.clientes || []).find(function(item) { return item.id === id; });
+      if (!cliente) return;
+      document.getElementById('pedidoNome').value = cliente.nome || '';
+      document.getElementById('pedidoTelefone').value = cliente.telefone || '';
+      document.getElementById('pedidoEndereco').value = cliente.endereco || '';
+      document.getElementById('pedidoNome').classList.remove('error');
+      fecharBuscasPedido();
+    }
+
+    function filtrarProdutosPedido(termo) {
+      var busca = normalizarBusca(termo);
+      var produtos = dadosCache.produtos || [];
+      if (!busca) return produtos.slice(0, 8);
+      return produtos.filter(function(produto) {
+        return normalizarBusca([produto.nome, produto.preco].join(' ')).indexOf(busca) !== -1;
+      }).slice(0, 8);
+    }
+
+    function renderProdutosPedido(input, produtos) {
+      var item = input.closest('.pedido-item');
+      var results = item ? item.querySelector('.produto-results') : null;
+      if (!results) return;
+      if (!produtos.length) {
+        results.innerHTML = '<div class="lookup-empty">Nenhum produto cadastrado encontrado.</div>';
+      } else {
+        results.innerHTML = produtos.map(function(produto) {
+          return '<button type="button" class="lookup-option" onclick="selecionarProdutoPedido(this, \'' + produto.id + '\')">' +
+            '<strong>' + escapeHtml(produto.nome || 'Produto sem nome') + '</strong>' +
+            '<span>' + escapeHtml(formatarMoeda(produto.preco || 0)) + '</span>' +
+            '</button>';
+        }).join('');
+      }
+      results.classList.add('open');
+    }
+
+    function abrirBuscaProdutoPedido(botao) {
+      var item = botao.closest('.pedido-item');
+      var input = item ? item.querySelector('.produto') : null;
+      if (!input) return;
+      renderProdutosPedido(input, filtrarProdutosPedido(input.value));
+      input.focus();
+    }
+
+    function atualizarBuscaProdutoPedido(input) {
+      var item = input.closest('.pedido-item');
+      var results = item ? item.querySelector('.produto-results') : null;
+      if (results && results.classList.contains('open')) {
+        renderProdutosPedido(input, filtrarProdutosPedido(input.value));
+      }
+    }
+
+    function selecionarProdutoPedido(botao, id) {
+      var produto = (dadosCache.produtos || []).find(function(item) { return item.id === id; });
+      var pedidoItem = botao.closest('.pedido-item');
+      if (!produto || !pedidoItem) return;
+      pedidoItem.querySelector('.produto').value = produto.nome || '';
+      pedidoItem.querySelector('.valor').value = formatarValorInput(produto.preco);
+      pedidoItem.querySelector('.produto').classList.remove('error');
+      pedidoItem.querySelector('.valor').classList.remove('error');
+      fecharBuscasPedido();
+      atualizarTotalPedido();
+    }
+
+    function obterItensPedido(apenasValidos) {
+      return Array.from(document.querySelectorAll('#itensContainer .pedido-item')).map(function(item) {
+        var produto = item.querySelector('.produto').value.trim();
+        var quantidade = parseFloat(item.querySelector('.quantidade').value) || 0;
+        var valor = parseValorBr(item.querySelector('.valor').value);
+        return {
+          produto: produto,
+          quantidade: quantidade,
+          valor: valor,
+          total: quantidade * valor
+        };
+      }).filter(function(item) {
+        return !apenasValidos || (item.produto && item.quantidade > 0 && item.valor > 0);
+      });
+    }
+
+    function atualizarTotalPedido() {
+      var descontoInput = document.getElementById('pedidoDesconto');
+      var totalView = document.getElementById('pedidoTotalView');
+      if (!descontoInput || !totalView) return;
+      var subtotal = obterItensPedido(false).reduce(function(soma, item) { return soma + item.total; }, 0);
+      var desconto = parseValorBr(descontoInput.value);
+      var total = subtotal - desconto;
+      totalView.textContent = formatarMoeda(total > 0 ? total : 0);
+    }
+
+    function atualizarNumeracaoItensPedido() {
+      var itens = document.querySelectorAll('#itensContainer .pedido-item');
+      itens.forEach(function(item, index) {
+        item.querySelector('.item-title span').textContent = 'Item ' + (index + 1);
+        item.querySelector('.btn-remove-item').style.display = itens.length > 1 ? 'inline-block' : 'none';
+      });
+    }
+
+    function adicionarItemPedido() {
+      var primeiro = document.querySelector('#itensContainer .pedido-item');
+      if (!primeiro) return;
+      var novo = primeiro.cloneNode(true);
+      novo.querySelectorAll('input, textarea, select').forEach(function(el) {
+        el.value = '';
+        el.classList.remove('error');
+      });
+      novo.querySelectorAll('.lookup-results').forEach(function(el) {
+        el.innerHTML = '';
+        el.classList.remove('open');
+      });
+      document.getElementById('itensContainer').appendChild(novo);
+      atualizarNumeracaoItensPedido();
+      atualizarTotalPedido();
+    }
+
+    function removerItemPedido(botao) {
+      if (document.querySelectorAll('#itensContainer .pedido-item').length <= 1) return;
+      botao.closest('.pedido-item').remove();
+      atualizarNumeracaoItensPedido();
+      atualizarTotalPedido();
+    }
+
+    function validarFormularioPedido() {
+      var valido = true;
+      ['pedidoNome', 'pedidoPagamento'].forEach(function(id) {
+        var el = document.getElementById(id);
+        el.classList.remove('error');
+        if (!el.value || !el.value.trim()) {
+          el.classList.add('error');
+          valido = false;
+        }
+      });
+      document.querySelectorAll('#itensContainer .pedido-item').forEach(function(item) {
+        ['produto', 'quantidade', 'valor'].forEach(function(classe) {
+          var el = item.querySelector('.' + classe);
+          el.classList.remove('error');
+          if (!el.value || !el.value.trim()) {
+            el.classList.add('error');
+            valido = false;
+          }
+        });
+      });
+      if (!valido) showToast('Preencha todos os campos obrigatorios.', 'error');
+      return valido;
+    }
+
+    function gerarCodigoPedido() {
+      var count = (dadosCache.pedidos || []).length + 1;
+      return 'PED-' + String(count).padStart(4, '0');
+    }
+
+    function obterDadosPedido() {
+      var itens = obterItensPedido(true);
+      var desconto = parseValorBr(document.getElementById('pedidoDesconto').value);
+      var subtotal = itens.reduce(function(soma, item) { return soma + item.total; }, 0);
+      var total = Math.max(subtotal - desconto, 0);
+      var hoje = new Date();
+      return {
+        idManual: document.getElementById('pedidoCustomId').value.trim() || gerarCodigoPedido(),
+        nome: document.getElementById('pedidoNome').value.trim(),
+        telefone: document.getElementById('pedidoTelefone').value.trim(),
+        endereco: document.getElementById('pedidoEndereco').value.trim(),
+        itens: itens,
+        subtotal: subtotal,
+        desconto: desconto,
+        total: total,
+        pagamento: document.getElementById('pedidoPagamento').value,
+        data: hoje.toISOString().split('T')[0],
+        dataBr: hoje.toLocaleDateString('pt-BR'),
+        dataHora: hoje.toLocaleString('pt-BR')
+      };
+    }
+
+    function montarResumoPedido(dados) {
+      var linhas = dados.itens.map(function(item) {
+        return item.quantidade + 'x ' + item.produto + ' (' + formatarMoeda(item.valor) + ')';
+      });
+      linhas.push('Pagamento: ' + dados.pagamento);
+      if (dados.telefone) linhas.push('Telefone: ' + dados.telefone);
+      if (dados.endereco) linhas.push('Endereco: ' + dados.endereco);
+      if (dados.desconto > 0) linhas.push('Desconto: ' + formatarMoeda(dados.desconto));
+      linhas.push('Codigo: ' + dados.idManual);
+      return linhas.join(' | ');
+    }
+
+    async function salvarPedidoCompleto(event) {
+      if (event) event.preventDefault();
+      if (!validarFormularioPedido()) return;
+
+      var saveBtn = document.getElementById('salvarPedidoBtn');
+      var dados = obterDadosPedido();
+      saveBtn.disabled = true;
+
+      var payload = {
+        cliente: dados.nome,
+        servico: montarResumoPedido(dados),
+        valor: dados.total,
+        status: 'Pendente',
+        data: dados.data
+      };
+
+      var result = await supabaseClient.from('pedidos').insert(payload);
+      saveBtn.disabled = false;
+
+      if (result.error) {
+        showToast('Erro ao salvar pedido: ' + result.error.message, 'error');
+        return;
+      }
+
+      showToast('Pedido salvo com sucesso!', 'success');
+      gerarPDFPedido(dados);
+      limparFormularioPedido();
+      await renderTabela('pedidos-lista');
+    }
+
+    function limparFormularioPedido() {
+      var form = document.getElementById('pedidoForm');
+      if (!form) return;
+      form.reset();
+      var itens = document.querySelectorAll('#itensContainer .pedido-item');
+      itens.forEach(function(item, index) {
+        if (index > 0) item.remove();
+      });
+      form.querySelectorAll('.error').forEach(function(el) { el.classList.remove('error'); });
+      atualizarNumeracaoItensPedido();
+      atualizarTotalPedido();
+    }
+
+    function gerarPDFPedido(dadosProntos) {
+      if (!dadosProntos && !validarFormularioPedido()) return;
+      var d = dadosProntos || obterDadosPedido();
+      if (!window.jspdf || !window.jspdf.jsPDF) {
+        showToast('Nao foi possivel carregar a biblioteca de PDF.', 'error');
+        return;
+      }
+
+      var jsPDF = window.jspdf.jsPDF;
+      var doc = new jsPDF({ unit: 'mm', format: 'a4' });
+      var y = 14;
+      var mg = 14;
+      var right = 196;
+
+      doc.setFillColor(0, 96, 100);
+      doc.roundedRect(mg, y, 182, 22, 2.5, 2.5, 'F');
+      doc.setTextColor(255, 255, 255);
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(18);
+      doc.text('Gelo Mix', mg + 6, y + 9);
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(9);
+      doc.text('Pedido de venda', mg + 6, y + 15);
+      doc.setFont('helvetica', 'bold');
+      doc.text('Data: ' + d.dataBr, right - 6, y + 9, { align: 'right' });
+      doc.setFont('helvetica', 'normal');
+      doc.text('Pedido: ' + d.idManual, right - 6, y + 15, { align: 'right' });
+
+      y += 32;
+      doc.setTextColor(31, 41, 51);
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(10);
+      doc.text('CLIENTE', mg, y);
+      doc.text('TELEFONE', 124, y);
+      doc.setFont('helvetica', 'normal');
+      y += 7;
+      doc.text(d.nome || '-', mg, y);
+      doc.text(d.telefone || '-', 124, y);
+      y += 8;
+      doc.setFont('helvetica', 'bold');
+      doc.text('ENDERECO', mg, y);
+      y += 6;
+      doc.setFont('helvetica', 'normal');
+      doc.text(doc.splitTextToSize(d.endereco || '-', 182), mg, y);
+
+      y += 16;
+      doc.setFillColor(0, 67, 72);
+      doc.rect(mg, y, 182, 9, 'F');
+      doc.setTextColor(255, 255, 255);
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(8.5);
+      doc.text('PRODUTO', mg + 4, y + 6);
+      doc.text('QTD', 132, y + 6);
+      doc.text('VALOR', 150, y + 6);
+      doc.text('TOTAL', 192, y + 6, { align: 'right' });
+      y += 9;
+
+      d.itens.forEach(function(item) {
+        if (y > 265) {
+          doc.addPage();
+          y = 18;
+        }
+        doc.setTextColor(31, 41, 51);
+        doc.setFont('helvetica', 'bold');
+        doc.text(String(item.produto || '-'), mg + 4, y + 5);
+        doc.setFontSize(9);
+        doc.text(String(item.quantidade), 132, y + 5);
+        doc.text(formatarMoeda(item.valor), 150, y + 5);
+        doc.text(formatarMoeda(item.total), 192, y + 5, { align: 'right' });
+        y += 14;
+      });
+
+      y += 6;
+      doc.setDrawColor(215, 226, 230);
+      doc.line(mg, y, 196, y);
+      y += 8;
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(96, 125, 134);
+      doc.text('Pagamento: ' + d.pagamento, mg, y);
+      doc.text('Subtotal: ' + formatarMoeda(d.subtotal), right, y, { align: 'right' });
+      y += 7;
+      doc.text('Desconto: ' + formatarMoeda(d.desconto), right, y, { align: 'right' });
+      y += 9;
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(14);
+      doc.setTextColor(0, 77, 64);
+      doc.text('Total: ' + formatarMoeda(d.total), right, y, { align: 'right' });
+
+      doc.save('pedido-' + d.idManual + '.pdf');
+    }
+
+    function configurarFormularioPedido() {
+      var form = document.getElementById('pedidoForm');
+      var itensContainer = document.getElementById('itensContainer');
+      var descontoInput = document.getElementById('pedidoDesconto');
+      if (!form || !itensContainer || !descontoInput) return;
+
+      form.addEventListener('submit', salvarPedidoCompleto);
+      itensContainer.addEventListener('input', atualizarTotalPedido);
+      descontoInput.addEventListener('input', atualizarTotalPedido);
+      itensContainer.addEventListener('blur', function(event) {
+        if (!event.target.classList.contains('valor')) return;
+        var valor = parseValorBr(event.target.value);
+        if (valor > 0) event.target.value = valor.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      }, true);
+      descontoInput.addEventListener('blur', function() {
+        var valor = parseValorBr(this.value);
+        if (valor > 0) this.value = valor.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      });
+      document.addEventListener('click', function(event) {
+        if (!event.target.closest('.lookup-field')) fecharBuscasPedido();
+      });
+      atualizarNumeracaoItensPedido();
+      atualizarTotalPedido();
+    }
+
+    // =============================================
+    // ROTAS COM CLIENTES CADASTRADOS
+    // =============================================
+    function obterTextoEnderecoRota(parada) {
+      var cliente = parada.querySelector('.rota-cliente').value.trim();
+      var endereco = parada.querySelector('.rota-endereco').value.trim();
+      var cep = parada.querySelector('.rota-cep').value.trim();
+      return [cliente, endereco, cep].filter(Boolean).join(' - ');
+    }
+
+    function obterParadasRota(apenasValidas) {
+      return Array.from(document.querySelectorAll('#rotaParadasContainer .rota-parada')).map(function(parada) {
+        return {
+          clienteId: parada.dataset.clienteId || '',
+          cliente: parada.querySelector('.rota-cliente').value.trim(),
+          telefone: parada.querySelector('.rota-telefone').value.trim(),
+          cep: parada.querySelector('.rota-cep').value.trim(),
+          endereco: parada.querySelector('.rota-endereco').value.trim()
+        };
+      }).filter(function(parada) {
+        return !apenasValidas || (parada.cliente && parada.endereco);
+      });
+    }
+
+    function validarRota() {
+      var valid = true;
+      var paradas = document.querySelectorAll('#rotaParadasContainer .rota-parada');
+      paradas.forEach(function(parada) {
+        ['rota-cliente', 'rota-endereco'].forEach(function(classe) {
+          var el = parada.querySelector('.' + classe);
+          el.classList.remove('error');
+          if (!el.value || !el.value.trim()) {
+            el.classList.add('error');
+            valid = false;
+          }
+        });
+      });
+      if (!valid) showToast('Informe cliente e endereco em todos os pontos da rota.', 'error');
+      return valid;
+    }
+
+    function atualizarNumeracaoParadasRota() {
+      var paradas = document.querySelectorAll('#rotaParadasContainer .rota-parada');
+      paradas.forEach(function(parada, index) {
+        parada.querySelector('.item-title span').textContent = 'Endereco ' + (index + 1);
+        parada.querySelector('.btn-remove-item').style.display = paradas.length > 1 ? 'inline-block' : 'none';
+      });
+    }
+
+    function adicionarParadaRota() {
+      var paradas = document.querySelectorAll('#rotaParadasContainer .rota-parada');
+      if (paradas.length >= 5) {
+        showToast('A rota permite no maximo 5 enderecos.', 'error');
+        return;
+      }
+      var novo = paradas[0].cloneNode(true);
+      novo.removeAttribute('data-cliente-id');
+      novo.querySelectorAll('input').forEach(function(input) {
+        input.value = '';
+        input.classList.remove('error');
+      });
+      novo.querySelectorAll('.lookup-results').forEach(function(el) {
+        el.innerHTML = '';
+        el.classList.remove('open');
+      });
+      document.getElementById('rotaParadasContainer').appendChild(novo);
+      atualizarNumeracaoParadasRota();
+    }
+
+    function removerParadaRota(botao) {
+      if (document.querySelectorAll('#rotaParadasContainer .rota-parada').length <= 1) return;
+      botao.closest('.rota-parada').remove();
+      atualizarNumeracaoParadasRota();
+    }
+
+    function renderClientesRota(input, clientes) {
+      var parada = input.closest('.rota-parada');
+      var results = parada ? parada.querySelector('.rota-cliente-results') : null;
+      if (!results) return;
+      if (!clientes.length) {
+        results.innerHTML = '<div class="lookup-empty">Nenhum cliente cadastrado encontrado.</div>';
+      } else {
+        results.innerHTML = clientes.map(function(cliente) {
+          return '<button type="button" class="lookup-option" onclick="selecionarClienteRota(this, \'' + cliente.id + '\')">' +
+            '<strong>' + escapeHtml(cliente.nome || 'Cliente sem nome') + '</strong>' +
+            '<span>' + escapeHtml([cliente.telefone, cliente.cep, cliente.endereco].filter(Boolean).join(' - ') || 'Sem endereco') + '</span>' +
+            '</button>';
+        }).join('');
+      }
+      results.classList.add('open');
+    }
+
+    function abrirBuscaClienteRota(botao) {
+      var parada = botao.closest('.rota-parada');
+      var input = parada ? parada.querySelector('.rota-cliente') : null;
+      if (!input) return;
+      renderClientesRota(input, filtrarClientesPedido(input.value));
+      input.focus();
+    }
+
+    function atualizarBuscaClienteRota(input) {
+      var paradaAtual = input.closest('.rota-parada');
+      if (paradaAtual) paradaAtual.removeAttribute('data-cliente-id');
+      var parada = input.closest('.rota-parada');
+      var results = parada ? parada.querySelector('.rota-cliente-results') : null;
+      if (results && results.classList.contains('open')) {
+        renderClientesRota(input, filtrarClientesPedido(input.value));
+      }
+    }
+
+    function selecionarClienteRota(botao, id) {
+      var cliente = (dadosCache.clientes || []).find(function(item) { return item.id === id; });
+      var parada = botao.closest('.rota-parada');
+      if (!cliente || !parada) return;
+      parada.dataset.clienteId = cliente.id || '';
+      parada.querySelector('.rota-cliente').value = cliente.nome || '';
+      parada.querySelector('.rota-telefone').value = cliente.telefone || '';
+      parada.querySelector('.rota-cep').value = cliente.cep || '';
+      parada.querySelector('.rota-endereco').value = cliente.endereco || '';
+      parada.querySelectorAll('.error').forEach(function(el) { el.classList.remove('error'); });
+      fecharBuscasPedido();
+    }
+
+    function criarLinksRota(paradas) {
+      var enderecos = paradas.map(function(p) {
+        return [p.endereco, p.cep].filter(Boolean).join(' ');
+      }).filter(Boolean);
+      var encoded = enderecos.map(encodeURIComponent);
+      var mapsUrl = '';
+      if (encoded.length === 1) {
+        mapsUrl = 'https://www.google.com/maps/search/?api=1&query=' + encoded[0];
+      } else {
+        mapsUrl = 'https://www.google.com/maps/dir/?api=1&origin=' + encoded[0] +
+          '&destination=' + encoded[encoded.length - 1] +
+          (encoded.length > 2 ? '&waypoints=' + encoded.slice(1, -1).join('%7C') : '');
+      }
+      return { maps: mapsUrl };
+    }
+
+    function abrirRotaGoogleMaps() {
+      if (!validarRota()) return;
+      var links = criarLinksRota(obterParadasRota(true));
+      window.open(links.maps, '_blank', 'noopener');
+    }
+
+    function montarMensagemRota() {
+      var nome = document.getElementById('rotaNome').value.trim() || 'Rota de entrega';
+      var paradas = obterParadasRota(true);
+      var links = criarLinksRota(paradas);
+      var linhas = [nome, ''];
+      paradas.forEach(function(parada, index) {
+        linhas.push((index + 1) + '. ' + parada.cliente);
+        linhas.push([parada.endereco, parada.cep].filter(Boolean).join(' - '));
+        if (parada.telefone) linhas.push('Tel: ' + parada.telefone);
+      });
+      linhas.push('');
+      linhas.push('Google Maps: ' + links.maps);
+      return linhas.join('\n');
+    }
+
+    function compartilharRotaWhatsApp() {
+      if (!validarRota()) return;
+      window.open('https://wa.me/?text=' + encodeURIComponent(montarMensagemRota()), '_blank', 'noopener');
+    }
+
+    function clienteRotaJaExiste(parada) {
+      var nome = normalizarBusca(parada.cliente);
+      var telefone = String(parada.telefone || '').replace(/\D/g, '');
+      var endereco = normalizarBusca(parada.endereco);
+      return (dadosCache.clientes || []).find(function(cliente) {
+        var mesmoId = parada.clienteId && cliente.id === parada.clienteId;
+        var mesmoTelefone = telefone && String(cliente.telefone || '').replace(/\D/g, '') === telefone;
+        var mesmoNomeEndereco = normalizarBusca(cliente.nome) === nome && normalizarBusca(cliente.endereco) === endereco;
+        return mesmoId || mesmoTelefone || mesmoNomeEndereco;
+      });
+    }
+
+    async function garantirClientesDaRota(paradas) {
+      var criados = 0;
+      for (var i = 0; i < paradas.length; i++) {
+        var parada = paradas[i];
+        if (clienteRotaJaExiste(parada)) continue;
+
+        var payload = {
+          nome: parada.cliente,
+          telefone: parada.telefone,
+          cep: parada.cep,
+          email: '',
+          endereco: parada.endereco
+        };
+
+        var result = await supabaseClient.from('clientes').insert(payload).select('*').single();
+        if (result.error && (result.error.message || '').indexOf("'cep' column") !== -1) {
+          delete payload.cep;
+          result = await supabaseClient.from('clientes').insert(payload).select('*').single();
+        }
+        if (result.error) throw result.error;
+        if (result.data) {
+          dadosCache.clientes = dadosCache.clientes || [];
+          dadosCache.clientes.unshift(result.data);
+        }
+        criados++;
+      }
+      return criados;
+    }
+
+    async function salvarRota(event) {
+      if (event) event.preventDefault();
+      if (!validarRota()) return;
+      var paradas = obterParadasRota(true);
+      var nome = document.getElementById('rotaNome').value.trim() || 'Rota com ' + paradas.length + ' enderecos';
+      var saveBtn = document.getElementById('salvarRotaBtn');
+      saveBtn.disabled = true;
+      var clientesCriados = 0;
+      try {
+        clientesCriados = await garantirClientesDaRota(paradas);
+      } catch (e) {
+        saveBtn.disabled = false;
+        showToast('Erro ao cadastrar cliente da rota: ' + (e.message || e), 'error');
+        return;
+      }
+      var result = await supabaseClient.from('rotas').insert({
+        bairro: nome,
+        regiao: paradas.map(function(p, i) { return (i + 1) + '. ' + p.cliente + ' - ' + [p.endereco, p.cep].filter(Boolean).join(' - '); }).join(' | '),
+        horario: new Date().toLocaleString('pt-BR')
+      });
+      saveBtn.disabled = false;
+      if (result.error) {
+        showToast('Erro ao salvar rota: ' + result.error.message, 'error');
+        return;
+      }
+      showToast('Rota salva com sucesso!' + (clientesCriados ? ' ' + clientesCriados + ' cliente(s) cadastrado(s).' : ''), 'success');
+      if (clientesCriados) await renderTabela('clientes');
+      await renderTabela('rotas');
+    }
+
+    function limparRota() {
+      var form = document.getElementById('rotaForm');
+      if (!form) return;
+      form.reset();
+      var paradas = document.querySelectorAll('#rotaParadasContainer .rota-parada');
+      paradas.forEach(function(parada, index) {
+        if (index > 0) parada.remove();
+      });
+      form.querySelectorAll('.error').forEach(function(el) { el.classList.remove('error'); });
+      form.querySelectorAll('.lookup-results').forEach(function(el) {
+        el.innerHTML = '';
+        el.classList.remove('open');
+      });
+      atualizarNumeracaoParadasRota();
+    }
+
+    function configurarFormularioRota() {
+      var form = document.getElementById('rotaForm');
+      if (!form) return;
+      form.addEventListener('submit', salvarRota);
+      form.addEventListener('input', function(event) {
+        if (event.target.classList.contains('rota-telefone')) {
+          event.target.value = aplicarMascaraCelular(event.target.value);
+        }
+        if (event.target.classList.contains('rota-cep')) {
+          event.target.value = aplicarMascaraCep(event.target.value);
+          if (event.target.value.replace(/\D/g, '').length === 8) buscarEnderecoRotaPorCep(event.target);
+        }
+      });
+      form.addEventListener('blur', function(event) {
+        if (event.target.classList.contains('rota-cep') && event.target.value.replace(/\D/g, '').length === 8) {
+          buscarEnderecoRotaPorCep(event.target);
+        }
+      }, true);
+      atualizarNumeracaoParadasRota();
+    }
+
+    // =============================================
     // MODAL FORMULARIOS
     // =============================================
     function validarCampo(valor, nome) {
       return valor && valor.trim() !== '';
+    }
+
+    function aplicarMascaraCelular(valor) {
+      var numeros = String(valor || '').replace(/\D/g, '').slice(0, 11);
+      if (numeros.length <= 2) return numeros.replace(/(\d{0,2})/, '($1');
+      if (numeros.length <= 7) return numeros.replace(/(\d{2})(\d{0,5})/, '($1) $2');
+      return numeros.replace(/(\d{2})(\d{5})(\d{0,4})/, '($1) $2-$3');
+    }
+
+    function aplicarMascaraCep(valor) {
+      var numeros = String(valor || '').replace(/\D/g, '').slice(0, 8);
+      if (numeros.length <= 5) return numeros;
+      return numeros.replace(/(\d{5})(\d{0,3})/, '$1-$2');
+    }
+
+    function configurarCamposClienteModal() {
+      var telefone = document.getElementById('f_telefone');
+      var cep = document.getElementById('f_cep');
+      if (telefone) {
+        telefone.value = aplicarMascaraCelular(telefone.value);
+        telefone.addEventListener('input', function() {
+          this.value = aplicarMascaraCelular(this.value);
+        });
+      }
+      if (cep) {
+        cep.value = aplicarMascaraCep(cep.value);
+        cep.addEventListener('input', function() {
+          this.value = aplicarMascaraCep(this.value);
+          if (this.value.replace(/\D/g, '').length === 8) buscarEnderecoPorCep(this.value);
+        });
+        cep.addEventListener('blur', function() {
+          if (this.value.replace(/\D/g, '').length === 8) buscarEnderecoPorCep(this.value);
+        });
+      }
+    }
+
+    async function buscarEnderecoPorCep(cepValor) {
+      var cep = String(cepValor || '').replace(/\D/g, '');
+      var cepInput = document.getElementById('f_cep');
+      var enderecoInput = document.getElementById('f_endereco');
+      if (cep.length !== 8 || !enderecoInput) return;
+
+      try {
+        if (cepInput) cepInput.disabled = true;
+        var response = await fetch('https://viacep.com.br/ws/' + cep + '/json/');
+        var data = await response.json();
+        if (data.erro) {
+          showToast('CEP não encontrado.', 'error');
+          return;
+        }
+        var endereco = [
+          data.logradouro,
+          data.bairro,
+          data.localidade && data.uf ? data.localidade + '/' + data.uf : ''
+        ].filter(Boolean).join(' - ');
+        enderecoInput.value = endereco;
+        showToast('Endereço preenchido pelo CEP.', 'success');
+      } catch (e) {
+        showToast('Não foi possível buscar o CEP agora.', 'error');
+      } finally {
+        if (cepInput) cepInput.disabled = false;
+      }
+    }
+
+    async function buscarEnderecoRotaPorCep(input) {
+      var parada = input.closest('.rota-parada');
+      var enderecoInput = parada ? parada.querySelector('.rota-endereco') : null;
+      var cep = String(input.value || '').replace(/\D/g, '');
+      if (!enderecoInput || cep.length !== 8) return;
+
+      try {
+        input.disabled = true;
+        var response = await fetch('https://viacep.com.br/ws/' + cep + '/json/');
+        var data = await response.json();
+        if (data.erro) {
+          showToast('CEP não encontrado.', 'error');
+          return;
+        }
+        enderecoInput.value = [
+          data.logradouro,
+          data.bairro,
+          data.localidade && data.uf ? data.localidade + '/' + data.uf : ''
+        ].filter(Boolean).join(' - ');
+      } catch (e) {
+        showToast('Não foi possível buscar o CEP agora.', 'error');
+      } finally {
+        input.disabled = false;
+      }
     }
 
     async function abrirModal(tipo, id) {
@@ -666,16 +2078,15 @@
       else if (tipo === 'clientes') {
         html = '<div class="form-group"><label for="f_nome">Nome *</label><input type="text" id="f_nome" value="' + escapeHtml(d.nome || '') + '" placeholder="Nome completo" required aria-required="true" /></div>' +
           '<div class="form-row">' +
-          '<div class="form-group"><label for="f_telefone">Telefone</label><input type="tel" id="f_telefone" value="' + escapeHtml(d.telefone || '') + '" placeholder="(00) 00000-0000" /></div>' +
+          '<div class="form-group"><label for="f_telefone">Telefone</label><input type="tel" id="f_telefone" value="' + escapeHtml(d.telefone || '') + '" placeholder="(00) 00000-0000" maxlength="15" inputmode="tel" /></div>' +
           '<div class="form-group"><label for="f_email">Email</label><input type="email" id="f_email" value="' + escapeHtml(d.email || '') + '" placeholder="email@exemplo.com" /></div>' +
           '</div>' +
+          '<div class="form-group"><label for="f_cep">CEP</label><input type="text" id="f_cep" value="' + escapeHtml(d.cep || '') + '" placeholder="00000-000" maxlength="9" inputmode="numeric" /></div>' +
           '<div class="form-group"><label for="f_endereco">Endereço</label><input type="text" id="f_endereco" value="' + escapeHtml(d.endereco || '') + '" placeholder="Rua, número - Bairro - Cidade/UF" /></div>';
         document.getElementById('modalTitle').textContent = titulo + 'Cliente';
       }
       else if (tipo === 'produtos') {
-        html = '<div class="form-group"><label for="f_nome">Nome *</label><input type="text" id="f_nome" value="' + escapeHtml(d.nome || '') + '" placeholder="Nome do produto" required aria-required="true" /></div>' +
-          '<div class="form-group"><label for="f_descricao">Descrição</label><textarea id="f_descricao" placeholder="Descrição do produto">' + escapeHtml(d.descricao || '') + '</textarea></div>' +
-          '<div class="form-row">' +
+        html = '<div class="form-group"><label for="f_nome">Nome *</label><input type="text" id="f_nome" value="' + escapeHtml(d.nome || '') + '" placeholder="Nome do produto" required aria-required="true" /></div>' +          '<div class="form-row">' +
           '<div class="form-group"><label for="f_preco">Preço (R$)</label><input type="number" step="0.01" id="f_preco" value="' + (d.preco || '') + '" placeholder="0.00" /></div>' +
           '<div class="form-group"><label for="f_estoque">Estoque</label><input type="number" id="f_estoque" value="' + (d.estoque || '') + '" placeholder="0" /></div>' +
           '</div>';
@@ -689,6 +2100,7 @@
       }
 
       document.getElementById('modalBody').innerHTML = html;
+      if (tipo === 'clientes') configurarCamposClienteModal();
       document.getElementById('modalOverlay').classList.add('active');
       document.body.style.overflow = 'hidden';
     }
@@ -742,14 +2154,13 @@
         dados = {
           nome: document.getElementById('f_nome').value.trim(),
           telefone: document.getElementById('f_telefone').value.trim(),
+          cep: document.getElementById('f_cep').value.trim(),
           email: document.getElementById('f_email').value.trim(),
           endereco: document.getElementById('f_endereco').value.trim()
         };
       } else if (tipoAtual === 'produtos') {
         dados = {
-          nome: document.getElementById('f_nome').value.trim(),
-          descricao: document.getElementById('f_descricao').value.trim(),
-          preco: parseFloat(document.getElementById('f_preco').value) || 0,
+          nome: document.getElementById('f_nome').value.trim(),          preco: parseFloat(document.getElementById('f_preco').value) || 0,
           estoque: parseInt(document.getElementById('f_estoque').value) || 0
         };
       } else if (tipoAtual === 'rotas') {
@@ -788,16 +2199,35 @@
       if (result.error) {
         var errMsg = result.error.message || JSON.stringify(result.error);
         console.error('[SE] Erro Supabase:', errMsg);
+        if (tipoAtual === 'clientes' && errMsg.indexOf("'cep' column") !== -1) {
+          delete dados.cep;
+          try {
+            result = editando
+              ? await supabaseClient.from(tabela).update(dados).eq('id', editando.id)
+              : await supabaseClient.from(tabela).insert(dados);
+          } catch (retryError) {
+            showToast('Erro de conexão: ' + retryError.message, 'error');
+            return;
+          }
+          if (!result.error) {
+            showToast('Cliente salvo. Para gravar CEP, aplique a coluna cep no Supabase.', 'success');
+            await renderTabela(tipoAtual);
+            fecharModal();
+            return;
+          }
+          errMsg = result.error.message || JSON.stringify(result.error);
+        }
         showToast('Erro ao salvar: ' + errMsg, 'error');
         return;
       }
 
       showToast(editando ? 'Registro atualizado!' : 'Registro criado!', 'success');
-      await renderTabela(tipoAtual);
+      await renderTabela(tipoAtual === 'pedidos' ? 'pedidos-lista' : tipoAtual);
       fecharModal();
     }
 
     async function editarRegistro(tab, id) {
+      if (tab === 'pedidos-lista') tab = 'pedidos';
       await abrirModal(tab, id);
     }
 
@@ -811,7 +2241,399 @@
         return;
       }
       showToast('Registro excluído.', 'success');
-      renderTabela(tab);
+      renderTabela(isPedidosTab(tab) ? 'pedidos-lista' : tab);
+    }
+
+    // =============================================
+    // SUPER CONFIG
+    // =============================================
+    function nivelLabel(nivel) {
+      var labels = {
+        nv1: 'NV1 - Usuario',
+        nv2: 'NV2 - Administrador',
+        nv3: 'NV3 - Super'
+      };
+      return labels[nivel] || nivel || 'NV1 - Usuario';
+    }
+
+    function popularSelect(id, dados, placeholder, labelFn) {
+      var select = document.getElementById(id);
+      if (!select) return;
+      var options = '<option value="">' + escapeHtml(placeholder) + '</option>';
+      options += dados.map(function(item) {
+        return '<option value="' + escapeHtml(item.id) + '">' + escapeHtml(labelFn(item)) + '</option>';
+      }).join('');
+      select.innerHTML = options;
+    }
+
+    function renderUsuariosAcesso() {
+      var tbody = document.getElementById('tbody-super-usuarios');
+      var empty = document.getElementById('empty-super-usuarios');
+      if (!tbody || !empty) return;
+      if (!usuariosAcessoCache.length) {
+        tbody.innerHTML = '';
+        empty.style.display = 'block';
+      } else {
+        empty.style.display = 'none';
+        tbody.innerHTML = usuariosAcessoCache.map(function(u) {
+          var criado = u.created_at ? new Date(u.created_at).toLocaleString('pt-BR') : '-';
+          return '<tr>' +
+            '<td><strong>' + escapeHtml(u.email || '-') + '</strong></td>' +
+            '<td>' + escapeHtml(u.nome || '-') + '</td>' +
+            '<td>' + escapeHtml(nivelLabel(u.nivel)) + '</td>' +
+            '<td>' + escapeHtml(criado) + '</td>' +
+            '</tr>';
+        }).join('');
+      }
+
+      popularSelect('scUserSelect', usuariosAcessoCache, 'Selecione um usuario', function(u) {
+        return (u.email || '-') + ' - ' + nivelLabel(u.nivel);
+      });
+      popularSelect('scDeleteUserSelect', usuariosAcessoCache, 'Selecione um email', function(u) {
+        return u.email || '-';
+      });
+    }
+
+    async function carregarUsuariosAcesso() {
+      var result = await supabaseClient.from('usuarios_acesso').select('*').order('created_at', { ascending: false });
+      if (result.error) {
+        usuariosAcessoCache = [];
+        renderUsuariosAcesso();
+        showToast('Tabela usuarios_acesso ainda nao existe no Supabase. Execute o setup_supabase.sql atualizado.', 'error');
+        return;
+      }
+      usuariosAcessoCache = result.data || [];
+      renderUsuariosAcesso();
+    }
+
+    async function carregarClientesSuperConfig() {
+      var clientes = dadosCache.clientes || [];
+      if (!clientes.length) {
+        var result = await supabaseClient.from('clientes').select('*').order('created_at', { ascending: false });
+        if (result.error) {
+          showToast('Erro ao carregar clientes: ' + result.error.message, 'error');
+          return;
+        }
+        clientes = result.data || [];
+        dadosCache.clientes = clientes;
+      }
+      popularSelect('scClienteSelect', clientes, 'Selecione um cliente', function(c) {
+        return [c.nome, c.telefone].filter(Boolean).join(' - ') || 'Cliente sem nome';
+      });
+      popularSelect('scClienteDeleteSelect', clientes, 'Selecione um cliente', function(c) {
+        return [c.nome, c.telefone].filter(Boolean).join(' - ') || 'Cliente sem nome';
+      });
+    }
+
+    async function carregarSuperConfig() {
+      await carregarUsuariosAcesso();
+      await carregarClientesSuperConfig();
+      configurarCamposSuperConfig();
+    }
+
+    async function salvarUsuarioAcesso() {
+      var email = document.getElementById('scUserEmail').value.trim().toLowerCase();
+      var nome = document.getElementById('scUserName').value.trim();
+      var nivel = document.getElementById('scUserLevel').value;
+      if (!email) {
+        showToast('Informe o email do usuario.', 'error');
+        return;
+      }
+      var result = await supabaseClient.from('usuarios_acesso').upsert({
+        email: email,
+        nome: nome,
+        nivel: nivel,
+        updated_at: new Date()
+      }, { onConflict: 'email' });
+      if (result.error) {
+        showToast('Erro ao salvar usuario: ' + result.error.message, 'error');
+        return;
+      }
+      document.getElementById('scUserEmail').value = '';
+      document.getElementById('scUserName').value = '';
+      document.getElementById('scUserLevel').value = 'nv1';
+      showToast('Usuario registrado no Supabase.', 'success');
+      carregarUsuariosAcesso();
+    }
+
+    function preencherUsuarioAcessoEdicao() {
+      var id = document.getElementById('scUserSelect').value;
+      var usuario = usuariosAcessoCache.find(function(u) { return u.id === id; });
+      document.getElementById('scEditName').value = usuario ? (usuario.nome || '') : '';
+      document.getElementById('scEditLevel').value = usuario ? (usuario.nivel || 'nv1') : 'nv1';
+    }
+
+    async function editarUsuarioAcesso() {
+      var id = document.getElementById('scUserSelect').value;
+      if (!id) {
+        showToast('Selecione um usuario para editar.', 'error');
+        return;
+      }
+      var result = await supabaseClient.from('usuarios_acesso').update({
+        nome: document.getElementById('scEditName').value.trim(),
+        nivel: document.getElementById('scEditLevel').value,
+        updated_at: new Date()
+      }).eq('id', id);
+      if (result.error) {
+        showToast('Erro ao editar usuario: ' + result.error.message, 'error');
+        return;
+      }
+      showToast('Nivel de acesso atualizado.', 'success');
+      carregarUsuariosAcesso();
+    }
+
+    async function excluirUsuarioAcesso() {
+      var id = document.getElementById('scDeleteUserSelect').value;
+      if (!id) {
+        showToast('Selecione um email para excluir.', 'error');
+        return;
+      }
+      if (!confirm('Excluir o acesso deste usuario?')) return;
+      var result = await supabaseClient.from('usuarios_acesso').delete().eq('id', id);
+      if (result.error) {
+        showToast('Erro ao excluir usuario: ' + result.error.message, 'error');
+        return;
+      }
+      showToast('Acesso removido.', 'success');
+      carregarUsuariosAcesso();
+    }
+
+    function normalizarContatoSelecionado(contato) {
+      var nome = Array.isArray(contato.name) ? contato.name.join(' ') : (contato.name || '');
+      var telefone = Array.isArray(contato.tel) ? contato.tel[0] : (contato.tel || '');
+      var endereco = Array.isArray(contato.address) && contato.address[0] ? String(contato.address[0]) : '';
+      return {
+        id: 'contato-' + Date.now() + '-' + Math.random().toString(16).slice(2),
+        nome: String(nome || '').trim(),
+        telefone: aplicarMascaraCelular(String(telefone || '')),
+        endereco: endereco,
+        selecionado: true
+      };
+    }
+
+    function renderContatosImportados() {
+      var box = document.getElementById('contatosImportadosLista');
+      if (!box) return;
+      if (!contatosImportados.length) {
+        box.style.display = 'none';
+        box.innerHTML = '';
+        return;
+      }
+      box.style.display = 'block';
+      box.innerHTML = contatosImportados.map(function(c) {
+        return '<label class="pedido-item" style="display:flex;align-items:center;gap:12px;">' +
+          '<input type="checkbox" ' + (c.selecionado ? 'checked' : '') + ' onchange="alternarContatoImportado(\'' + c.id + '\', this.checked)" />' +
+          '<span><strong>' + escapeHtml(c.nome || 'Contato sem nome') + '</strong><br><small>' + escapeHtml(c.telefone || 'Sem telefone') + '</small></span>' +
+          '</label>';
+      }).join('');
+    }
+
+    function alternarContatoImportado(id, marcado) {
+      contatosImportados = contatosImportados.map(function(c) {
+        if (c.id === id) c.selecionado = marcado;
+        return c;
+      });
+    }
+
+    async function selecionarContatosCelular() {
+      if (!('contacts' in navigator) || !('ContactsManager' in window)) {
+        showToast('Este navegador nao permite selecionar contatos do celular. Use o cadastro manual.', 'error');
+        return;
+      }
+      try {
+        var propsDisponiveis = await navigator.contacts.getProperties();
+        var props = ['name', 'tel', 'address'].filter(function(prop) {
+          return propsDisponiveis.indexOf(prop) !== -1;
+        });
+        if (props.indexOf('name') === -1 && props.indexOf('tel') === -1) {
+          showToast('Este navegador nao liberou nome ou telefone dos contatos.', 'error');
+          return;
+        }
+        var contatos = await navigator.contacts.select(props, { multiple: true });
+        contatosImportados = contatos.map(normalizarContatoSelecionado).filter(function(c) {
+          return c.nome || c.telefone;
+        });
+        renderContatosImportados();
+        showToast(contatosImportados.length + ' contato(s) pronto(s) para importar.', 'success');
+      } catch (e) {
+        showToast('Selecao de contatos cancelada ou indisponivel.', 'error');
+      }
+    }
+
+    async function salvarClientePayload(payload, id) {
+      var query = id
+        ? supabaseClient.from('clientes').update(payload).eq('id', id)
+        : supabaseClient.from('clientes').insert(payload);
+      var result = await query;
+      if (result.error && (result.error.message || '').indexOf("'cep' column") !== -1) {
+        var semCep = Object.assign({}, payload);
+        delete semCep.cep;
+        result = id
+          ? await supabaseClient.from('clientes').update(semCep).eq('id', id)
+          : await supabaseClient.from('clientes').insert(semCep);
+      }
+      return result;
+    }
+
+    async function atualizarClientesAposSuperConfig() {
+      await renderTabela('clientes');
+      await carregarClientesSuperConfig();
+      var superTab = document.getElementById('tab-super-config');
+      if (superTab && superTab.classList.contains('active')) {
+        document.getElementById('pageBadge').textContent = 'Super';
+      }
+    }
+
+    async function salvarContatosSelecionados() {
+      var selecionados = contatosImportados.filter(function(c) { return c.selecionado; });
+      if (!selecionados.length) {
+        showToast('Marque ao menos um contato para importar.', 'error');
+        return;
+      }
+      for (var i = 0; i < selecionados.length; i++) {
+        var c = selecionados[i];
+        var result = await salvarClientePayload({
+          nome: c.nome || c.telefone || 'Cliente sem nome',
+          telefone: c.telefone || '',
+          cep: '',
+          email: '',
+          endereco: c.endereco || ''
+        });
+        if (result.error) {
+          showToast('Erro ao importar ' + (c.nome || c.telefone) + ': ' + result.error.message, 'error');
+          return;
+        }
+      }
+      contatosImportados = [];
+      renderContatosImportados();
+      showToast('Contatos importados como clientes.', 'success');
+      atualizarClientesAposSuperConfig();
+    }
+
+    async function buscarEnderecoParaCampos(cepId, enderecoId) {
+      var cepInput = document.getElementById(cepId);
+      var enderecoInput = document.getElementById(enderecoId);
+      var cep = cepInput ? String(cepInput.value || '').replace(/\D/g, '') : '';
+      if (!cepInput || !enderecoInput || cep.length !== 8) return;
+      try {
+        cepInput.disabled = true;
+        var response = await fetch('https://viacep.com.br/ws/' + cep + '/json/');
+        var data = await response.json();
+        if (data.erro) {
+          showToast('CEP nao encontrado.', 'error');
+          return;
+        }
+        enderecoInput.value = [
+          data.logradouro,
+          data.bairro,
+          data.localidade && data.uf ? data.localidade + '/' + data.uf : ''
+        ].filter(Boolean).join(' - ');
+      } catch (e) {
+        showToast('Nao foi possivel buscar o CEP agora.', 'error');
+      } finally {
+        cepInput.disabled = false;
+      }
+    }
+
+    function configurarCamposSuperConfig() {
+      ['scClienteTelefone', 'scClienteEditTelefone'].forEach(function(id) {
+        var input = document.getElementById(id);
+        if (!input || input.dataset.maskReady) return;
+        input.value = aplicarMascaraCelular(input.value);
+        input.addEventListener('input', function() { this.value = aplicarMascaraCelular(this.value); });
+        input.dataset.maskReady = '1';
+      });
+      [
+        { cep: 'scClienteCep', endereco: 'scClienteEndereco' },
+        { cep: 'scClienteEditCep', endereco: 'scClienteEditEndereco' }
+      ].forEach(function(cfg) {
+        var input = document.getElementById(cfg.cep);
+        if (!input || input.dataset.cepReady) return;
+        input.value = aplicarMascaraCep(input.value);
+        input.addEventListener('input', function() {
+          this.value = aplicarMascaraCep(this.value);
+          if (this.value.replace(/\D/g, '').length === 8) buscarEnderecoParaCampos(cfg.cep, cfg.endereco);
+        });
+        input.addEventListener('blur', function() {
+          if (this.value.replace(/\D/g, '').length === 8) buscarEnderecoParaCampos(cfg.cep, cfg.endereco);
+        });
+        input.dataset.cepReady = '1';
+      });
+    }
+
+    async function salvarClienteSuperConfig() {
+      var nome = document.getElementById('scClienteNome').value.trim();
+      if (!nome) {
+        showToast('Informe o nome do cliente.', 'error');
+        return;
+      }
+      var result = await salvarClientePayload({
+        nome: nome,
+        telefone: document.getElementById('scClienteTelefone').value.trim(),
+        cep: document.getElementById('scClienteCep').value.trim(),
+        email: '',
+        endereco: document.getElementById('scClienteEndereco').value.trim()
+      });
+      if (result.error) {
+        showToast('Erro ao salvar cliente: ' + result.error.message, 'error');
+        return;
+      }
+      ['scClienteNome', 'scClienteTelefone', 'scClienteCep', 'scClienteEndereco'].forEach(function(id) {
+        document.getElementById(id).value = '';
+      });
+      showToast('Cliente salvo.', 'success');
+      atualizarClientesAposSuperConfig();
+    }
+
+    function preencherClienteSuperConfigEdicao() {
+      var id = document.getElementById('scClienteSelect').value;
+      var cliente = (dadosCache.clientes || []).find(function(c) { return c.id === id; });
+      document.getElementById('scClienteEditNome').value = cliente ? (cliente.nome || '') : '';
+      document.getElementById('scClienteEditTelefone').value = cliente ? (cliente.telefone || '') : '';
+      document.getElementById('scClienteEditCep').value = cliente ? (cliente.cep || '') : '';
+      document.getElementById('scClienteEditEndereco').value = cliente ? (cliente.endereco || '') : '';
+      configurarCamposSuperConfig();
+    }
+
+    async function editarClienteSuperConfig() {
+      var id = document.getElementById('scClienteSelect').value;
+      if (!id) {
+        showToast('Selecione um cliente para editar.', 'error');
+        return;
+      }
+      var nome = document.getElementById('scClienteEditNome').value.trim();
+      if (!nome) {
+        showToast('Informe o nome do cliente.', 'error');
+        return;
+      }
+      var result = await salvarClientePayload({
+        nome: nome,
+        telefone: document.getElementById('scClienteEditTelefone').value.trim(),
+        cep: document.getElementById('scClienteEditCep').value.trim(),
+        endereco: document.getElementById('scClienteEditEndereco').value.trim()
+      }, id);
+      if (result.error) {
+        showToast('Erro ao editar cliente: ' + result.error.message, 'error');
+        return;
+      }
+      showToast('Cliente atualizado.', 'success');
+      atualizarClientesAposSuperConfig();
+    }
+
+    async function excluirClienteSuperConfig() {
+      var id = document.getElementById('scClienteDeleteSelect').value;
+      if (!id) {
+        showToast('Selecione um cliente para excluir.', 'error');
+        return;
+      }
+      if (!confirm('Excluir este cliente do banco?')) return;
+      var result = await supabaseClient.from('clientes').delete().eq('id', id);
+      if (result.error) {
+        showToast('Erro ao excluir cliente: ' + result.error.message, 'error');
+        return;
+      }
+      showToast('Cliente excluido.', 'success');
+      atualizarClientesAposSuperConfig();
     }
 
     // =============================================
@@ -829,6 +2651,9 @@
       document.getElementById('cfgHorario').value = cfgMap['horario'] || '';
       document.getElementById('cfgWhatsapp').value = cfgMap['whatsapp'] || '';
       document.getElementById('cfgInstagram').value = cfgMap['instagram'] || '';
+      document.getElementById('cfgFacebook').value = cfgMap['facebook'] || '';
+      document.getElementById('cfgX').value = cfgMap['x'] || '';
+      document.getElementById('cfgWhatsappLink').value = cfgMap['whatsapp_link'] || cfgMap['whatsapp'] || '';
     }
 
     async function salvarConfig() {
@@ -839,7 +2664,10 @@
         { chave: 'endereco', valor: document.getElementById('cfgEndereco').value },
         { chave: 'horario', valor: document.getElementById('cfgHorario').value },
         { chave: 'whatsapp', valor: document.getElementById('cfgWhatsapp').value },
-        { chave: 'instagram', valor: document.getElementById('cfgInstagram').value }
+        { chave: 'instagram', valor: document.getElementById('cfgInstagram').value },
+        { chave: 'facebook', valor: document.getElementById('cfgFacebook').value },
+        { chave: 'x', valor: document.getElementById('cfgX').value },
+        { chave: 'whatsapp_link', valor: document.getElementById('cfgWhatsappLink').value }
       ];
 
       var saveBtn = document.getElementById('saveConfigBtn');
@@ -889,7 +2717,12 @@
       }
       var ok = await verificarSessao();
       if (!ok) return;
-      renderTabela('pedidos');
+      document.querySelectorAll('.mobile-nav a').forEach(function(a) {
+        if (a.getAttribute('data-tab') === 'pedidos') a.classList.add('active');
+      });
+      configurarFormularioPedido();
+      configurarFormularioRota();
+      renderTabela('pedidos-lista');
       renderTabela('clientes');
       renderTabela('produtos');
       renderTabela('rotas');
@@ -901,3 +2734,6 @@
   </script>
 </body>
 </html>
+
+
+
