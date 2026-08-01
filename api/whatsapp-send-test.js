@@ -1,15 +1,14 @@
 // =============================================
-// SOLUCOES ELETRICA / GELO MIX - Notificacao WhatsApp
-// Envia mensagem automatica via WhatsApp Cloud API (Meta).
+// SOLUCOES ELETRICA - Envio teste de WhatsApp
 //
-// Configuracao vem da tabela whatsapp_config (painel) com fallback
-// para as env vars (WHATSAPP_TOKEN, WHATSAPP_PHONE_ID).
+// POST /api/whatsapp-send-test - envia mensagem de texto livre
+//                                para um destino (teste do painel).
 //
-// Se nenhuma configuracao existir, retorna { sent: false, reason: 'not_configured' }
-// para o frontend acionar o fallback via link wa.me.
+// Auth: exige token JWT valido + perfil admin/super (requireAdmin).
 // =============================================
 
 import { GRAPH_URL, loadConfig, normalizarTelefone } from './_lib/whatsapp.js';
+import { requireAdmin } from './_lib/auth.js';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -17,23 +16,27 @@ export default async function handler(req, res) {
     return;
   }
 
-  const { telefone, mensagem } = req.body || {};
-
-  if (!telefone || !mensagem) {
-    res.status(400).json({ sent: false, reason: 'invalid_payload' });
-    return;
-  }
-
-  const to = normalizarTelefone(telefone);
-  if (!to) {
-    res.status(400).json({ sent: false, reason: 'invalid_phone' });
-    return;
-  }
-
   try {
+    await requireAdmin(req);
+
     const cfg = await loadConfig();
     if (!cfg.accessToken || !cfg.phoneNumberId) {
       res.status(200).json({ sent: false, reason: 'not_configured' });
+      return;
+    }
+
+    let body = {};
+    try { body = JSON.parse(req.body || '{}'); } catch (e) { body = {}; }
+
+    const { telefone, mensagem } = body;
+    if (!telefone || !mensagem) {
+      res.status(400).json({ sent: false, reason: 'invalid_payload' });
+      return;
+    }
+
+    const to = normalizarTelefone(telefone);
+    if (!to) {
+      res.status(400).json({ sent: false, reason: 'invalid_phone' });
       return;
     }
 
@@ -60,8 +63,7 @@ export default async function handler(req, res) {
     }
 
     res.status(200).json({ sent: true, data: data });
-  } catch (err) {
-    res.status(200).json({ sent: false, reason: 'exception', error: err.message });
+  } catch (e) {
+    res.status(200).json({ sent: false, reason: 'exception', error: e.message });
   }
 }
-

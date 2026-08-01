@@ -533,6 +533,9 @@
       <a href="#" data-tab="config" onclick="switchTab('config', this)" role="tab">
         <i class="fas fa-cog" aria-hidden="true"></i> Configurações
       </a>
+      <a href="#" data-tab="whatsapp" onclick="switchTab('whatsapp', this)" role="tab">
+        <i class="fab fa-whatsapp" aria-hidden="true"></i> WhatsApp
+      </a>
       <div class="nav-divider"></div>
       <div class="nav-section">Gelo Mix</div>
       <a href="#" data-tab="gelo-publica" onclick="switchTab('gelo-publica', this)" role="tab">
@@ -1080,6 +1083,127 @@
         </div>
       </div>
 
+      <!-- ========== WHATSAPP ========== -->
+      <div class="tab-content" id="tab-whatsapp">
+        <div class="card" style="max-width:860px;">
+          <div class="card-header">
+            <h2>WhatsApp - Integração Cloud API (Meta)</h2>
+            <div class="card-actions">
+              <button class="btn btn-outline" onclick="carregarWhatsappConfig()"><i class="fas fa-rotate" aria-hidden="true"></i> Atualizar</button>
+              <button class="btn btn-primary" onclick="validarWhatsapp()" id="whatsappValidateBtn"><i class="fas fa-plug" aria-hidden="true"></i> Validar Meta API</button>
+            </div>
+          </div>
+          <div style="padding:24px;">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;padding:14px 16px;border-radius:12px;background:#f8fafc;border:1px solid #e2e8f0;">
+              <i class="fab fa-whatsapp" style="font-size:24px;color:#25d366;" aria-hidden="true"></i>
+              <span style="font-size:0.9rem;color:#475569;">Status da conexão:</span>
+              <span class="status-badge" id="whatsappStatusBadge" style="background:#fef3c7;color:#92400e;">Pendente</span>
+              <span id="whatsappStatusDetail" style="font-size:0.8rem;color:#94a3b8;"></span>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="wGraphVersion">Graph API Version</label>
+                <input type="text" id="wGraphVersion" placeholder="v25.0" />
+              </div>
+              <div class="form-group">
+                <label for="wPhoneNumberId">Phone Number ID *</label>
+                <input type="text" id="wPhoneNumberId" placeholder="Ex: 1204834672717847" />
+              </div>
+              <div class="form-group">
+                <label for="wWabaId">WABA ID</label>
+                <input type="text" id="wWabaId" placeholder="ID da conta WhatsApp Business" />
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="wBusinessPhone">Telefone Business</label>
+                <input type="tel" id="wBusinessPhone" placeholder="Ex: 5561991783512" />
+              </div>
+              <div class="form-group">
+                <label for="wBusinessName">Nome da empresa</label>
+                <input type="text" id="wBusinessName" placeholder="Gelo Mix" />
+              </div>
+              <div class="form-group">
+                <label for="wAdminPhone">Telefone administrador</label>
+                <input type="tel" id="wAdminPhone" placeholder="Ex: 5561991783512" />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="wAccessToken">Access Token *</label>
+              <textarea id="wAccessToken" placeholder="Token do Sistema (System User) ou token temporário do WhatsApp Cloud API" style="min-height:90px;font-family:ui-monospace,monospace;font-size:0.8rem;"></textarea>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="wAppSecret">App Secret</label>
+                <input type="text" id="wAppSecret" placeholder="App Secret do aplicativo Meta" />
+              </div>
+              <div class="form-group">
+                <label for="wVerifyToken">Verify Token *</label>
+                <div style="display:flex;gap:8px;">
+                  <input type="text" id="wVerifyToken" placeholder="Token de verificação do webhook" style="flex:1;" />
+                  <button class="btn btn-outline" onclick="gerarVerifyToken()" title="Gerar token aleatório"><i class="fas fa-dice" aria-hidden="true"></i> Gerar</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="wWebhookUrl">Webhook URL</label>
+              <div style="display:flex;gap:8px;">
+                <input type="text" id="wWebhookUrl" readonly style="flex:1;background:#f8fafc;" />
+                <button class="btn btn-outline" onclick="copiarWebhookUrl()" title="Copiar URL do webhook"><i class="fas fa-copy" aria-hidden="true"></i> Copiar</button>
+              </div>
+              <p style="font-size:0.78rem;color:#94a3b8;margin-top:6px;">Cadastre esta URL no Meta > WhatsApp Cloud API > Webhook e assine os eventos <code>messages</code> e <code>message_statuses</code>.</p>
+            </div>
+
+            <div style="margin:22px 0 12px;padding-top:18px;border-top:1px solid #e2e8f0;">
+              <p style="font-size:0.9rem;font-weight:700;margin-bottom:4px;">Templates de mensagem (pedidos)</p>
+              <p style="font-size:0.78rem;color:#94a3b8;margin-bottom:12px;">Placeholders: <code>{{nome}}</code>, <code>{{resumo}}</code>, <code>{{total}}</code></p>
+            </div>
+            <div class="form-group">
+              <label for="wTplConfirmado">Pedido confirmado</label>
+              <textarea id="wTplConfirmado" style="min-height:70px;"></textarea>
+            </div>
+            <div class="form-group">
+              <label for="wTplLembrete">Lembrete de pedido</label>
+              <textarea id="wTplLembrete" style="min-height:70px;"></textarea>
+            </div>
+            <div class="form-group">
+              <label for="wTplCancelado">Pedido cancelado</label>
+              <textarea id="wTplCancelado" style="min-height:70px;"></textarea>
+            </div>
+            <div class="form-group">
+              <label for="wTplPagamentoPendente">Pagamento pendente</label>
+              <textarea id="wTplPagamentoPendente" style="min-height:70px;"></textarea>
+            </div>
+
+            <button class="btn btn-primary" onclick="salvarWhatsappConfig()" id="saveWhatsappBtn" style="margin-top:8px;"><i class="fas fa-save" aria-hidden="true"></i> Salvar WhatsApp</button>
+          </div>
+        </div>
+
+        <div class="card" style="max-width:860px;margin-top:24px;">
+          <div class="card-header"><h2>Envio de teste</h2></div>
+          <div style="padding:24px;">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="wTestDestino">Destino</label>
+                <input type="tel" id="wTestDestino" placeholder="Ex: (61) 99178-3512" inputmode="tel" />
+              </div>
+              <div class="form-group">
+                <label for="wTestMensagem">Mensagem</label>
+                <input type="text" id="wTestMensagem" placeholder="Mensagem de teste" />
+              </div>
+              <div class="form-group" style="justify-content:flex-end;">
+                <button class="btn btn-outline" onclick="enviarWhatsappTeste()" id="whatsappSendBtn"><i class="fas fa-paper-plane" aria-hidden="true"></i> Enviar teste</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 
@@ -1091,6 +1215,7 @@
     <a href="#" data-tab="rotas" onclick="switchTab('rotas', this)"><i class="fas fa-route" aria-hidden="true"></i><span>Rotas</span></a>
     <a href="#" data-tab="pedidos-lista" onclick="switchTab('pedidos-lista', this)"><i class="fas fa-list-check" aria-hidden="true"></i><span>Registros</span></a>
     <a href="#" data-tab="config" onclick="switchTab('config', this)"><i class="fas fa-cog" aria-hidden="true"></i><span>Config</span></a>
+    <a href="#" data-tab="whatsapp" onclick="switchTab('whatsapp', this)"><i class="fab fa-whatsapp" aria-hidden="true"></i><span>WhatsApp</span></a>
     <a href="#" data-tab="gelo-publica" onclick="switchTab('gelo-publica', this)"><i class="fas fa-eye" aria-hidden="true"></i><span>Gelo</span></a>
     <a href="#" data-tab="gelo-config" onclick="switchTab('gelo-config', this)"><i class="fas fa-snowflake" aria-hidden="true"></i><span>Gelo Cfg</span></a>
     <a href="#" data-tab="super-config" onclick="switchTab('super-config', this)"><i class="fas fa-user-shield" aria-hidden="true"></i><span>Super</span></a>
@@ -1161,6 +1286,7 @@
       rotas: 'Rotas',
       'super-config': 'Super Config',
       config: 'Configurações',
+      whatsapp: 'WhatsApp',
       'gelo-publica': 'Gelo Mix - Página Pública',
       'gelo-config': 'Gelo Mix - Configurações'
     };
@@ -1224,6 +1350,9 @@
       } else if (tab === 'gelo-config') {
         document.getElementById('pageBadge').textContent = 'Gelo Mix';
         carregarGeloConfig();
+      } else if (tab === 'whatsapp') {
+        document.getElementById('pageBadge').textContent = 'WhatsApp';
+        carregarWhatsappConfig();
       } else if (tab !== 'config') {
         atualizarBadge(tab);
       } else {
@@ -2624,12 +2753,20 @@
         return;
       }
       try {
+        var sessaoToken = (await supabaseClient.auth.getSession()).data.session;
         var resp = await fetch('/api/super-admin-user', {
           method: 'POST',
-          headers: { 'Content-Type': 'text/plain' },
+          headers: {
+            'Content-Type': 'text/plain',
+            'Authorization': 'Bearer ' + (sessaoToken ? sessaoToken.access_token : '')
+          },
           body: JSON.stringify({ action: 'update_password', email: usuario.email, password: novaSenha })
         });
         var data = await resp.json();
+        if (resp.status === 401 || resp.status === 403) {
+          showToast(data.error || 'Nao autorizado: faca login como administrador.', 'error');
+          return;
+        }
         if (data.configured === false) {
           var reset = await supabaseClient.auth.resetPasswordForEmail(usuario.email);
           if (reset.error) {
@@ -3097,6 +3234,227 @@
       if (!produtos.length) html += '<p>Nenhum produto cadastrado.</p>';
       html += '</div>';
       document.getElementById('geloPublicaResumo').innerHTML = html;
+    }
+
+    // =============================================
+    // WHATSAPP - CONFIGURACAO / VALIDACAO / ENVIO TESTE
+    // =============================================
+    var WHATSAPP_TEMPLATES_DEFAULT = {
+      pedido_confirmado: 'Olá {{nome}}! 🧊\nSeu pedido na Gelo Mix foi CONFIRMADO:\n{{resumo}}\nTotal: {{total}}\nNossa equipe entrará em contato para combinar a entrega. Obrigado!',
+      lembrete_pedido: 'Olá {{nome}}! 🧊\nLembrete do seu pedido na Gelo Mix:\n{{resumo}}\nTotal: {{total}}\nQualquer dúvida, estamos à disposição.',
+      pedido_cancelado: 'Olá {{nome}}! 🧊\nSeu pedido na Gelo Mix foi CANCELADO:\n{{resumo}}\nSe precisar de algo, é só chamar. Obrigado!',
+      pagamento_pendente: 'Olá {{nome}}! 🧊\nO pagamento do seu pedido na Gelo Mix está PENDENTE:\n{{resumo}}\nTotal: {{total}}\nRealize o pagamento para confirmarmos a entrega. Obrigado!'
+    };
+
+    async function tokenSessao() {
+      var s = (await supabaseClient.auth.getSession()).data.session;
+      return s ? s.access_token : '';
+    }
+
+    function setWhatsappBadge(status, detail) {
+      var badge = document.getElementById('whatsappStatusBadge');
+      if (!badge) return;
+      var conectado = status === 'conectado';
+      badge.textContent = conectado ? 'Conectado' : 'Pendente';
+      badge.style.background = conectado ? '#d1fae5' : '#fef3c7';
+      badge.style.color = conectado ? '#065f46' : '#92400e';
+      var det = document.getElementById('whatsappStatusDetail');
+      if (det) det.textContent = detail || '';
+    }
+
+    async function carregarWhatsappConfig() {
+      var btn = document.getElementById('saveWhatsappBtn');
+      if (btn) btn.disabled = true;
+      try {
+        var token = await tokenSessao();
+        var resp = await fetch('/api/whatsapp-config', { headers: { 'Authorization': 'Bearer ' + token } });
+        var data = await resp.json();
+        if (resp.status === 401 || resp.status === 403) {
+          showToast(data.error || 'Nao autorizado.', 'error');
+          return;
+        }
+        var cfg = data.config || {};
+        var ver = cfg.graph_api_version || 'v25.0';
+        document.getElementById('wGraphVersion').value = ver;
+        document.getElementById('wPhoneNumberId').value = cfg.phone_number_id || '';
+        document.getElementById('wWabaId').value = cfg.waba_id || '';
+        document.getElementById('wBusinessPhone').value = cfg.business_phone || '';
+        document.getElementById('wBusinessName').value = cfg.business_name || '';
+        document.getElementById('wAdminPhone').value = cfg.admin_phone || '';
+        document.getElementById('wAccessToken').value = cfg.access_token || '';
+        document.getElementById('wAppSecret').value = cfg.app_secret || '';
+        document.getElementById('wVerifyToken').value = cfg.verify_token || '';
+        var url = cfg.webhook_url || window.location.origin + '/api/whatsapp-webhook';
+        document.getElementById('wWebhookUrl').value = url;
+        var tpl = cfg.templates || {};
+        document.getElementById('wTplConfirmado').value = tpl.pedido_confirmado || WHATSAPP_TEMPLATES_DEFAULT.pedido_confirmado;
+        document.getElementById('wTplLembrete').value = tpl.lembrete_pedido || WHATSAPP_TEMPLATES_DEFAULT.lembrete_pedido;
+        document.getElementById('wTplCancelado').value = tpl.pedido_cancelado || WHATSAPP_TEMPLATES_DEFAULT.pedido_cancelado;
+        document.getElementById('wTplPagamentoPendente').value = tpl.pagamento_pendente || WHATSAPP_TEMPLATES_DEFAULT.pagamento_pendente;
+        setWhatsappBadge(cfg.status || 'pendente', cfg.updated_at ? 'Atualizado: ' + new Date(cfg.updated_at).toLocaleString('pt-BR') : '');
+      } catch (e) {
+        showToast('Falha ao carregar configuracao: ' + e.message, 'error');
+      } finally {
+        if (btn) btn.disabled = false;
+      }
+    }
+
+    function gerarVerifyToken() {
+      document.getElementById('wVerifyToken').value = 'gelomix_whatsapp_' +
+        Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2);
+    }
+
+    function copiarWebhookUrl() {
+      var input = document.getElementById('wWebhookUrl');
+      if (!input) return;
+      input.select();
+      input.setSelectionRange(0, 99999);
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(input.value).then(function() {
+          showToast('Webhook URL copiada.', 'success');
+        }).catch(function() {
+          document.execCommand('copy');
+          showToast('Webhook URL copiada.', 'success');
+        });
+      } else {
+        document.execCommand('copy');
+        showToast('Webhook URL copiada.', 'success');
+      }
+    }
+
+    function lerWhatsappForm() {
+      return {
+        graph_api_version: document.getElementById('wGraphVersion').value.trim() || 'v25.0',
+        phone_number_id: document.getElementById('wPhoneNumberId').value.trim(),
+        waba_id: document.getElementById('wWabaId').value.trim(),
+        business_phone: document.getElementById('wBusinessPhone').value.trim(),
+        business_name: document.getElementById('wBusinessName').value.trim(),
+        admin_phone: document.getElementById('wAdminPhone').value.trim(),
+        access_token: document.getElementById('wAccessToken').value.trim(),
+        app_secret: document.getElementById('wAppSecret').value.trim(),
+        verify_token: document.getElementById('wVerifyToken').value.trim(),
+        webhook_url: document.getElementById('wWebhookUrl').value.trim(),
+        templates: {
+          pedido_confirmado: document.getElementById('wTplConfirmado').value,
+          lembrete_pedido: document.getElementById('wTplLembrete').value,
+          pedido_cancelado: document.getElementById('wTplCancelado').value,
+          pagamento_pendente: document.getElementById('wTplPagamentoPendente').value
+        }
+      };
+    }
+
+    async function salvarWhatsappConfig() {
+      var payload = lerWhatsappForm();
+      if (!payload.phone_number_id) {
+        showToast('Informe o Phone Number ID.', 'error');
+        return;
+      }
+      if (!payload.access_token) {
+        showToast('Informe o Access Token.', 'error');
+        return;
+      }
+      var btn = document.getElementById('saveWhatsappBtn');
+      if (btn) btn.disabled = true;
+      try {
+        var token = await tokenSessao();
+        var resp = await fetch('/api/whatsapp-config', {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain', 'Authorization': 'Bearer ' + token },
+          body: JSON.stringify(payload)
+        });
+        var data = await resp.json();
+        if (resp.status === 401 || resp.status === 403) {
+          showToast(data.error || 'Nao autorizado.', 'error');
+          return;
+        }
+        if (data.error) {
+          showToast(data.error, 'error');
+          return;
+        }
+        setWhatsappBadge((data.config && data.config.status) || 'pendente');
+        showToast('Configuracao WhatsApp salva!', 'success');
+      } catch (e) {
+        showToast('Falha ao salvar: ' + e.message, 'error');
+      } finally {
+        if (btn) btn.disabled = false;
+      }
+    }
+
+    async function validarWhatsapp() {
+      var btn = document.getElementById('whatsappValidateBtn');
+      if (btn) btn.disabled = true;
+      try {
+        var token = await tokenSessao();
+        var resp = await fetch('/api/whatsapp-test', {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain', 'Authorization': 'Bearer ' + token },
+          body: '{}'
+        });
+        var data = await resp.json();
+        if (resp.status === 401 || resp.status === 403) {
+          showToast(data.error || 'Nao autorizado.', 'error');
+          return;
+        }
+        if (data.error) {
+          showToast(data.error, 'error');
+          return;
+        }
+        if (data.ok) {
+          setWhatsappBadge('conectado');
+          var tel = data.phone ? (data.phone.display_phone_number || '') : '';
+          var nome = data.phone ? (data.phone.verified_name || '') : '';
+          var perms = (data.permissions || []).map(function(p) { return p.scope; }).join(', ') || 'nenhuma';
+          showToast('Conexao validada: ' + nome + ' ' + tel, 'success');
+          setWhatsappBadge('conectado', 'Número verificado: ' + tel + ' · Permissões: ' + perms.slice(0, 120));
+        } else {
+          setWhatsappBadge('pendente');
+          showToast(data.message || 'Falha na validacao.', 'error');
+        }
+      } catch (e) {
+        showToast('Falha ao validar: ' + e.message, 'error');
+      } finally {
+        if (btn) btn.disabled = false;
+      }
+    }
+
+    async function enviarWhatsappTeste() {
+      var telefone = document.getElementById('wTestDestino').value.trim();
+      var mensagem = document.getElementById('wTestMensagem').value.trim();
+      if (!telefone) {
+        showToast('Informe o destino do teste.', 'error');
+        return;
+      }
+      if (!mensagem) {
+        showToast('Informe a mensagem de teste.', 'error');
+        return;
+      }
+      var btn = document.getElementById('whatsappSendBtn');
+      if (btn) btn.disabled = true;
+      try {
+        var token = await tokenSessao();
+        var resp = await fetch('/api/whatsapp-send-test', {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain', 'Authorization': 'Bearer ' + token },
+          body: JSON.stringify({ telefone: telefone, mensagem: mensagem })
+        });
+        var data = await resp.json();
+        if (resp.status === 401 || resp.status === 403) {
+          showToast(data.error || 'Nao autorizado.', 'error');
+          return;
+        }
+        if (data.sent) {
+          showToast('Mensagem de teste enviada!', 'success');
+          document.getElementById('wTestMensagem').value = '';
+        } else {
+          var motivo = data.reason || 'falha';
+          var det = data.error ? (' - ' + JSON.stringify(data.error).slice(0, 200)) : '';
+          showToast('Falha no envio (' + motivo + ')' + det, 'error');
+        }
+      } catch (e) {
+        showToast('Falha ao enviar: ' + e.message, 'error');
+      } finally {
+        if (btn) btn.disabled = false;
+      }
     }
 
     // =============================================

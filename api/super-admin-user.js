@@ -6,13 +6,27 @@
 //   SUPABASE_URL                  - URL do projeto (ex: https://xxxx.supabase.co)
 //   SUPABASE_SERVICE_ROLE_KEY     - Service Role Key (Supabase Dashboard > Settings > API)
 //
+// Auth: exige token JWT valido + perfil admin/super (requireAdmin).
 // Se as env vars nao estiverem configuradas, retorna { configured: false }
 // para o frontend acionar o fallback (envio de link de redefinicao).
 // =============================================
 
+import { requireAdmin } from './_lib/auth.js';
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     res.status(405).json({ error: 'method_not_allowed' });
+    return;
+  }
+
+  try {
+    await requireAdmin(req);
+  } catch (e) {
+    res.status(e.status === 403 ? 403 : 401).json({
+      error: e.status === 403
+        ? 'Acesso negado: voce nao e administrador.'
+        : 'Nao autorizado: faca login como administrador.'
+    });
     return;
   }
 
