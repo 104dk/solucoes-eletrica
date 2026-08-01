@@ -754,6 +754,7 @@
 
   <footer>
     <p>&copy; 2026 Gelo Mix — Todos os direitos reservados</p>
+    <p style="margin-top:4px; font-size:0.8rem; opacity:0.6;" id="siteVersion"></p>
     <p style="margin-top:4px;"><i class="fas fa-map-marker-alt" aria-hidden="true"></i> <span id="footerEndereco">Rua 43, Quadra 149, Lote E — Parque Mingone II — Luziânia, GO</span></p>
     <div class="footer-social" aria-label="Redes sociais">
       <a href="https://wa.me/5561991783512" target="_blank" rel="noopener" aria-label="WhatsApp" id="footerWhatsapp">
@@ -1337,6 +1338,9 @@
         var waFab = document.getElementById('footerWhatsappFab');
         if (waFooter) waFooter.href = waLink;
         if (waFab) waFab.href = waLink + '?text=' + encodeURIComponent('Olá! Gostaria de pedir gelo.');
+
+        var versionEl = document.getElementById('siteVersion');
+        if (versionEl) versionEl.textContent = 'v' + (SE_CONFIG.APP_VERSION || '1.0.0');
 
         if (cfgMap['gelo_produtos']) {
           try {

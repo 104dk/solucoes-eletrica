@@ -662,6 +662,7 @@
 
   <footer>
     <p>&copy; 2026 Soluções Elétrica — Todos os direitos reservados</p>
+    <p style="margin-top:4px; font-size:0.8rem; opacity:0.6;" id="siteVersion"></p>
     <p style="margin-top:4px;" id="footerAddress"><i class="fas fa-map-marker-alt" aria-hidden="true"></i> <span id="footerEndereco">Carregando endereço...</span></p>
     <div class="footer-social" aria-label="Redes sociais">
       <a id="footerInstagram" href="https://www.instagram.com/solucoeseletrica" target="_blank" rel="noopener" aria-label="Instagram">
@@ -962,6 +963,9 @@
     // =============================================
     carregarConfigFrontend();
     checkOAuthCallback();
+
+    var versionEl = document.getElementById('siteVersion');
+    if (versionEl) versionEl.textContent = 'v' + (SE_CONFIG.APP_VERSION || '1.0.0');
   </script>
 
 </body>

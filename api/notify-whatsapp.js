@@ -10,7 +10,7 @@
 // para o frontend acionar o fallback via link wa.me.
 // =============================================
 
-const GRAPH_URL = 'https://graph.facebook.com/v21.0';
+const GRAPH_URL = 'https://graph.facebook.com/v25.0';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {

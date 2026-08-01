@@ -549,6 +549,7 @@
     <div class="sidebar-footer">
       <a href="index.html"><i class="fas fa-arrow-left" aria-hidden="true"></i> Voltar ao site</a>
       <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt" aria-hidden="true"></i> Sair</a>
+      <p style="margin:12px 0 0; font-size:0.75rem; opacity:0.55;" id="siteVersion"></p>
     </div>
   </aside>
 
@@ -3136,6 +3137,9 @@
       renderTabela('rotas');
       carregarConfig();
       atualizarBadge('pedidos');
+
+      var versionEl = document.getElementById('siteVersion');
+      if (versionEl) versionEl.textContent = 'v' + (SE_CONFIG.APP_VERSION || '1.0.0');
     }
 
     init();
