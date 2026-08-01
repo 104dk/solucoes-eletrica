@@ -153,6 +153,12 @@
     .status-concluido { background: #d1fae5; color: #065f46; }
     .status-cancelado { background: #fee2e2; color: #991b1b; }
     .actions-cell { display: flex; gap: 4px; }
+    .status-select {
+      padding: 4px 6px; border: 1px solid #e2e8f0; border-radius: 6px;
+      font-size: 0.75rem; font-weight: 600; background: #fff; color: #334155;
+      max-width: 132px; cursor: pointer;
+    }
+    .status-select:focus { outline: none; border-color: #00838f; }
     .empty-state {
       text-align: center; padding: 48px 24px; color: #94a3b8;
     }
@@ -1186,11 +1192,33 @@
       var printBtn = isPedidosTab(tab)
         ? '<button class="btn btn-sm btn-outline" onclick="imprimirPedido(\'' + d.id + '\')" aria-label="Imprimir pedido" title="Imprimir pedido"><i class="fas fa-print" aria-hidden="true"></i></button>'
         : '';
+      var statusSel = isPedidosTab(tab)
+        ? '<select class="status-select" onchange="alterarStatusPedido(\'' + d.id + '\', this.value)" aria-label="Alterar status do pedido">' +
+          statusOptions.map(function(s) {
+            return '<option value="' + s + '"' + (d.status === s ? ' selected' : '') + '>' + s + '</option>';
+          }).join('') +
+          '</select>'
+        : '';
       return '<tr>' + cols + '<td class="actions-cell">' +
         printBtn +
+        statusSel +
         '<button class="btn btn-sm btn-outline" onclick="editarRegistro(\'' + tab + '\',\'' + d.id + '\')" aria-label="Editar"><i class="fas fa-pen" aria-hidden="true"></i></button>' +
         '<button class="btn btn-sm btn-danger" onclick="excluirRegistro(\'' + tab + '\',\'' + d.id + '\')" aria-label="Excluir"><i class="fas fa-trash" aria-hidden="true"></i></button>' +
         '</td></tr>';
+    }
+
+    async function alterarStatusPedido(id, novoStatus) {
+      if (!novoStatus) return;
+      var pedido = (dadosCache['pedidos-lista'] || dadosCache.pedidos || []).find(function(p) { return p.id === id; });
+      if (pedido && pedido.status === novoStatus) return;
+      var result = await supabaseClient.from('pedidos').update({ status: novoStatus }).eq('id', id);
+      if (result.error) {
+        showToast('Erro ao atualizar status: ' + result.error.message, 'error');
+        renderTabela('pedidos-lista');
+        return;
+      }
+      showToast('Status atualizado para "' + novoStatus + '".', 'success');
+      renderTabela('pedidos-lista');
     }
 
     function imprimirPedido(id) {
