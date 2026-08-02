@@ -2427,7 +2427,7 @@
 
         var payload = {
           nome: parada.cliente,
-          telefone: parada.telefone,
+          telefone: corrigirTelefone(parada.telefone),
           cep: parada.cep,
           email: '',
           endereco: parada.endereco
@@ -2500,7 +2500,7 @@
       form.addEventListener('submit', salvarRota);
       form.addEventListener('input', function(event) {
         if (event.target.classList.contains('rota-telefone')) {
-          event.target.value = aplicarMascaraCelular(event.target.value);
+          event.target.value = corrigirTelefone(event.target.value);
         }
         if (event.target.classList.contains('rota-cep')) {
           event.target.value = aplicarMascaraCep(event.target.value);
@@ -2529,6 +2529,18 @@
       return numeros.replace(/(\d{2})(\d{5})(\d{0,4})/, '($1) $2-$3');
     }
 
+    function corrigirTelefone(valor) {
+      var d = String(valor || '').replace(/\D/g, '');
+      if (!d) return '';
+      if (d.length >= 12 && d.length <= 15 && d.charAt(0) === d.charAt(2) && d.charAt(1) === d.charAt(3)) {
+        var rest = d.slice(2);
+        if (rest.length === 10 || rest.length === 11) d = rest;
+      }
+      if ((d.length === 12 || d.length === 13) && d.indexOf('55') === 0) d = d.slice(2);
+      if (d.length > 11) d = d.slice(d.length - 11);
+      return aplicarMascaraCelular(d);
+    }
+
     function aplicarMascaraCep(valor) {
       var numeros = String(valor || '').replace(/\D/g, '').slice(0, 8);
       if (numeros.length <= 5) return numeros;
@@ -2539,9 +2551,9 @@
       var telefone = document.getElementById('f_telefone');
       var cep = document.getElementById('f_cep');
       if (telefone) {
-        telefone.value = aplicarMascaraCelular(telefone.value);
+        telefone.value = corrigirTelefone(telefone.value);
         telefone.addEventListener('input', function() {
-          this.value = aplicarMascaraCelular(this.value);
+          this.value = corrigirTelefone(this.value);
         });
       }
       if (cep) {
@@ -2717,7 +2729,7 @@
       } else if (tipoAtual === 'clientes') {
         dados = {
           nome: document.getElementById('f_nome').value.trim(),
-          telefone: document.getElementById('f_telefone').value.trim(),
+          telefone: corrigirTelefone(document.getElementById('f_telefone').value),
           cep: document.getElementById('f_cep').value.trim(),
           email: document.getElementById('f_email').value.trim(),
           endereco: document.getElementById('f_endereco').value.trim()
@@ -3067,7 +3079,7 @@
       return {
         id: 'contato-' + Date.now() + '-' + Math.random().toString(16).slice(2),
         nome: String(nome || '').trim(),
-        telefone: aplicarMascaraCelular(String(telefone || '')),
+        telefone: corrigirTelefone(String(telefone || '')),
         endereco: endereco,
         selecionado: true
       };
@@ -3156,7 +3168,7 @@
         var c = selecionados[i];
         var result = await salvarClientePayload({
           nome: c.nome || c.telefone || 'Cliente sem nome',
-          telefone: c.telefone || '',
+          telefone: corrigirTelefone(c.telefone),
           cep: '',
           email: '',
           endereco: c.endereco || ''
@@ -3201,8 +3213,8 @@
       ['scClienteTelefone', 'scClienteEditTelefone'].forEach(function(id) {
         var input = document.getElementById(id);
         if (!input || input.dataset.maskReady) return;
-        input.value = aplicarMascaraCelular(input.value);
-        input.addEventListener('input', function() { this.value = aplicarMascaraCelular(this.value); });
+        input.value = corrigirTelefone(input.value);
+        input.addEventListener('input', function() { this.value = corrigirTelefone(this.value); });
         input.dataset.maskReady = '1';
       });
       [
@@ -3231,7 +3243,7 @@
       }
       var result = await salvarClientePayload({
         nome: nome,
-        telefone: document.getElementById('scClienteTelefone').value.trim(),
+        telefone: corrigirTelefone(document.getElementById('scClienteTelefone').value),
         cep: document.getElementById('scClienteCep').value.trim(),
         email: '',
         endereco: document.getElementById('scClienteEndereco').value.trim()
@@ -3270,7 +3282,7 @@
       }
       var result = await salvarClientePayload({
         nome: nome,
-        telefone: document.getElementById('scClienteEditTelefone').value.trim(),
+        telefone: corrigirTelefone(document.getElementById('scClienteEditTelefone').value),
         cep: document.getElementById('scClienteEditCep').value.trim(),
         endereco: document.getElementById('scClienteEditEndereco').value.trim()
       }, id);
@@ -3786,7 +3798,7 @@
         return '<label style="display:flex;align-items:center;gap:10px;padding:7px 8px;border-radius:6px;cursor:pointer;">' +
           '<input type="checkbox" class="mClienteCheck" value="' + escapeHtml(c.id || '') + '" data-telefone="' + escapeHtml(c.telefone || '') + '" data-nome="' + escapeHtml(c.nome || '') + '" onchange="atualizarContadorMensagens()">' +
           '<span style="flex:1;font-size:0.85rem;">' + escapeHtml(c.nome || '-') + '</span>' +
-          '<span style="font-size:0.78rem;color:#94a3b8;">' + escapeHtml(c.telefone || '') + '</span>' +
+          '<span style="font-size:0.78rem;color:#94a3b8;">' + escapeHtml(corrigirTelefone(c.telefone)) + '</span>' +
           '</label>';
       }).join('');
       atualizarContadorMensagens();
@@ -3936,7 +3948,7 @@
         return '<label style="display:flex;align-items:center;gap:10px;padding:7px 8px;border-radius:6px;cursor:pointer;">' +
           '<input type="checkbox" class="lClienteCheck" value="' + escapeHtml(c.id || '') + '" data-telefone="' + escapeHtml(c.telefone || '') + '" data-nome="' + escapeHtml(c.nome || '') + '" onchange="atualizarContadorLinks()">' +
           '<span style="flex:1;font-size:0.85rem;">' + escapeHtml(c.nome || '-') + '</span>' +
-          '<span style="font-size:0.78rem;color:#94a3b8;">' + escapeHtml(c.telefone || '') + '</span>' +
+          '<span style="font-size:0.78rem;color:#94a3b8;">' + escapeHtml(corrigirTelefone(c.telefone)) + '</span>' +
           '</label>';
       }).join('');
       atualizarContadorLinks();
@@ -4051,7 +4063,7 @@
         gerados.map(function(g, i) {
           return '<div style="display:flex;align-items:center;gap:10px;padding:8px 12px;border-bottom:1px solid #eef2f7;background:' + (i % 2 ? '#f8fafc' : '#fff') + ';">' +
             '<span style="flex:1;font-size:0.83rem;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + escapeHtml(g.nome) + '</span>' +
-            '<span style="font-size:0.75rem;color:#94a3b8;">+' + escapeHtml(g.telefone) + '</span>' +
+            '<span style="font-size:0.75rem;color:#94a3b8;">' + escapeHtml(corrigirTelefone(g.telefone)) + '</span>' +
             '<button class="btn btn-sm btn-success" onclick="abrirLinkWhatsApp(' + i + ')"><i class="fas fa-paper-plane" aria-hidden="true"></i> Abrir</button>' +
             '<button class="btn btn-sm btn-outline" onclick="copiarLinkWhatsApp(' + i + ')"><i class="fas fa-copy" aria-hidden="true"></i> Copiar</button>' +
             '</div>';
